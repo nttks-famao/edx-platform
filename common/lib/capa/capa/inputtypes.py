@@ -39,6 +39,7 @@ graded status as'status'
 # makes sense, but a bunch of problems have markup that assumes block.  Bigger TODO: figure out a
 # general css and layout strategy for capa, document it, then implement it.
 
+import time
 import json
 import logging
 from lxml import etree
@@ -46,11 +47,14 @@ import re
 import shlex  # for splitting quoted strings
 import sys
 import pyparsing
+import html5lib
+import bleach
 
 from .registry import TagRegistry
 from chem import chemcalc
 from calc.preview import latex_preview
 import xqueue_interface
+from xqueue_interface import XQUEUE_TIMEOUT
 from datetime import datetime
 from xmodule.stringify import stringify_children
 
@@ -58,7 +62,47 @@ log = logging.getLogger(__name__)
 
 #########################################################################
 
-registry = TagRegistry()
+registry = TagRegistry()  # pylint: disable=C0103
+
+
+class Status(object):
+    """
+    Problem status
+    attributes: classname, display_name
+    """
+    css_classes = {
+        # status: css class
+        'unsubmitted': 'unanswered',
+        'incomplete': 'incorrect',
+        'queued': 'processing',
+    }
+    __slots__ = ('classname', '_status', 'display_name')
+
+    def __init__(self, status, gettext_func=unicode):
+        self.classname = self.css_classes.get(status, status)
+        _ = gettext_func
+        names = {
+            'correct': _('correct'),
+            'incorrect': _('incorrect'),
+            'incomplete': _('incomplete'),
+            'unanswered': _('unanswered'),
+            'unsubmitted': _('unanswered'),
+            'queued': _('processing'),
+        }
+        self.display_name = names.get(status, unicode(status))
+        self._status = status or ''
+
+    def __str__(self):
+        return self._status
+
+    def __unicode__(self):
+        return self._status.decode('utf8')
+
+    def __repr__(self):
+        return 'Status(%r)' % self._status
+
+    def __eq__(self, other):
+        return self._status == str(other)
 
 
 class Attribute(object):
@@ -257,7 +301,7 @@ class InputTypeBase(object):
         context = {
             'id': self.input_id,
             'value': self.value,
-            'status': self.status,
+            'status': Status(self.status, self.capa_system.i18n.ugettext),
             'msg': self.msg,
             'STATIC_URL': self.capa_system.STATIC_URL,
         }
@@ -286,7 +330,26 @@ class InputTypeBase(object):
         context = self._get_render_context()
 
         html = self.capa_system.render_template(self.template, context)
-        return etree.XML(html)
+
+        try:
+            output = etree.XML(html)
+        except etree.XMLSyntaxError as ex:
+            # If `html` contains attrs with no values, like `controls` in <audio controls src='smth'/>,
+            # XML parser will raise exception, so wee fallback to html5parser, which will set empty "" values for such attrs.
+            try:
+                output = html5lib.parseFragment(html, treebuilder='lxml', namespaceHTMLElements=False)[0]
+            except IndexError:
+                raise ex
+
+        return output
+
+    def get_user_visible_answer(self, internal_answer):
+        """
+        Given the internal representation of the answer provided by the user, return the representation of the answer
+        as the user saw it.  Subclasses should override this method if and only if the internal represenation of the
+        answer is different from the answer that is displayed to the user.
+        """
+        return internal_answer
 
 
 #-----------------------------------------------------------------------------
@@ -385,6 +448,7 @@ class ChoiceGroup(InputTypeBase):
             raise Exception("ChoiceGroup: unexpected tag {0}".format(self.tag))
 
         self.choices = self.extract_choices(self.xml)
+        self._choices_map = dict(self.choices)  # pylint: disable=attribute-defined-outside-init
 
     @classmethod
     def get_attributes(cls):
@@ -418,6 +482,12 @@ class ChoiceGroup(InputTypeBase):
                     % choice.tag)
             choices.append((choice.get("name"), stringify_children(choice)))
         return choices
+
+    def get_user_visible_answer(self, internal_answer):
+        if isinstance(internal_answer, basestring):
+            return self._choices_map[internal_answer]
+
+        return [self._choices_map[i] for i in internal_answer]
 
 
 #-----------------------------------------------------------------------------
@@ -600,7 +670,6 @@ class FileSubmission(InputTypeBase):
     template = "filesubmission.html"
     tags = ['filesubmission']
 
-
     @staticmethod
     def parse_files(files):
         """
@@ -657,21 +726,21 @@ class CodeInput(InputTypeBase):
         # non-codemirror editor.
     ]
 
-
     @classmethod
     def get_attributes(cls):
         """
         Convert options to a convenient format.
         """
-        return [Attribute('rows', '30'),
-                Attribute('cols', '80'),
-                Attribute('hidden', ''),
+        return [
+            Attribute('rows', '30'),
+            Attribute('cols', '80'),
+            Attribute('hidden', ''),
 
-                # For CodeMirror
-                Attribute('mode', 'python'),
-                Attribute('linenumbers', 'true'),
-                # Template expects tabsize to be an int it can do math with
-                Attribute('tabsize', 4, transform=int),
+            # For CodeMirror
+            Attribute('mode', 'python'),
+            Attribute('linenumbers', 'true'),
+            # Template expects tabsize to be an int it can do math with
+            Attribute('tabsize', 4, transform=int),
         ]
 
     def setup_code_response_rendering(self):
@@ -690,7 +759,7 @@ class CodeInput(InputTypeBase):
         if self.status == 'incomplete':
             self.status = 'queued'
             self.queue_len = self.msg
-            self.msg = self.submitted_msg
+            self.msg = bleach.clean(self.submitted_msg)
 
     def setup(self):
         """ setup this input type """
@@ -726,7 +795,6 @@ class MatlabInput(CodeInput):
     template = "matlabinput.html"
     tags = ['matlabinput']
 
-
     def setup(self):
         """
         Handle matlab-specific parsing
@@ -747,11 +815,33 @@ class MatlabInput(CodeInput):
         # this is only set if we don't have a graded response
         # the graded response takes precedence
         if 'queue_msg' in self.input_state and self.status in ['queued', 'incomplete', 'unsubmitted']:
-            self.queue_msg = self.input_state['queue_msg']
+            attributes = bleach.ALLOWED_ATTRIBUTES.copy()
+            # Yuck! but bleach does not offer the option of passing in allowed_protocols,
+            # and matlab uses data urls for images
+            if u'data' not in bleach.BleachSanitizer.allowed_protocols:
+                bleach.BleachSanitizer.allowed_protocols.append(u'data')
+            attributes.update({'*': ['class', 'style', 'id'],
+                    'audio': ['controls', 'autobuffer', 'autoplay', 'src'],
+                    'img': ['src', 'width', 'height', 'class']})
+            self.queue_msg = bleach.clean(self.input_state['queue_msg'],
+                    tags=bleach.ALLOWED_TAGS + ['div', 'p', 'audio', 'pre', 'img'],
+                    styles=['white-space'],
+                    attributes=attributes
+                    )
+
         if 'queuestate' in self.input_state and self.input_state['queuestate'] == 'queued':
             self.status = 'queued'
             self.queue_len = 1
             self.msg = self.submitted_msg
+            # Handle situation if no response from xqueue arrived during specified time.
+            if ('queuetime' not in self.input_state or
+                    time.time() - self.input_state['queuetime'] > XQUEUE_TIMEOUT):
+                self.queue_len = 0
+                self.status = 'unsubmitted'
+                self.msg = _(
+                    'No response from Xqueue within {xqueue_timeout} seconds. Aborted.'
+                ).format(xqueue_timeout=XQUEUE_TIMEOUT)
+
 
     def handle_ajax(self, dispatch, data):
         """
@@ -807,6 +897,8 @@ class MatlabInput(CodeInput):
             'queue_len': str(self.queue_len),
             'queue_msg': self.queue_msg,
             'button_enabled': self.button_enabled(),
+            'matlab_editor_js': '{static_url}js/vendor/CodeMirror/octave.js'.format(
+                static_url=self.capa_system.STATIC_URL),
         }
         return extra_context
 
@@ -874,6 +966,7 @@ class MatlabInput(CodeInput):
         if error == 0:
             self.input_state['queuekey'] = queuekey
             self.input_state['queuestate'] = 'queued'
+            self.input_state['queuetime'] = time.time()
 
         return {'success': error == 0, 'message': msg}
 
@@ -904,6 +997,15 @@ class Schematic(InputTypeBase):
             Attribute('label', ''),
         ]
 
+    def _extra_context(self):
+        """
+        """
+        context = {
+            'setup_script': '{static_url}js/capa/schematicinput.js'.format(
+                static_url=self.capa_system.STATIC_URL),
+        }
+
+        return context
 
 #-----------------------------------------------------------------------------
 
@@ -1021,8 +1123,8 @@ class ChemicalEquationInput(InputTypeBase):
         """
         Can set size of text field.
         """
-        return [Attribute('size', '20'),             
-                Attribute('label', ''),]
+        return [Attribute('size', '20'),
+                Attribute('label', ''), ]
 
     def _extra_context(self):
         """
@@ -1108,16 +1210,10 @@ class FormulaEquationInput(InputTypeBase):
         TODO (vshnayder): Get rid of 'previewer' once we have a standard way of requiring js to be loaded.
         """
         # `reported_status` is basically `status`, except we say 'unanswered'
-        reported_status = ''
-        if self.status == 'unsubmitted':
-            reported_status = 'unanswered'
-        elif self.status in ('correct', 'incorrect', 'incomplete'):
-            reported_status = self.status
 
         return {
             'previewer': '{static_url}js/capa/src/formula_equation_preview.js'.format(
                 static_url=self.capa_system.STATIC_URL),
-            'reported_status': reported_status,
         }
 
     def handle_ajax(self, dispatch, get):

@@ -12,11 +12,11 @@ from xmodule.modulestore.loc_mapper_store import LocMapperStore
 from mock import Mock
 
 
-class TestLocationMapper(unittest.TestCase):
+class LocMapperSetupSansDjango(unittest.TestCase):
     """
-    Test the location to locator mapper
+    Create and destroy a loc mapper for each test
     """
-
+    loc_store = None
     def setUp(self):
         modulestore_options = {
             'host': 'localhost',
@@ -27,14 +27,19 @@ class TestLocationMapper(unittest.TestCase):
         cache_standin = TrivialCache()
         self.instrumented_cache = Mock(spec=cache_standin, wraps=cache_standin)
         # pylint: disable=W0142
-        TestLocationMapper.loc_store = LocMapperStore(self.instrumented_cache, **modulestore_options)
+        LocMapperSetupSansDjango.loc_store = LocMapperStore(self.instrumented_cache, **modulestore_options)
 
     def tearDown(self):
         dbref = TestLocationMapper.loc_store.db
         dbref.drop_collection(TestLocationMapper.loc_store.location_map)
         dbref.connection.close()
-        TestLocationMapper.loc_store = None
+        self.loc_store = None
 
+
+class TestLocationMapper(LocMapperSetupSansDjango):
+    """
+    Test the location to locator mapper
+    """
     def test_create_map(self):
         org = 'foo_org'
         course = 'bar_course'
@@ -74,6 +79,38 @@ class TestLocationMapper(unittest.TestCase):
         self.assertEqual(entry['draft_branch'], 'wip')
         self.assertEqual(entry['prod_branch'], 'live')
         self.assertEqual(entry['block_map'], block_map)
+
+    def test_delete_course_map(self):
+        """
+        Test that course location is properly remove from loc_mapper and cache when course is deleted
+        """
+        org = u'foo_org'
+        course = u'bar_course'
+        run = u'baz_run'
+        course_location = Location('i4x', org, course, 'course', run)
+        course_locator = loc_mapper().translate_location(course_location.course_id, course_location)
+        loc_mapper().create_map_entry(course_location)
+        # pylint: disable=protected-access
+        entry = loc_mapper().location_map.find_one({
+            '_id': loc_mapper()._construct_location_son(org, course, run)
+        })
+        self.assertIsNotNone(entry, 'Entry not found in loc_mapper')
+        self.assertEqual(entry['course_id'], u'{0}.{1}.{2}'.format(org, course, run))
+
+        # now delete course location from loc_mapper and cache and test that course location no longer
+        # exists in loca_mapper and cache
+        loc_mapper().delete_course_mapping(course_location)
+        # pylint: disable=protected-access
+        entry = loc_mapper().location_map.find_one({
+            '_id': loc_mapper()._construct_location_son(org, course, run)
+        })
+        self.assertIsNone(entry, 'Entry found in loc_mapper')
+        # pylint: disable=protected-access
+        cached_value = loc_mapper()._get_location_from_cache(course_locator)
+        self.assertIsNone(cached_value, 'course_locator found in cache')
+        # pylint: disable=protected-access
+        cached_value = loc_mapper()._get_course_location_from_cache(course_locator.package_id)
+        self.assertIsNone(cached_value, 'Entry found in cache')
 
     def translate_n_check(self, location, old_style_course_id, new_style_package_id, block_id, branch, add_entry=False):
         """
@@ -125,7 +162,7 @@ class TestLocationMapper(unittest.TestCase):
         )
         test_problem_locn = Location('i4x', org, course, 'problem', 'abc123')
         # only one course matches
-        self.translate_n_check(test_problem_locn, old_style_course_id, new_style_package_id, 'problem2', 'published')
+
         # look for w/ only the Location (works b/c there's only one possible course match). Will force
         # cache as default translation for this problemid
         self.translate_n_check(test_problem_locn, None, new_style_package_id, 'problem2', 'published')
@@ -389,7 +426,7 @@ def loc_mapper():
     """
     Mocks the global location mapper.
     """
-    return TestLocationMapper.loc_store
+    return LocMapperSetupSansDjango.loc_store
 
 
 def render_to_template_mock(*_args):
@@ -422,3 +459,10 @@ class TrivialCache(object):
         mock set
         """
         self.cache[key] = entry
+
+    def delete_many(self, entries):
+        """
+        mock delete_many
+        """
+        for entry in entries:
+            del self.cache[entry]

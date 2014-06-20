@@ -1,0 +1,84 @@
+# edX translation file
+# Copyright (C) 2014 edX
+# This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
+#
+# Translators:
+# yokose-ks <ayokose.gacco@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: edx-platform\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2014-03-25 10:00+0900\n"
+"PO-Revision-Date: 2014-03-25 10:00+0900\n"
+"Last-Translator: yokose-ks <ayokose.gacco@gmail.com>\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/edx-platform/language/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: Temporary Show Answer(s) has been deleted
+msgid "Show Answer(s)"
+msgstr "答えを見る"
+
+#: Temporary Hide Answer(s) has been deleted
+msgid "Hide Answer(s)"
+msgstr "答えを隠す"
+
+msgid "Unable to Load"
+msgstr "読み込みできません"
+
+msgid "This problem has already been released. Any changes will apply only to future assessments."
+msgstr "この課題は既にリリースされています。今後行う変更はこの先の提出にのみ影響します"
+
+msgid "Status of Your Response"
+msgstr "あなたの解答のステータス"
+
+msgid "This response has not been saved."
+msgstr "このレポートは一時保存されていません"
+
+msgid "Saving..."
+msgstr "一時保存中..."
+
+msgid "This response has been saved but not submitted."
+msgstr "このレポートは一時保存されていますが提出されていません"
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "This section could not be loaded."
+msgstr "このセクションは読み込むことができませんでした"
+
+msgid "This response could not be submitted."
+msgstr "このレポートを提出することができませんでした"
+
+msgid "This response could not be saved."
+msgstr "このレポートを一時保存することができませんした"
+
+msgid "This feedback could not be submitted."
+msgstr "このフィードバックを提出することができませんでした"
+
+msgid "This assessment could not be submitted."
+msgstr "この採点することができませんでした"
+
+msgid "This problem could not be loaded."
+msgstr "この課題を読み込むことができませんでした"
+
+msgid "This problem could not be saved."
+msgstr "この課題を保存することができませんでした"
+
+msgid "The server could not be contacted."
+msgstr "サーバーに接続することができませんでした"
+
+msgid "You're about to submit your response for this assignment. "
+msgstr "あなたのレポートを提出します。 "
+
+msgid "After you submit this response, you can't change it or submit a new response."
+msgstr "提出後はレポートを編集したり新たに提出することはできません。"
+
+msgid "If you leave this page without saving or submitting your response, "
+msgstr "保存または提出をせずに別のページに遷移する場合、"
+
+msgid "you'll lose any work you've done on the response."
+msgstr "記述したレポートの内容が失われます"

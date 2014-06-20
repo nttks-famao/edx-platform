@@ -99,7 +99,7 @@ setup_instructor_dashboard = (idash_content) =>
       e.preventDefault()
 
       # deactivate all link & section styles
-      idash_content.find(".#{CSS_INSTRUCTOR_NAV}").children().removeClass CSS_ACTIVE_SECTION
+      idash_content.find(".#{CSS_INSTRUCTOR_NAV} li").children().removeClass CSS_ACTIVE_SECTION
       idash_content.find(".#{CSS_IDASH_SECTION}").removeClass CSS_ACTIVE_SECTION
 
       # discover section paired to link
@@ -170,6 +170,12 @@ setup_instructor_dashboard_sections = (idash_content) ->
   ,
     constructor: window.InstructorDashboard.sections.Analytics
     $element: idash_content.find ".#{CSS_IDASH_SECTION}#analytics"
+  ,
+    constructor: window.InstructorDashboard.sections.Metrics
+    $element: idash_content.find ".#{CSS_IDASH_SECTION}#metrics"
+  ,
+    constructor: window.InstructorDashboard.sections.SurveyDownload
+    $element: idash_content.find ".#{CSS_IDASH_SECTION}#survey"
   ]
 
   sections_to_initialize.map ({constructor, $element}) ->

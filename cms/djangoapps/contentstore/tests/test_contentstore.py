@@ -1,61 +1,55 @@
-#pylint: disable=E1101
+# -*- coding: utf-8 -*-
+# pylint: disable=E1101
 
-import json
+import copy
 import mock
+import re
 import shutil
 
-from textwrap import dedent
-
-from django.test.utils import override_settings
-from django.conf import settings
-from path import path
-from tempdir import mkdtemp_clean
-from fs.osfs import OSFS
-import copy
-from json import loads
 from datetime import timedelta
-from django.test import TestCase
+from fs.osfs import OSFS
+from json import loads
+from path import path
+from pymongo import MongoClient
+from tempdir import mkdtemp_clean
+from textwrap import dedent
+from uuid import uuid4
 
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import User, Group
 from django.dispatch import Signal
+from django.test import TestCase
+from django.test.utils import override_settings
+
 from contentstore.utils import get_modulestore
-from contentstore.tests.utils import parse_json, AjaxEnabledTestClient
-
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from contentstore.tests.modulestore_config import TEST_MODULESTORE
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from contentstore.tests.utils import parse_json, AjaxEnabledTestClient
+from contentstore.views.component import ADVANCED_COMPONENT_TYPES
 
-from xmodule.modulestore import Location, mongo
-from xmodule.modulestore.store_utilities import clone_course
-from xmodule.modulestore.store_utilities import delete_course
-from xmodule.modulestore.django import modulestore
+from xmodule.contentstore.content import StaticContent
 from xmodule.contentstore.django import contentstore, _CONTENTSTORE
+from xmodule.contentstore.utils import restore_asset_from_trashcan, empty_asset_trashcan
+from xmodule.exceptions import NotFoundError, InvalidVersionError
+from xmodule.modulestore import Location, mongo
+from xmodule.modulestore.django import modulestore, loc_mapper
+from xmodule.modulestore.exceptions import ItemNotFoundError
+from xmodule.modulestore.inheritance import own_metadata
+from xmodule.modulestore.locator import BlockUsageLocator
+from xmodule.modulestore.store_utilities import clone_course, delete_course
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from xmodule.modulestore.xml_exporter import export_to_xml
 from xmodule.modulestore.xml_importer import import_from_xml, perform_xlint
-from xmodule.modulestore.inheritance import own_metadata
-from xmodule.contentstore.content import StaticContent
-from xmodule.contentstore.utils import restore_asset_from_trashcan, empty_asset_trashcan
 
 from xmodule.capa_module import CapaDescriptor
 from xmodule.course_module import CourseDescriptor
 from xmodule.seq_module import SequenceDescriptor
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.modulestore.locator import BlockUsageLocator
-
-from contentstore.views.component import ADVANCED_COMPONENT_TYPES
-from xmodule.exceptions import NotFoundError
-
-from django_comment_common.utils import are_permissions_roles_seeded
-from xmodule.exceptions import InvalidVersionError
-from uuid import uuid4
-from pymongo import MongoClient
-from student.models import CourseEnrollment
-import re
 
 from contentstore.utils import delete_course_and_groups
-from xmodule.modulestore.django import loc_mapper
-from student.roles import CourseCreatorRole
+from django_comment_common.utils import are_permissions_roles_seeded
 from student import auth
+from student.models import CourseEnrollment
+from student.roles import CourseCreatorRole, CourseInstructorRole
 
 TEST_DATA_CONTENTSTORE = copy.deepcopy(settings.CONTENTSTORE)
 TEST_DATA_CONTENTSTORE['DOC_STORE_CONFIG']['db'] = 'test_xcontent_%s' % uuid4().hex
@@ -142,7 +136,7 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         self.check_components_on_page(
             ADVANCED_COMPONENT_TYPES,
             ['Word cloud', 'Annotation', 'Text Annotation', 'Video Annotation',
-             'Open Response Assessment', 'Peer Grading Interface'],
+             'Open Response Assessment', 'Peer Grading Interface', 'openassessment'],
         )
 
     def test_advanced_components_require_two_clicks(self):
@@ -399,23 +393,34 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
 
         course = module_store.get_item(course_location)
 
-        # reverse the ordering
-        reverse_tabs = []
+        # reverse the ordering of the static tabs
+        reverse_static_tabs = []
+        built_in_tabs = []
         for tab in course.tabs:
             if tab['type'] == 'static_tab':
-                reverse_tabs.insert(0, unicode(self._get_tab_locator(course, tab)))
+                reverse_static_tabs.insert(0, tab)
+            else:
+                built_in_tabs.append(tab)
 
-        self.client.ajax_post(new_location.url_reverse('tabs'), {'tabs': reverse_tabs})
+        # create the requested tab_id_locators list
+        tab_id_locators = [
+            {
+                'tab_id': tab.tab_id
+            } for tab in built_in_tabs
+        ]
+        tab_id_locators.extend([
+            {
+                'tab_locator': unicode(self._get_tab_locator(course, tab))
+            } for tab in reverse_static_tabs
+        ])
+
+        self.client.ajax_post(new_location.url_reverse('tabs'), {'tabs': tab_id_locators})
 
         course = module_store.get_item(course_location)
 
         # compare to make sure that the tabs information is in the expected order after the server call
-        course_tabs = []
-        for tab in course.tabs:
-            if tab['type'] == 'static_tab':
-                course_tabs.append(unicode(self._get_tab_locator(course, tab)))
-
-        self.assertEqual(reverse_tabs, course_tabs)
+        new_static_tabs = [tab for tab in course.tabs if (tab['type'] == 'static_tab')]
+        self.assertEqual(reverse_static_tabs, new_static_tabs)
 
     def test_static_tab_deletion(self):
         module_store, course_location, _ = self._create_static_tabs()
@@ -1003,7 +1008,7 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         # We had a bug where orphaned draft nodes caused export to fail. This is here to cover that case.
         vertical.location = mongo.draft.as_draft(vertical.location.replace(name='no_references'))
 
-        draft_store.save_xmodule(vertical)
+        draft_store.update_item(vertical, allow_not_found=True)
         orphan_vertical = draft_store.get_item(vertical.location)
         self.assertEqual(orphan_vertical.location.name, 'no_references')
 
@@ -1020,13 +1025,14 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
 
         # now create a new/different private (draft only) vertical
         vertical.location = mongo.draft.as_draft(Location(['i4x', 'edX', 'toy', 'vertical', 'a_private_vertical', None]))
-        draft_store.save_xmodule(vertical)
+        draft_store.update_item(vertical, allow_not_found=True)
         private_vertical = draft_store.get_item(vertical.location)
         vertical = None  # blank out b/c i destructively manipulated its location 2 lines above
 
         # add the new private to list of children
-        sequential = module_store.get_item(Location(['i4x', 'edX', 'toy',
-                                           'sequential', 'vertical_sequential', None]))
+        sequential = module_store.get_item(
+            Location('i4x', 'edX', 'toy', 'sequential', 'vertical_sequential', None)
+        )
         private_location_no_draft = private_vertical.location.replace(revision=None)
         sequential.children.append(private_location_no_draft.url())
         module_store.update_item(sequential, self.user.id)
@@ -1422,6 +1428,15 @@ class ContentStoreTest(ModuleStoreTestCase):
         self.assertTrue(CourseEnrollment.is_enrolled(self.user, _get_course_id(test_course_data)))
         return test_course_data
 
+    def assert_create_course_failed(self, error_message):
+        """
+        Checks that the course not created.
+        """
+        resp = self.client.ajax_post('/course', self.course_data)
+        self.assertEqual(resp.status_code, 400)
+        data = parse_json(resp)
+        self.assertEqual(data['error'], error_message)
+
     def test_create_course_check_forum_seeding(self):
         """Test new course creation and verify forum seeding """
         test_course_data = self.assert_created_course(number_suffix=uuid4().hex)
@@ -1469,6 +1484,30 @@ class ContentStoreTest(ModuleStoreTestCase):
         self.assertTrue(CourseEnrollment.is_enrolled(self.user, course_id))
         # check that user has form role "Student" for this course even after deleting it
         self.assertTrue(self.user.roles.filter(name="Student", course_id=course_id))  # pylint: disable=no-member
+
+    def test_course_access_groups_on_delete(self):
+        """
+        Test that course deletion removes users from 'instructor' and 'staff' groups of this course
+        of all format e.g, 'instructor_edX/Course/Run', 'instructor_edX.Course.Run', 'instructor_Course'
+        """
+        test_course_data = self.assert_created_course(number_suffix=uuid4().hex)
+        course_id = _get_course_id(test_course_data)
+        course_location = CourseDescriptor.id_to_location(course_id)
+
+        # Add user in possible groups and check that user in instructor groups of this course
+        instructor_role = CourseInstructorRole(course_location)
+        groupnames = instructor_role._group_names  # pylint: disable=protected-access
+        groups = Group.objects.filter(name__in=groupnames)
+        for group in groups:
+            group.user_set.add(self.user)
+
+        self.assertTrue(len(instructor_role.users_with_role()) > 0)
+
+        # Now delete course and check that user not in instructor groups of this course
+        delete_course_and_groups(course_location.course_id, commit=True)
+
+        self.assertFalse(instructor_role.has_user(self.user))
+        self.assertEqual(len(instructor_role.users_with_role()), 0)
 
     def test_create_course_duplicate_course(self):
         """Test new course creation - error path"""
@@ -1560,6 +1599,21 @@ class ContentStoreTest(ModuleStoreTestCase):
         with mock.patch.dict('django.conf.settings.FEATURES', {"ENABLE_CREATOR_GROUP": True}):
             auth.add_users(self.user, CourseCreatorRole(), self.user)
             self.assert_created_course()
+
+    def test_create_course_with_unicode_in_id_disabled(self):
+        """
+        Test new course creation with feature setting: ALLOW_UNICODE_COURSE_ID disabled.
+        """
+        with mock.patch.dict('django.conf.settings.FEATURES', {'ALLOW_UNICODE_COURSE_ID': False}):
+            error_message = "Special characters not allowed in organization, course number, and course run."
+            self.course_data['org'] = u'Юникода'
+            self.assert_create_course_failed(error_message)
+
+            self.course_data['number'] = u'échantillon'
+            self.assert_create_course_failed(error_message)
+
+            self.course_data['run'] = u'όνομα'
+            self.assert_create_course_failed(error_message)
 
     def assert_course_permission_denied(self):
         """
@@ -1755,13 +1809,51 @@ class ContentStoreTest(ModuleStoreTestCase):
         # first check PDF textbooks, to make sure the url paths got updated
         course_module = module_store.get_instance(target_course_id, target_location)
 
-        self.assertEquals(len(course_module.pdf_textbooks), 1)
-        self.assertEquals(len(course_module.pdf_textbooks[0]["chapters"]), 2)
-        self.assertEquals(course_module.pdf_textbooks[0]["chapters"][0]["url"], '/c4x/MITx/999/asset/Chapter1.pdf')
-        self.assertEquals(course_module.pdf_textbooks[0]["chapters"][1]["url"], '/c4x/MITx/999/asset/Chapter2.pdf')
+        self.assertEqual(len(course_module.pdf_textbooks), 1)
+        self.assertEqual(len(course_module.pdf_textbooks[0]["chapters"]), 2)
+        self.assertEqual(course_module.pdf_textbooks[0]["chapters"][0]["url"], '/static/Chapter1.pdf')
+        self.assertEqual(course_module.pdf_textbooks[0]["chapters"][1]["url"], '/static/Chapter2.pdf')
 
-        # check that URL slug got updated to new course slug
-        self.assertEquals(course_module.wiki_slug, '999')
+    def test_import_into_new_course_id_wiki_slug_renamespacing(self):
+        module_store = modulestore('direct')
+
+        # If reimporting into the same course do not change the wiki_slug.
+        target_location = Location('i4x', 'edX', 'toy', 'course', '2012_Fall')
+        course_data = {
+            'org': target_location.org,
+            'number': target_location.course,
+            'display_name': 'Robot Super Course',
+            'run': target_location.name
+        }
+        _create_course(self, course_data)
+        course_module = module_store.get_instance(target_location.course_id, target_location)
+        course_module.wiki_slug = 'toy'
+        course_module.save()
+
+        # Import a course with wiki_slug == location.course
+        import_from_xml(module_store, 'common/test/data/', ['toy'], target_location_namespace=target_location)
+        course_module = module_store.get_instance(target_location.course_id, target_location)
+        self.assertEquals(course_module.wiki_slug, 'toy')
+
+        # But change the wiki_slug if it is a different course.
+        target_location = Location('i4x', 'MITx', '999', 'course', '2013_Spring')
+        course_data = {
+            'org': target_location.org,
+            'number': target_location.course,
+            'display_name': 'Robot Super Course',
+            'run': target_location.name
+        }
+        _create_course(self, course_data)
+
+        # Import a course with wiki_slug == location.course
+        import_from_xml(module_store, 'common/test/data/', ['toy'], target_location_namespace=target_location)
+        course_module = module_store.get_instance(target_location.course_id, target_location)
+        self.assertEquals(course_module.wiki_slug, 'MITx.999.2013_Spring')
+
+        # Now try importing a course with wiki_slug == '{0}.{1}.{2}'.format(location.org, location.course, location.name)
+        import_from_xml(module_store, 'common/test/data/', ['two_toys'], target_location_namespace=target_location)
+        course_module = module_store.get_instance(target_location.course_id, target_location)
+        self.assertEquals(course_module.wiki_slug, 'MITx.999.2013_Spring')
 
     def test_import_metadata_with_attempts_empty_string(self):
         module_store = modulestore('direct')
@@ -1914,6 +2006,14 @@ class ContentStoreTest(ModuleStoreTestCase):
         _test_no_locations(self, resp)
         return resp
 
+    def test_wiki_slug(self):
+        """When creating a course a unique wiki_slug should be set."""
+
+        course_location = Location(['i4x', 'MITx', '999', 'course', '2013_Spring'])
+        _create_course(self, self.course_data)
+        course_module = modulestore('direct').get_item(course_location)
+        self.assertEquals(course_module.wiki_slug, 'MITx.999.2013_Spring')
+
 
 @override_settings(MODULESTORE=TEST_MODULESTORE)
 class MetadataSaveTestCase(ModuleStoreTestCase):
@@ -2026,7 +2126,7 @@ def _course_factory_create_course():
 
 def _get_course_id(test_course_data):
     """Returns the course ID (org/number/run)."""
-    return "{org}/{number}/{run}".format(**test_course_data)
+    return u"{org}/{number}/{run}".format(**test_course_data)
 
 
 def _test_no_locations(test, resp, status_code=200, html=True):

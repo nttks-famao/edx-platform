@@ -23,10 +23,11 @@ ERROR_MESSAGES = {
 
 STATUSES = {
     'found': u'Timed Transcript Found',
+    'not found on edx': u'No EdX Timed Transcript',
     'not found': u'No Timed Transcript',
     'replace': u'Timed Transcript Conflict',
-    'uploaded_successfully': u'Timed Transcript uploaded successfully',
-    'use existing': u'Timed Transcript Not Updated',
+    'uploaded_successfully': u'Timed Transcript Uploaded Successfully',
+    'use existing': u'Confirm Timed Transcript',
 }
 
 SELECTORS = {
@@ -39,13 +40,13 @@ SELECTORS = {
 
 # button type , button css selector, button message
 TRANSCRIPTS_BUTTONS = {
-    'import': ('.setting-import',  'Import from YouTube'),
-    'download_to_edit': ('.setting-download', 'Download to Edit'),
-    'disabled_download_to_edit': ('.setting-download.is-disabled', 'Download to Edit'),
-    'upload_new_timed_transcripts': ('.setting-upload',  'Upload New Timed Transcript'),
-    'replace': ('.setting-replace', 'Yes, Replace EdX Timed Transcript with YouTube Timed Transcript'),
+    'import': ('.setting-import', 'Import YouTube Transcript'),
+    'download_to_edit': ('.setting-download', 'Download Transcript for Editing'),
+    'disabled_download_to_edit': ('.setting-download.is-disabled', 'Download Transcript for Editing'),
+    'upload_new_timed_transcripts': ('.setting-upload',  'Upload New Transcript'),
+    'replace': ('.setting-replace', 'Yes, replace the edX transcript with the YouTube transcript'),
     'choose': ('.setting-choose', 'Timed Transcript from {}'),
-    'use_existing': ('.setting-use-existing', 'Use Existing Timed Transcript'),
+    'use_existing': ('.setting-use-existing', 'Use Current Transcript'),
 }
 
 
@@ -195,41 +196,43 @@ def i_enter_a_source(_step, link, index):
 def upload_file(_step, file_name):
     path = os.path.join(TEST_ROOT, 'uploads/', file_name.strip())
     world.browser.execute_script("$('form.file-chooser').show()")
-    world.browser.attach_file('file', os.path.abspath(path))
+    world.browser.attach_file('transcript-file', os.path.abspath(path))
     world.wait_for_ajax_complete()
 
 
 @step('I see "([^"]*)" text in the captions')
 def check_text_in_the_captions(_step, text):
-    assert world.browser.is_text_present(text.strip(), 5)
+    world.wait_for_present('.video.is-captions-rendered')
+    world.wait_for(lambda _: world.css_text('.subtitles'), timeout=30)
+    actual_text = world.css_text('.subtitles')
+    assert (text in actual_text)
 
 
 @step('I see value "([^"]*)" in the field "([^"]*)"$')
 def check_transcripts_field(_step, values, field_name):
-    world.click_link_by_text('Advanced')
-    field_id = '#' + world.browser.find_by_xpath('//label[text()="%s"]' % field_name.strip())[0]['for']
+    world.select_editor_tab('Advanced')
+    tab = world.css_find('#settings-tab').first;
+    field_id = '#' + tab.find_by_xpath('.//label[text()="%s"]' % field_name.strip())[0]['for']
     values_list = [i.strip() == world.css_value(field_id) for i in values.split('|')]
     assert any(values_list)
-    world.click_link_by_text('Basic')
+    world.select_editor_tab('Basic')
 
 
 @step('I save changes$')
 def save_changes(_step):
-    save_css = 'a.save-button'
-    world.css_click(save_css)
-    world.wait_for_ajax_complete()
+    world.save_component()
 
 
 @step('I open tab "([^"]*)"$')
 def open_tab(_step, tab_name):
-    world.click_link_by_text(tab_name.strip())
-    world.wait_for_ajax_complete()
+    world.select_editor_tab(tab_name)
 
 
 @step('I set value "([^"]*)" to the field "([^"]*)"$')
 def set_value_transcripts_field(_step, value, field_name):
-    XPATH = '//label[text()="{name}"]'.format(name=field_name)
-    SELECTOR = '#' + world.browser.find_by_xpath(XPATH)[0]['for']
+    tab = world.css_find('#settings-tab').first;
+    XPATH = './/label[text()="{name}"]'.format(name=field_name)
+    SELECTOR = '#' + tab.find_by_xpath(XPATH)[0]['for']
     element = world.css_find(SELECTOR).first
     if element['type'] == 'text':
         SCRIPT = '$("{selector}").val("{value}").change()'.format(

@@ -4,12 +4,12 @@
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # 
 # Translators:
-# brscvs <brscvs@gmail.com>, 2013
+# brscvs <brscvs@gmail.com>, 2013-2014
 # brscvs <brscvs@gmail.com>, 2013
 # burakozalp <realburq@gmail.com>, 2013
 # burakozalp <realburq@gmail.com>, 2013
-# hgsenel <hgsenel@gmail.com>, 2014
-# hgsenel <hgsenel@gmail.com>, 2014
+# Hakan Senel <hgsenel@gmail.com>, 2014
+# Hakan Senel <hgsenel@gmail.com>, 2014
 # Kerim Kaan Dönmez <ben@kerimkaan.com>, 2013
 # Kerim Kaan Dönmez <ben@kerimkaan.com>, 2013
 # onurbektas <mustafaonurbektas@gmail.com>, 2013
@@ -22,17 +22,17 @@
 # Translators:
 # brscvs <brscvs@gmail.com>, 2013
 # burakozalp <realburq@gmail.com>, 2013
-# hgsenel <hgsenel@gmail.com>, 2014
-# hgsenel <hgsenel@gmail.com>, 2014
+# Hakan Senel <hgsenel@gmail.com>, 2014
+# Hakan Senel <hgsenel@gmail.com>, 2014
 # Kerim Kaan Dönmez <ben@kerimkaan.com>, 2013
 # onurbektas <mustafaonurbektas@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-02-24 16:00-0500\n"
-"PO-Revision-Date: 2014-02-24 17:06+0000\n"
-"Last-Translator: hgsenel <hgsenel@gmail.com>\n"
+"POT-Creation-Date: 2014-05-13 09:30-0400\n"
+"PO-Revision-Date: 2014-05-11 14:42+0000\n"
+"Last-Translator: sarina <sarina@edx.org>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/edx-platform/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -42,6 +42,7 @@ msgstr ""
 
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/js/views/course_info_update.js
+#: cms/static/js/views/modals/edit_xblock.js
 #: common/static/coffee/src/discussion/utils.js
 msgid "OK"
 msgstr "Tamam"
@@ -50,6 +51,8 @@ msgstr "Tamam"
 #: cms/static/js/base.js cms/static/js/views/asset.js
 #: cms/static/js/views/course_info_update.js
 #: cms/static/js/views/show_textbook.js cms/static/js/views/validation.js
+#: cms/static/js/views/modals/base_modal.js
+#: cms/static/js/views/pages/container.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Cancel"
@@ -99,17 +102,31 @@ msgid "(%(num_points)s point possible)"
 msgid_plural "(%(num_points)s points possible)"
 msgstr[0] "(%(num_points)s puan mümkün)"
 
-#. Translators: the word Answer here refers to the answer to a problem the
-#. student must solve.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
-msgid "Hide Answer(s)"
-msgstr "Yanıt(lar)ı sakla"
+#: common/lib/xmodule/xmodule/js/src/capa/display.js
+msgid "Answer:"
+msgstr "Yanıt:"
 
 #. Translators: the word Answer here refers to the answer to a problem the
 #. student must solve.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
-msgid "Show Answer(s)"
-msgstr "Yanıt(lar)ı Göster"
+#: common/lib/xmodule/xmodule/js/src/capa/display.js
+msgid "Hide Answer"
+msgstr "Yanıtı Gizle:"
+
+#. Translators: the word Answer here refers to the answer to a problem the
+#. student must solve.;
+#: common/lib/xmodule/xmodule/js/src/capa/display.js
+msgid "Show Answer"
+msgstr "Yanıtı Göster:"
+
+#: common/lib/xmodule/xmodule/js/src/capa/display.js
+msgid "Reveal Answer"
+msgstr "Yanıtı Açıkla:"
+
+#: common/lib/xmodule/xmodule/js/src/capa/display.js
+msgid "Answer hidden"
+msgstr "Gizlenmiş yanıt:"
 
 #. Translators: the word unanswered here is about answering a problem the
 #. student must solve.;
@@ -229,7 +246,7 @@ msgstr "Video kaydırıcısı"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Pause"
-msgstr "Durdur"
+msgstr "Duraklat"
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Play"
@@ -341,6 +358,8 @@ msgstr "Tartışmayı Göster"
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
+#: common/static/coffee/src/discussion/views/discussion_thread_view.js
+#: common/static/coffee/src/discussion/views/discussion_user_profile_view.js
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "Sorry"
 msgstr "Özür Dilerim"
@@ -368,6 +387,10 @@ msgstr ""
 "Talebinizi işlerken sorunla karşılaştık. Lütfen kaydetmediğiniz "
 "çalışmalarınızın kopyasını aldığınıza emin olunuz ve sayfayı yeniden "
 "yükleyiniz."
+
+#: common/static/coffee/src/discussion/utils.js
+msgid "We had some trouble processing your request. Please try again."
+msgstr "Talebinizi işlerken sorun yaşadık. Lütfen tekrar deneyin."
 
 #: common/static/coffee/src/discussion/utils.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
@@ -398,18 +421,14 @@ msgid "vote"
 msgstr "oyla"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
-msgid ""
-"%(voteNum)s%(startSrSpan)s vote (click to remove your vote)%(endSrSpan)s"
-msgid_plural ""
-"%(voteNum)s%(startSrSpan)s votes (click to remove your vote)%(endSrSpan)s"
+msgid "vote (click to remove your vote)"
+msgid_plural "votes (click to remove your vote)"
 msgstr[0] ""
-"%(voteNum)s%(startSrSpan)s oy (oyunuzu kaldırmak için tıklayın)%(endSrSpan)s"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
-msgid "%(voteNum)s%(startSrSpan)s vote (click to vote)%(endSrSpan)s"
-msgid_plural "%(voteNum)s%(startSrSpan)s votes (click to vote)%(endSrSpan)s"
+msgid "vote (click to vote)"
+msgid_plural "votes (click to vote)"
 msgstr[0] ""
-"%(voteNum)s%(startSrSpan)s oy (lütfen oylama için tıklayınız)%(endSrSpan)s"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Load more"
@@ -437,11 +456,13 @@ msgstr "İplik listesini yüklüyor"
 msgid "Click to remove report"
 msgstr "Raporu kaldırmak için tıklayın"
 
+#. Translators: The text between start_sr_span and end_span is not shown
+#. in most browsers but will be read by screen readers.
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 #: common/static/coffee/src/discussion/views/thread_response_show_view.js
-msgid "Misuse Reported, %(start_sr_span)s click to remove report%(end_span)s"
+msgid "Misuse Reported%(start_sr_span)s, click to remove report%(end_span)s"
 msgstr ""
-"Yanlış Kullanım Raporlandı, %(start_sr_span)s raporu kaldırmak için "
+"Kötü kullanım Rapor edildi%(start_sr_span)s, raporu temizlemek için "
 "tıklayın%(end_span)s"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
@@ -451,6 +472,17 @@ msgstr ""
 msgid "Report Misuse"
 msgstr "Yanlış Kullanımı Rapor Edin"
 
+#. Translators: The text between start_sr_span and end_span is not shown
+#. in most browsers but will be read by screen readers.
+#: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
+msgid "Pinned%(start_sr_span)s, click to unpin%(end_span)s"
+msgstr ""
+"İşaretli%(start_sr_span)s, işaretsiz kale getirmek için tıklayın%(end_span)s"
+
+#: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
+msgid "Click to unpin"
+msgstr "İşaretsizleştirmek için tıklayın"
+
 #: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
 msgid "Pinned"
 msgstr "İşaretli"
@@ -459,9 +491,10 @@ msgstr "İşaretli"
 msgid "Pin Thread"
 msgstr "İşaret İpliği"
 
-#: common/static/coffee/src/discussion/views/discussion_thread_show_view.js
-msgid "Pinning is not currently available"
-msgstr "İşaretleme artık sağlanamamaktadır"
+#: common/static/coffee/src/discussion/views/discussion_thread_view.js
+msgid ""
+"The thread you selected has been deleted. Please select another thread."
+msgstr ""
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "We had some trouble loading responses. Please reload the page."
@@ -499,6 +532,10 @@ msgstr "Bir sonraki %(numResponses)s yanıtları yükle"
 msgid "Are you sure you want to delete this post?"
 msgstr "Bu gönderiyi silmek istiyor musunuz?"
 
+#: common/static/coffee/src/discussion/views/discussion_user_profile_view.js
+msgid "We had some trouble loading the page you requested. Please try again."
+msgstr ""
+
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
 msgstr "anonim"
@@ -521,23 +558,21 @@ msgstr "Yanlış kullanım raporlandı, raporu kaldırmak için tıklayın"
 
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "Are you sure you want to delete this comment?"
-msgstr ""
+msgstr "Bu yorumu silmeye emin misiniz?"
 
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "We had some trouble deleting this comment. Please try again."
-msgstr ""
+msgstr "Bu yorumu silerken sorun yaşadık. Lütfen tekrar deneyin."
 
 #: common/static/coffee/src/discussion/views/thread_response_view.js
 msgid "Are you sure you want to delete this response?"
 msgstr "Bu cevabı silmeye emin misiniz?"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "%s ago"
 msgstr "%s önce"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "%s from now"
 msgstr "Şimdiden itibaren %s"
 
@@ -550,7 +585,6 @@ msgid "about a minute"
 msgstr "yaklaşık bir dakika"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d dakika"
@@ -560,7 +594,6 @@ msgid "about an hour"
 msgstr "yaklaşık bir saat"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "about %d hour"
 msgid_plural "about %d hours"
 msgstr[0] "yaklaşık %d saat"
@@ -570,7 +603,6 @@ msgid "a day"
 msgstr "bir gün"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d gün"
@@ -580,7 +612,6 @@ msgid "about a month"
 msgstr "yaklaşık bir ay"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] "%d ay"
@@ -590,18 +621,15 @@ msgid "about a year"
 msgstr "yaklaşık bir sene"
 
 #: common/static/js/src/jquery.timeago.locale.js
-#, c-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d yıl"
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid "Available %s"
 msgstr "Kullanılabilir %s"
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid ""
 "This is the list of available %s. You may choose some by selecting them in "
 "the box below and then clicking the \"Choose\" arrow between the two boxes."
@@ -610,9 +638,8 @@ msgstr ""
 "tıklayarak içlerinden seçebilirsiniz."
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid "Type into this box to filter down the list of available %s."
-msgstr "Uygun seçenek listesini %s filtremek için kutuya yazın"
+msgstr "Uygun seçenek listesini %s filtremek için bu kutuya yazın"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Filter"
@@ -623,9 +650,8 @@ msgid "Choose all"
 msgstr "Hepsini seç"
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid "Click to choose all %s at once."
-msgstr "Tüm %s leri seçmek için tıklayın."
+msgstr "Tüm %s leri bir anda seçmek için tıklayın."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose"
@@ -633,15 +659,13 @@ msgstr "Seç"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove"
-msgstr "Sil"
+msgstr "Çıkart"
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid "Chosen %s"
 msgstr "Seçilmiş %s"
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid ""
 "This is the list of chosen %s. You may remove some by selecting them in the "
 "box below and then clicking the \"Remove\" arrow between the two boxes."
@@ -651,17 +675,16 @@ msgstr ""
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr "Hepsini sil"
+msgstr "Hepsini çıkart"
 
 #: lms/static/admin/js/SelectFilter2.js
-#, c-format
 msgid "Click to remove all chosen %s at once."
-msgstr "Tüm seçili %s leri  silmek için tıklayınız."
+msgstr "Tüm seçili %s leri  çıkartmak için tıklayınız."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid "%(sel)s of %(cnt)s selected"
 msgid_plural "%(sel)s of %(cnt)s selected"
-msgstr[0] "%(sel)s lerin %(cnt)s seçilmişleri"
+msgstr[0] "%(sel)s lerin %(cnt)s i seçilmiş"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
@@ -709,7 +732,7 @@ msgstr "Göster"
 
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.min.js
 msgid "Hide"
-msgstr "Sakla"
+msgstr "Gizle"
 
 #. Translators: the names of days, keep the pipe (|) separators.
 #: lms/static/admin/js/dateparse.js
@@ -727,7 +750,7 @@ msgstr "Saat"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Choose a time"
-msgstr "Zaman seçiniz"
+msgstr "Bir zaman seçin "
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Midnight"
@@ -774,6 +797,26 @@ msgstr "Önizleme"
 msgid "Post body"
 msgstr "Gönderi gövdesi"
 
+#: lms/static/coffee/src/instructor_dashboard/analytics.js
+msgid "Error fetching distribution."
+msgstr "Dağılımı alırken hata."
+
+#: lms/static/coffee/src/instructor_dashboard/analytics.js
+msgid "Unavailable metric display."
+msgstr "Bulunamayan metrik gösterim."
+
+#: lms/static/coffee/src/instructor_dashboard/analytics.js
+msgid "Error fetching grade distributions."
+msgstr "Not dağılımlarını alırken hata."
+
+#: lms/static/coffee/src/instructor_dashboard/analytics.js
+msgid "Last Updated: <%= timestamp %>"
+msgstr "Son Güncelleme: <%= timestamp %>"
+
+#: lms/static/coffee/src/instructor_dashboard/analytics.js
+msgid "<%= num_students %> students scored."
+msgstr "<%= num_students %> öğrenci notlandırıldı."
+
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Loading..."
 msgstr "Yüklüyor..."
@@ -791,68 +834,175 @@ msgid "Error generating grades. Please try again."
 msgstr "Notları oluştururken hata. Lütfen tekrar deneyin."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
-msgid "File Name (Newest First)"
-msgstr "Dosya İsmi (En Yenisi Başta)"
+msgid "File Name"
+msgstr "Dosya İsmi"
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid ""
 "Links are generated on demand and expire within 5 minutes due to the "
-"sensitive nature of student grade information."
+"sensitive nature of student information."
 msgstr ""
-"Linkler talep edildiğinde oluşturulmakta ve öğrencinin not bilgisinin hassas"
-" durumu nedeniyle 5 dakika içinde kaldırılmaktadır."
+"Linkler talep geldiğinde oluşturulur ve öğrenci bilgilerinin hassas durumu "
+"nedeniyle 5 dakika içinde zaman aşımına uğrar."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "Successfully enrolled and sent email to the following students:"
-msgstr "Başarıyla kayıt yapıldı ve aşağıdaki öğrencilere e-posta gönderildi:"
+msgid "Username"
+msgstr "Kullanıcı adı"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "Successfully enrolled the following students:"
-msgstr "Aşağıdaki öğrenciler başarıyla kaydedildi:"
+msgid "Email"
+msgstr "E-posta"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Revoke access"
+msgstr "Erişimi yetkisini geri ver"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Enter username or email"
+msgstr "Kullanıcı adı veya e-posta giriniz"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Please enter a username or email."
+msgstr "Lütfen kullanıcı adı veya e-posta adresi girin."
+
+#. Translators: A rolename appears this sentence.;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Error fetching list for role"
+msgstr "Rol listesini çekerken hata"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Error changing user's permissions."
+msgstr "Kullanıcının izinlerini değiştirirken hata."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
-"Successfully sent enrollment emails to the following students. They will be "
+"Could not find a user with username or email address '<%= identifier %>'."
+msgstr ""
+"'<%= identifier %>' kullanıcı isimli veya e-posta adresli kullanıcı "
+"bulunamadı."
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid ""
+"Error: User '<%= username %>' has not yet activated their account. Users "
+"must create and activate their accounts before they can be assigned a role."
+msgstr ""
+"Hata: '<%= username %>' kullanıcısı hesabını şu ana kadar aktifleştirmedi. "
+"Bir rol verilmeden önce, kullanıcılar hesaplarını oluşturmalı ve "
+"aktifleştirmelidir."
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Error: You cannot remove yourself from the Instructor group!"
+msgstr "Hata: Eğitmen grubundan kendinizi silemezsiniz!"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Error adding/removing users as beta testers."
+msgstr "Kullanıcıları beta sınayıcıları oalrak ekler/çıkarırken hata oluştu."
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were successfully added as beta testers:"
+msgstr "Bu kullanıcılar beta sınayıcıları olarak başarıyla eklendi:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were successfully removed as beta testers:"
+msgstr "Bu kullanıcılar beta sınayıcıları olarak ayrıldı:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were not added as beta testers:"
+msgstr "Bu kullanıcılar beta sınayıcıları olarak eklenemedi:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "These users were not removed as beta testers:"
+msgstr "Bu kullanıcılar beta sınayıcıları olarak silinmedi:"
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid ""
+"Users must create and activate their account before they can be promoted to "
+"beta tester."
+msgstr ""
+"Beta sınayıcısı olarak yükseltilmeden önce kullanıcılar kendi hesaplarını "
+"oluşturmalı ve aktiflmelidir."
+
+#. Translators: A list of identifiers (which are email addresses and/or
+#. usernames) appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Could not find users associated with the following identifiers:"
+msgstr ""
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Error enrolling/unenrolling users."
+msgstr "Kullanıcıları kaydederken/kayıtları silerken hata."
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "The following email addresses and/or usernames are invalid:"
+msgstr ""
+
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Successfully enrolled and sent email to the following users:"
+msgstr "Aşağıdaki kullanıcılar başarıyla kaydedildi ve e-posta gönderildi:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid "Successfully enrolled the following users:"
+msgstr "Aşağıdaki kullanıcılar başarıyla kaydedildi:"
+
+#. Translators: A list of users appears after this sentence;
+#: lms/static/coffee/src/instructor_dashboard/membership.js
+msgid ""
+"Successfully sent enrollment emails to the following users. They will be "
 "allowed to enroll once they register:"
 msgstr ""
-"Aşağıdaki öğrencilere kayıt epostaları başarıyla gönderildi. Kayıt "
-"bilgilerini girdikten sonra kaydolmalarına izin verilecektir:"
+"Aşağıdaki kullanıcılara kayıt e-postaları başarıyla gönderildi. Kayıt "
+"bilgilerini girdikten sonra sonra kayıt yapmalarına izin verilecektir."
 
+#. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "These students will be allowed to enroll once they register:"
-msgstr "Bu öğrenciler kayıt bilgilerini girdikten sonra kaydedilecektir:"
+msgid "These users will be allowed to enroll once they register:"
+msgstr ""
+"Bu kullanıcılar kayıt bilgilerini girdikten sonra kaydolmalarına izin "
+"verilecektir:"
 
+#. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
-"Successfully sent enrollment emails to the following students. They will be "
+"Successfully sent enrollment emails to the following users. They will be "
 "enrolled once they register:"
 msgstr ""
-"Aşağıdaki öğrencilere kayıt olduklarına dair e-postalar başarıyla "
-"gönderildi. Kayıt bilgilerini girdikten sonra ders kaydedileceklerdir:"
+"Aşağıdaki kullanıcılara kayıt e-postaları başarıyla gönderildi. Kayıt "
+"bilgilerini girdikten sonra sonra kayıtları yapılacaktır:"
 
+#. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "These students will be enrolled once they register:"
-msgstr "Bu öğrenciler kayıt bilgilerini yazdıktan sonra kaydolacaklar:"
+msgid "These users will be enrolled once they register:"
+msgstr ""
+"Kayıt bilgilerini girdikten sonra sonra bu kullanıcıların kayıtları "
+"yapılacaktır:"
 
+#. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
-"Emails successfully sent. The following students are no longer enrolled in "
-"the course:"
+"Emails successfully sent. The following users are no longer enrolled in the "
+"course:"
 msgstr ""
-"E-postalar başarıyla gönderildi. Aşağıdaki öğrenciler bu derste artık "
-"kayıtlı değildir:"
+"E-postalar başarıyla gönderildi. Aşağıdaki kullanıcılar bu derse artık "
+"kayıtlı değiller:"
 
+#. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
-msgid "The following students are no longer enrolled in the course:"
-msgstr "Aşağıdaki öğrenciler artık kayıtlı değillerdir:"
+msgid "The following users are no longer enrolled in the course:"
+msgstr "Aşağıdaki kullanıcılar artık bu derse kayıtlı değiller:"
 
+#. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
-"These students were not affliliated with the course so could not be "
-"unenrolled:"
+"These users were not affiliated with the course so could not be unenrolled:"
 msgstr ""
-"Aşağıdaki öğrenciler dersle ilişkileri olmadığı için kayıtları iptal "
-"edilemedi:"
+"Bu kullanıcıların dersle ilişikleri olmadığından kayıtları silinemedi:"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your message must have a subject."
@@ -867,20 +1017,29 @@ msgid "Your email was successfully queued for sending."
 msgstr "E-postanız gönderme kuyruğuna başarıyla eklendi"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
-msgid "yourself"
-msgstr "kendiniz"
-
-#: lms/static/coffee/src/instructor_dashboard/send_email.js
-msgid "everyone who is staff or instructor on this course"
-msgstr "bu derste görevli veya öğretim elemanı olan herkes"
+msgid ""
+"You are about to send an email titled '<%= subject %>' to yourself. Is this "
+"OK?"
+msgstr ""
+"Kendinize '<%= subject %>' başlıklı e-posta göndermek üzeresiniz. Bunu kabul"
+" ediyor musunuz?"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
-"ALL (everyone who is enrolled in this course as student, staff, or "
-"instructor)"
+"You are about to send an email titled '<%= subject %>' to everyone who is "
+"staff or instructor on this course. Is this OK?"
 msgstr ""
-"HEPSİ (herkes bu derse öğrenci, personel veya öğretim elemanı olarak "
-"kayıtlıdır)"
+"Bu derste yer alan görevli veya eğitmenlere '<%= subject %>' başlıklı "
+"e-posta göndermek üzeresiniz. Bunu kabul ediyor musunuz?"
+
+#: lms/static/coffee/src/instructor_dashboard/send_email.js
+msgid ""
+"You are about to send an email titled '<%= subject %>' to ALL (everyone who "
+"is enrolled in this course as student, staff, or instructor). Is this OK?"
+msgstr ""
+"Bu derste yer alan HERKESE (bu derse öğrenci, görevli veya eğitmen olarak "
+"kayıtlı herbir kişi) '<%= subject %>' başlıklı e-posta göndermek üzeresiniz."
+" Bunu kabul ediyor musunuz?"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
@@ -891,10 +1050,6 @@ msgstr ""
 "E-postanız gönderilmek üzere kuyruğa eklendi. Büyük sınıflar için, bütün "
 "mesajların gönderilmesi (eğer diğer dersler de gönderiyorsa) bir saatten "
 "fazla süre alabilir."
-
-#: lms/static/coffee/src/instructor_dashboard/send_email.js
-msgid "You are about to send an email titled \""
-msgstr "Şu başlıklı e-posta göndermek üzeresiniz \""
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Error sending email."
@@ -1057,6 +1212,60 @@ msgstr ""
 msgid "Error listing task history for this student and problem."
 msgstr "Bu öğrenci ve problem için görev tarihçesi listelemede hata"
 
+#. Translators: a "Task" is a background process such as grading students or
+#. sending email
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Task Type"
+msgstr "Görev Tipi"
+
+#. Translators: a "Task" is a background process such as grading students or
+#. sending email
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Task inputs"
+msgstr "Görev girdileri"
+
+#. Translators: a "Task" is a background process such as grading students or
+#. sending email
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Task ID"
+msgstr "Görev No"
+
+#. Translators: a "Requester" is a username that requested a task such as
+#. sending email
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Requester"
+msgstr "İsteyen"
+
+#. Translators: A timestamp of when a task (eg, sending email) was submitted
+#. appears after this
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Submitted"
+msgstr "Girildi"
+
+#. Translators: The length of a task (eg, sending email) in seconds appears
+#. this
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Duration (sec)"
+msgstr "Süre (sn)"
+
+#. Translators: The state (eg, "In progress") of a task (eg, sending email)
+#. appears after this.
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "State"
+msgstr "Durum"
+
+#. Translators: a "Task" is a background process such as grading students or
+#. sending email
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Task Status"
+msgstr "Görev Durumu"
+
+#. Translators: a "Task" is a background process such as grading students or
+#. sending email
+#: lms/static/coffee/src/instructor_dashboard/util.js
+msgid "Task Progress"
+msgstr "Görev İlerlemesi"
+
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Grades saved.  Fetching the next submission to grade."
 msgstr "Notlar kaydedildi. Bir sonraki yükleme notlandırılmak üzere alınıyor."
@@ -1123,21 +1332,17 @@ msgid "(Show)"
 msgstr "(Göster)"
 
 #: lms/static/js/Markdown.Editor.js
-msgid ""
-"<p><b>Insert Hyperlink</b></p><p>http://example.com/ \"optional title\"</p>"
+msgid "Insert Hyperlink"
 msgstr ""
-"<p><b>Hiperlink ekleyiniz</b></p><p>http://example.com/ \"tercihe bağlı "
-"başlık\"</p>"
+
+#. Translators: Please keep the quotation marks (") around this text
+#: lms/static/js/Markdown.Editor.js lms/static/js/Markdown.Editor.js.c
+msgid "\"optional title\""
+msgstr ""
 
 #: lms/static/js/Markdown.Editor.js
-msgid ""
-"<p><b>Insert Image (upload file or type "
-"url)</b></p><p>http://example.com/images/diagram.jpg \"optional "
-"title\"<br><br></p>"
+msgid "Insert Image (upload file or type url)"
 msgstr ""
-"<p><b>İmge ekleyin (dosyayı yükleyin veya URL'sini "
-"yazınız)</b></p><p>http://example.com/images/diagram.jpg \"tercihe bağlı "
-"başlık\"<br><br></p>"
 
 #: lms/static/js/Markdown.Editor.js
 msgid "Markdown Editing Help"
@@ -1227,6 +1432,43 @@ msgstr "Liste maddesi"
 msgid "Heading"
 msgstr "Başlık"
 
+#: lms/static/js/staff_debug_actions.js
+msgid "Unknown Error Occurred."
+msgstr ""
+
+#: lms/static/js/staff_debug_actions.js
+msgid "Successfully reset the attempts for user {user}"
+msgstr ""
+
+#: lms/static/js/staff_debug_actions.js
+msgid "Failed to reset attempts."
+msgstr ""
+
+#: lms/static/js/staff_debug_actions.js
+msgid "Successfully deleted student state for user {user}"
+msgstr ""
+
+#: lms/static/js/staff_debug_actions.js
+msgid "Failed to delete student state."
+msgstr ""
+
+#: lms/static/js/staff_debug_actions.js
+msgid "Successfully rescored problem for user {user}"
+msgstr ""
+
+#: lms/static/js/staff_debug_actions.js
+msgid "Failed to rescore problem."
+msgstr ""
+
+#: lms/templates/class_dashboard/all_section_metrics.js
+#: lms/templates/class_dashboard/all_section_metrics.js
+msgid "Unable to retrieve data, please try again later."
+msgstr "Veri alınamadı, lütfen tekrar deneyin."
+
+#: lms/templates/class_dashboard/d3_stacked_bar_graph.js
+msgid "Number of Students"
+msgstr "Öğrencilerin Sayısı"
+
 #: cms/static/coffee/src/main.js
 msgid ""
 "This may be happening because of an error with our server or your internet "
@@ -1240,17 +1482,14 @@ msgstr ""
 msgid "Studio's having trouble saving your work"
 msgstr "Studio yaptığınız işi saklama konusunda zorluk yaşıyor."
 
-#: cms/static/coffee/src/views/module_edit.js
-#, c-format
-msgid "<em>Editing:</em> %s"
-msgstr "<em>Değiştiriyor:</em> %s"
-
-#: cms/static/coffee/src/views/module_edit.js
-#: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/unit.js
-#: cms/static/js/models/section.js cms/static/js/views/asset.js
+#: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/tabs.js
+#: cms/static/coffee/src/views/unit.js
+#: cms/static/coffee/src/xblock/cms.runtime.v1.js
+#: cms/static/js/models/section.js cms/static/js/utils/drag_and_drop.js
+#: cms/static/js/views/asset.js cms/static/js/views/container.js
 #: cms/static/js/views/course_info_handout.js
 #: cms/static/js/views/course_info_update.js cms/static/js/views/overview.js
-#: cms/static/js/views/overview.js.c
+#: cms/static/js/views/xblock_editor.js
 msgid "Saving&hellip;"
 msgstr "Kaydediliyor&hellip;"
 
@@ -1267,6 +1506,7 @@ msgstr ""
 
 #: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/unit.js
 #: cms/static/js/base.js cms/static/js/views/course_info_update.js
+#: cms/static/js/views/pages/container.js
 msgid "Deleting&hellip;"
 msgstr "Siliyor&hellip;"
 
@@ -1274,25 +1514,25 @@ msgstr "Siliyor&hellip;"
 msgid "Adding&hellip;"
 msgstr "Ekliyor&hellip;"
 
-#: cms/static/coffee/src/views/unit.js
+#: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Duplicating&hellip;"
 msgstr "Kopyalanıyor&hellip;"
 
-#: cms/static/coffee/src/views/unit.js
+#: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Delete this component?"
 msgstr "Bu bileşen silinsin mi?"
 
-#: cms/static/coffee/src/views/unit.js
+#: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Deleting this component is permanent and cannot be undone."
 msgstr "Bu bileşenin silinmesi kalıcıdır ve geri alınamaz."
 
-#: cms/static/coffee/src/views/unit.js
+#: cms/static/coffee/src/views/unit.js cms/static/js/views/pages/container.js
 msgid "Yes, delete this component"
 msgstr "Evet, bu bileşeni sil"
 
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
-msgstr "Bu link yeni bir kip penceresinde açılacak."
+msgstr "Bu link yeni bir kip penceresinde açılacak"
 
 #: cms/static/js/base.js
 msgid "Delete this "
@@ -1309,6 +1549,11 @@ msgstr "Evet, bunu sil"
 #: cms/static/js/index.js
 msgid "Please do not use any spaces in this field."
 msgstr "Lütfen bu alanda boşluk kullanmayınız."
+
+#: cms/static/js/index.js
+msgid "Please do not use any spaces or special characters in this field."
+msgstr ""
+"Lütfen bu alanda boşluk ya da herhangi bir özel karakter kullanmayınız."
 
 #: cms/static/js/index.js
 msgid ""
@@ -1373,7 +1618,7 @@ msgstr "Anahtar sadece harf, sayı, _ veya - içermelidir"
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "There's already another assignment type with this name."
-msgstr "Bu isimle mevcut bir kayıt tipi bulunmaktadır."
+msgstr "Bu isimle mevcut bir görev tipi bulunmaktadır."
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Please enter an integer between 0 and 100."
@@ -1389,7 +1634,7 @@ msgstr "Lütfen negatif olmayan tamsayı giriniz."
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Cannot drop more <% attrs.types %> than will assigned."
-msgstr "<% attrs.types %> den daha fazla düşürülemez."
+msgstr "Verilen <% attrs.types %> görevlerden daha fazla düşürülemez."
 
 #: cms/static/js/models/settings/course_grading_policy.js
 msgid "Grace period must be specified in HH:MM format."
@@ -1437,6 +1682,10 @@ msgstr "Bu eylem geri alınamaz."
 msgid "Upload a new PDF to “<%= name %>”"
 msgstr " Şu konuma “<%= name %>” yeni bir PDF dosyası yükle"
 
+#: cms/static/js/views/edit_chapter.js
+msgid "Please select a PDF file to upload."
+msgstr "Lütfen yüklemek için PDF dosyası seçiniz."
+
 #: cms/static/js/views/edit_textbook.js
 #: cms/static/js/views/overview_assignment_grader.js
 msgid "Saving"
@@ -1453,6 +1702,10 @@ msgid ""
 msgstr ""
 "Dosya formatı desteklenmiyor. Lütfen dosyayı <code>tar.gz</code> uzantısı "
 "ile yükleyiniz."
+
+#: cms/static/js/views/metadata.js
+msgid "Upload File"
+msgstr "Dosya yükle"
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
@@ -1478,23 +1731,27 @@ msgstr "Bölüm yayın tarihini değiştir"
 msgid "Not Graded"
 msgstr "Notlandırılmadı"
 
-#: cms/static/js/views/paging.js
-msgid "ascending"
-msgstr "artan"
-
-#: cms/static/js/views/paging.js
-msgid "descending"
-msgstr "azalan"
-
+#. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
+#. Added ascending"
 #: cms/static/js/views/paging_header.js
 msgid ""
-"Showing %(current_span)s%(start)s-%(end)s%(end_span)s out of "
-"%(total_span)s%(total)s total%(end_span)s, sorted by "
-"%(order_span)s%(sort_order)s%(end_span)s %(sort_direction)s"
+"Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
+"%(sort_name)s ascending"
 msgstr ""
-"Gösteriliyor %(current_span)s%(start)s-%(end)s%(end_span)s den "
-"%(total_span)s%(total)s toplam%(end_span)s,sıralanmış "
-"%(order_span)s%(sort_order)s%(end_span)s %(sort_direction)s"
+
+#. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
+#. Added descending"
+#: cms/static/js/views/paging_header.js
+msgid ""
+"Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
+"%(sort_name)s descending"
+msgstr ""
+
+#. Translators: turns into "25 total" to be used in other sentences, e.g.
+#. "Showing 0-9 out of 25 total".
+#: cms/static/js/views/paging_header.js
+msgid "%(total_items)s total"
+msgstr ""
 
 #: cms/static/js/views/section_edit.js
 msgid "Your change could not be saved"
@@ -1521,6 +1778,10 @@ msgid "Deleting"
 msgstr "Siliniyor"
 
 #: cms/static/js/views/uploads.js
+msgid "Upload"
+msgstr "Yükle"
+
+#: cms/static/js/views/uploads.js
 msgid "We're sorry, there was an error"
 msgstr "Özür dileriz, bir hata oluştu"
 
@@ -1530,7 +1791,7 @@ msgstr "Bazı değişiklikler yaptınız"
 
 #: cms/static/js/views/validation.js
 msgid "Your changes will not take effect until you save your progress."
-msgstr "Değişiklikleriniz  kaydedilene kadar  aktif olmayacaktır."
+msgstr "Değişiklikleriniz  kaydedilene kadar aktif olmayacaktır."
 
 #: cms/static/js/views/validation.js
 msgid "You've made some changes, but there are some errors"
@@ -1548,6 +1809,26 @@ msgstr "Değişikleri Kaydet"
 #: cms/static/js/views/validation.js
 msgid "Your changes have been saved."
 msgstr "Değişiklikleriniz kaydedildi."
+
+#: cms/static/js/views/xblock_editor.js
+msgid "Editor"
+msgstr "Editör"
+
+#: cms/static/js/views/xblock_editor.js
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: cms/static/js/views/modals/base_modal.js
+msgid "Save"
+msgstr "Kaydet"
+
+#: cms/static/js/views/modals/edit_xblock.js
+msgid "Component"
+msgstr "Bileşen"
+
+#: cms/static/js/views/modals/edit_xblock.js
+msgid "Editing: %(title)s"
+msgstr "Düzeltiliyor: %(title)s"
 
 #: cms/static/js/views/settings/advanced.js
 msgid ""
@@ -1578,3 +1859,15 @@ msgstr "Ders imgesini yükleyin."
 #: cms/static/js/views/settings/main.js
 msgid "Files must be in JPEG or PNG format."
 msgstr "Dosyalar mutlaka JPEG veya PNG formatında olmalıdır."
+
+#: cms/static/js/views/video/translations_editor.js
+msgid ""
+"Sorry, there was an error parsing the subtitles that you uploaded. Please "
+"check the format and try again."
+msgstr ""
+"Üzgünüz, yüklediğiniz altyazıları tararken hatayla karşılaşıldı. Lütfen "
+"dosya biçimini kontrol edin ve tekrar deneyin."
+
+#: cms/static/js/views/video/translations_editor.js
+msgid "Upload translation"
+msgstr "Çeviriyi yükle"

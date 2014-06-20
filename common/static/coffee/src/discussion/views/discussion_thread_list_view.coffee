@@ -3,11 +3,17 @@ if Backbone?
     events:
       "click .search": "showSearch"
       "click .home": "goHome"
-      "click .browse": "toggleTopicDrop"
+      "click .browse-dropdown": "toggleTopicDrop"
       "keydown .post-search-field": "performSearch"
       "focus .post-search-field": "showSearch"
+      ## search欄の×ボタン
+      "click .clearButton": "clearSearch"
       "click .sort-bar a": "sortThreads"
-      "click .browse-topic-drop-menu": "filterTopic"
+      ## sidebarのアコーディオン化
+      "click .drop-menu-parent-category": "toggleAccordion"
+      ##"click .browse-topic-drop-menu": "filterTopic"
+      "click .drop-menu-meta-category": "filterTopic"
+      "click .drop-menu-entry": "filterTopic"
       "click .browse-topic-drop-search-input": "ignoreClick"
       "click .post-list .list-item a": "threadSelected"
       "click .post-list .more-pages a": "loadMorePages"
@@ -29,19 +35,24 @@ if Backbone?
         # if target.length > 0
         #   @filterTopic($.Event("filter", {'target': target[0]}))
       @collection.on "add", @addAndSelectThread
-      @sidebar_padding = 10
-      @sidebar_header_height = 87
+##      @sidebar_padding = 10
+##      @sidebar_header_height = 87
       @boardName
       @template = _.template($("#thread-list-template").html())
+      @templateTL = _.template($("#topic-list-template").html())
       @current_search = ""
       @mode = 'all'
 
     reloadDisplayedCollection: (thread) =>
       thread_id = thread.get('id')
       content = @renderThread(thread)
+      ## sidebar コメント等操作バグ対応時に追加
+      content.addClass("read")
       current_el = @$("a[data-id=#{thread_id}]")
       active = current_el.hasClass("active")
-      current_el.replaceWith(content)
+      ## トピックリストが２か所にあるのでreplaceAllに
+      ## current_el.replaceWith(content)
+      content.replaceAll(current_el)
       if active
         @setActiveThread(thread_id)
 
@@ -55,35 +66,36 @@ if Backbone?
         @trigger "thread:created", thread.get('id')
 
     updateSidebar: =>
-
-      scrollTop = $(window).scrollTop();
-      windowHeight = $(window).height();
-
-      discussionBody = $(".discussion-article")
-      discussionsBodyTop = if discussionBody[0] then discussionBody.offset().top
-      discussionsBodyBottom = discussionsBodyTop + discussionBody.outerHeight()
-
-      sidebar = $(".sidebar")
-      if scrollTop > discussionsBodyTop - @sidebar_padding
-        sidebar.css('top', scrollTop - discussionsBodyTop + @sidebar_padding);
-      else
-        sidebar.css('top', '0');
-
-      sidebarWidth = .31 * $(".discussion-body").width();
-      sidebar.css('width', sidebarWidth + 'px');
-
-      sidebarHeight = windowHeight - Math.max(discussionsBodyTop - scrollTop, @sidebar_padding)
-
-      topOffset = scrollTop + windowHeight
-      discussionBottomOffset = discussionsBodyBottom + @sidebar_padding
-      amount = Math.max(topOffset - discussionBottomOffset, 0)
-
-      sidebarHeight = sidebarHeight - @sidebar_padding - amount
-      sidebarHeight = Math.min(sidebarHeight + 1, discussionBody.outerHeight())
-      sidebar.css 'height', sidebarHeight
-
-      postListWrapper = @$('.post-list-wrapper')
-      postListWrapper.css('height', (sidebarHeight - @sidebar_header_height - 4) + 'px')
+      ## 本家ではここでsidebarのリサイズをするが、
+      ## gaccoではfoundationで横幅調整するので何もしない。
+#      scrollTop = $(window).scrollTop();
+#      windowHeight = $(window).height();
+#
+#      discussionBody = $(".discussion-article")
+#      discussionsBodyTop = if discussionBody[0] then discussionBody.offset().top
+#      discussionsBodyBottom = discussionsBodyTop + discussionBody.outerHeight()
+#
+#      sidebar = $(".sidebar")
+#      if scrollTop > discussionsBodyTop - @sidebar_padding
+#        sidebar.css('top', scrollTop - discussionsBodyTop + @sidebar_padding);
+#      else
+#        sidebar.css('top', '0');
+#
+#      sidebarWidth = .31 * $(".discussion-body").width();
+#      sidebar.css('width', sidebarWidth + 'px');
+#
+#      sidebarHeight = windowHeight - Math.max(discussionsBodyTop - scrollTop, @sidebar_padding)
+#
+#      topOffset = scrollTop + windowHeight
+#      discussionBottomOffset = discussionsBodyBottom + @sidebar_padding
+#      amount = Math.max(topOffset - discussionBottomOffset, 0)
+#
+#      sidebarHeight = sidebarHeight - @sidebar_padding - amount
+#      sidebarHeight = Math.min(sidebarHeight + 1, discussionBody.outerHeight())
+#      sidebar.css 'height', sidebarHeight
+#
+#      postListWrapper = @$('.post-list-wrapper')
+#      postListWrapper.css('height', (sidebarHeight - @sidebar_header_height - 4) + 'px')
 
 
     # Because we want the behavior that when the body is clicked the menu is
@@ -95,6 +107,8 @@ if Backbone?
     render: ->
       @timer = 0
       @$el.html(@template())
+      ## アコーディオン対応のため、topic-listを定義
+      $(".topic-list").html(@templateTL())
 
       $(window).bind "load", @updateSidebar
       $(window).bind "scroll", @updateSidebar
@@ -125,6 +139,8 @@ if Backbone?
     loadMorePages: (event) ->
       if event
         event.preventDefault()
+        ## ドロップダウンリストが閉じるのを防止
+        event.stopPropagation()
       @$(".more-pages").html('<div class="loading-animation" tabindex=0><span class="sr" role="alert">' + gettext('Loading more threads') + '</span></div>')
       @$(".more-pages").addClass("loading")
       loadingDiv = @$(".more-pages .loading-animation")
@@ -205,6 +221,8 @@ if Backbone?
       thread_id = $(e.target).closest("a").attr("data-id")
       @setActiveThread(thread_id)
       @trigger("thread:selected", thread_id)  # This triggers a callback in the DiscussionRouter which calls the line above...
+      ## ドロップダウン閉じる
+      @hideTopicDrop($("#browse-topic-list"))
       false
 
     threadRemoved: (thread_id) =>
@@ -212,18 +230,24 @@ if Backbone?
 
     setActiveThread: (thread_id) ->
       @$(".post-list a[data-id!='#{thread_id}']").removeClass("active")
-      @$(".post-list a[data-id='#{thread_id}']").addClass("active")
+      ##@$(".post-list a[data-id='#{thread_id}']").addClass("active")
+      target = @$(".post-list a[data-id='#{thread_id}']")
+      target.addClass("active")
+      $(".current-thread").html(target.children("span.title").html())
+
+
 
     showSearch: ->
-      @$(".browse").removeClass('is-dropped')
-      @hideTopicDrop()
-
-      @$(".search").addClass('is-open')
-      @$(".browse").removeClass('is-open')
+        ## Search場所移動につき以下は不要 
+##      @$(".browse").removeClass('is-dropped')
+##      @hideTopicDrop()
+##      @$(".search").addClass('is-open')
+##      @$(".browse").removeClass('is-open')
       setTimeout (-> @$(".post-search-field").focus()), 200 unless @$(".post-search-field").is(":focus")
 
     goHome: ->
       @template = _.template($("#discussion-home").html())
+      @hideTopicDrop($("#browse-topic-filter-dropdown"))
       $(".discussion-column").html(@template)
       $(".post-list a").removeClass("active")
       $("input.email-setting").bind "click", @updateEmailNotifications
@@ -241,25 +265,46 @@ if Backbone?
       #select all threads
 
 
+    ## トピックドロップダウンの開閉。
+    ## 部品としてfoundationのsplitボタンを利用
     toggleTopicDrop: (event) =>
       event.preventDefault()
       event.stopPropagation()
-      if @current_search != ""
-        @clearSearch()
-      @$(".search").removeClass('is-open')
-      @$(".browse").addClass('is-open')
-      @$(".browse").toggleClass('is-dropped')
+      ## ドロップダウン開閉で検索結果を消さない
+      ## if @current_search != ""
+      ##   @clearSearch()
+      ## 検索ボタンやホームボタンは別の場所に移したので不要
+      ## @$(".search").removeClass('is-open')
+      ## @$(".browse").addClass('is-open')
+      ## @$ (".browse").toggleClass('is-dropped')
 
-      if @$(".browse").hasClass('is-dropped')
-        @$(".browse-topic-drop-menu-wrapper").show()
-        $(".browse-topic-drop-search-input").focus()
+      ## large表示とsmall表示のどちらのボタンか判定して開閉
+      if event.data && event.data.dst
+        if $(event.target).closest(".f-dropdown").length > 0
+          return false
+        else
+          target = $('#'+event.data.dst)
+      else
+        target_name = $(event.target).attr('data-dropdown')
+        target = $(event.target).closest(".browse").siblings("#"+target_name)
+      target.toggleClass('open')
+
+      ## 開閉はis-dropではなくopenで管理。
+      ## foundationのsplitによるドロップダウンはhide時は画面左外に隠れている 
+      if target.hasClass('open')
+        target.css({left:'0px'})
+##        @$(".browse-topic-drop-menu-wrapper").show()
+##        $(".browse-topic-drop-search-input").focus()
         $("body").bind "click", @toggleTopicDrop
+        $("body").bind "click", {dst:target_name}, @toggleTopicDrop
         $("body").bind "keydown", @setActiveItem
       else
-        @hideTopicDrop()
+        @hideTopicDrop(target)
 
-    hideTopicDrop: ->
-      @$(".browse-topic-drop-menu-wrapper").hide()
+    hideTopicDrop: (el) ->
+##      @$(".browse-topic-drop-menu-wrapper").hide()
+      el.css({left:'-9999px'})
+      el.removeClass('open')
       $("body").unbind "click", @toggleTopicDrop
       $("body").unbind "keydown", @setActiveItem
 
@@ -267,15 +312,25 @@ if Backbone?
     setTopicHack: (boardNameContainer) ->
       item = $(boardNameContainer).closest('a')
       boardName = item.find(".board-name").html()
-      _.each item.parents('ul').not('.browse-topic-drop-menu'), (parent) ->
-        boardName = $(parent).siblings('a').find('.board-name').html() + ' / ' + boardName
+      ## 板名の見せ方を少し変更
+      ##  _.each item.parents('ul').not('.browse-topic-drop-menu'), (parent) ->
+      ##    boardName = $(parent).siblings('a').find('.board-name').html() + ' / ' + boardName
+      _.each item.parents('div.content'), (parent) ->
+        category = $(parent).siblings('a').find('.board-name')
+        if category
+          boardName = category.html() + ' <br> > ' + boardName
       @$(".current-board").html(@fitName(boardName))
 
     setTopic: (event) ->
       item = $(event.target).closest('a')
       boardName = item.find(".board-name").html()
-      _.each item.parents('ul').not('.browse-topic-drop-menu'), (parent) ->
-        boardName = $(parent).siblings('a').find('.board-name').html() + ' / ' + boardName
+      ## 板名の見せ方を少し変更
+      ##  _.each item.parents('ul').not('.browse-topic-drop-menu'), (parent) ->
+      ##    boardName = $(parent).siblings('a').find('.board-name').html() + ' / ' + boardName
+      _.each item.parents('div.content'), (parent) ->
+        category = $(parent).siblings('a').find('.board-name')
+        if category
+          boardName = category.html() + ' <br> > ' + boardName
       @$(".current-board").html(@fitName(boardName))
 
     setSelectedTopic: (name) ->
@@ -296,30 +351,46 @@ if Backbone?
       return width
 
     fitName: (name) ->
-      @maxNameWidth = (@$el.width() * .8) - 50
-      width = @getNameWidth(name)
-      if width < @maxNameWidth
-        return name
-      path = (x.replace /^\s+|\s+$/g, "" for x in name.split("/"))
-      while path.length > 1
-        path.shift()
-        partialName = gettext("…") + "/" + path.join("/")
-        if  @getNameWidth(partialName) < @maxNameWidth
-          return partialName
-      rawName = path[0]
-      name = gettext("…") + "/" + rawName
-      while @getNameWidth(name) > @maxNameWidth
-        rawName = rawName[0...rawName.length-1]
-        name =  gettext("…") + "/" + rawName + gettext("…")
+      ## トピック名の長さを調整する関数
+      ## あまり要らなさそうなのでOFFにする
+      ## @maxNameWidth = (@$el.width() * .8) - 50
+      ## width = @getNameWidth(name)
+      ## if width < @maxNameWidth
+      ##   return name
+      ## path = (x.replace /^\s+|\s+$/g, "" for x in name.split("/"))
+      ## while path.length > 1
+      ##   path.shift()
+      ##   partialName = gettext("…") + "/" + path.join("/")
+      ##   if  @getNameWidth(partialName) < @maxNameWidth
+      ##     return partialName
+      ## rawName = path[0]
+      ## name = gettext("…") + "/" + rawName
+      ## while @getNameWidth(name) > @maxNameWidth
+      ##   rawName = rawName[0...rawName.length-1]
+      ##   name =  gettext("…") + "/" + rawName + gettext("…")
       return name
 
+
+    toggleAccordion: (event) ->
+      ## トピックのアコーディオン表示のために追加。
+      if($(event.target).hasClass("board-name"))
+        target = $(event.target).parent()
+      else
+        target = $(event.target)
+      target.toggleClass("active")
+      target.siblings("div.content").toggleClass("active")
+      event.preventDefault()
+      event.stopPropagation()
+
     filterTopic: (event) ->
+      ## トピック選択時、ドロップダウンを閉じる
+      @hideTopicDrop($("#browse-topic-filter-dropdown"))
       if @current_search != ""
         @setTopic(event)
         @clearSearch @filterTopic, event
       else
         @setTopic(event)  # just sets the title for the dropdown
-        item = $(event.target).closest('li')
+        item = $(event.target).closest('dd')
         discussionId = item.find("span.board-name").data("discussion_id")
         if discussionId == "#all"
           @discussionIds = ""
@@ -384,14 +455,18 @@ if Backbone?
       @loadMorePages(event)
 
     sortThreads: (event) ->
-      activeSort = @$(".sort-bar a[class='active']")
+      ## foundationのテンプレに合わせて変更
+      ## activeSort = @$(".sort-bar a[class='active']")
+      activeSort = @$(".sort-bar dd[class='active']")
       activeSort.removeClass("active")
       activeSort.attr("aria-checked", "false")
-      newSort = $(event.target)
+      ##newSort = $(event.target)
+      newSort = $(event.target).parent()
       newSort.addClass("active")
       newSort.attr("aria-checked", "true")
-      @sortBy = newSort.data("sort")
-
+      ## @sortBy = newSort.data("sort")
+      @sortBy = newSort.find("a").data("sort")
+      
       @displayedCollection.comparator = switch @sortBy
         when 'date' then @displayedCollection.sortByDateRecentFirst
         when 'votes' then @displayedCollection.sortByVotes
@@ -401,7 +476,11 @@ if Backbone?
     performSearch: (event) ->
       if event.which == 13
         event.preventDefault()
-        text = @$(".post-search-field").val()
+        ## カテゴリをALLに戻す
+        @setSelectedTopic($(".board-name").first().text())
+        ## 検索窓が2か所になったので
+        ## text = @$(".post-search-field").val()
+        text = @$(event.target).val()
         @searchFor(text)
 
     searchFor: (text, callback, value) ->
@@ -420,8 +499,9 @@ if Backbone?
         loadingCallback: =>
           @$(".post-list").html('<li class="loading"><div class="loading-animation"><span class="sr">' + gettext('Loading thread list') + '</span></div></li>')
         loadedCallback: =>
-          if callback
-            callback.apply @, [value]
+          if callback             
+            callback 
+        ##     callback.apply @, [value]
         success: (response, textStatus) =>
           if textStatus == 'success'
             # TODO: Augment existing collection?
@@ -433,10 +513,15 @@ if Backbone?
             # In the future we might not load all of a user's votes at once
             # so this would probably be necessary anyway
             @displayedCollection.reset(@collection.models) # Don't think this is necessary
+            @collection.current_page = 0
+            @$(".post-search-field").removeAttr("disabled")
+            @loadMorePages(event)
 
+	    
     clearSearch: (callback, value) ->
       @$(".post-search-field").val("")
       @searchFor("", callback, value)
+      
 
     setActiveItem: (event) ->
       if event.which == 13

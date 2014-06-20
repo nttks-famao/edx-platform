@@ -6,15 +6,18 @@ import inspect
 from path import path
 from django.http import Http404
 from django.conf import settings
-from .module_render import get_module
+
+from edxmako.shortcuts import render_to_string
 from xmodule.course_module import CourseDescriptor
-from xmodule.modulestore import Location, XML_MODULESTORE_TYPE
+from xmodule.modulestore import Location, XML_MODULESTORE_TYPE, MONGO_MODULESTORE_TYPE
 from xmodule.modulestore.django import modulestore, loc_mapper
 from xmodule.contentstore.content import StaticContent
 from xmodule.modulestore.exceptions import ItemNotFoundError, InvalidLocationError
-from courseware.model_data import FieldDataCache
 from static_replace import replace_static_urls
+
 from courseware.access import has_access
+from courseware.model_data import FieldDataCache
+from courseware.module_render import get_module
 import branding
 
 log = logging.getLogger(__name__)
@@ -49,9 +52,9 @@ def get_course(course_id, depth=0):
         course_loc = CourseDescriptor.id_to_location(course_id)
         return modulestore().get_instance(course_id, course_loc, depth=depth)
     except (KeyError, ItemNotFoundError):
-        raise ValueError("Course not found: {}".format(course_id))
+        raise ValueError(u"Course not found: {0}".format(course_id))
     except InvalidLocationError:
-        raise ValueError("Invalid location: {}".format(course_id))
+        raise ValueError(u"Invalid location: {0}".format(course_id))
 
 
 def get_course_by_id(course_id, depth=0):
@@ -103,11 +106,19 @@ def course_image_url(course):
     """Try to look up the image url for the course.  If it's not found,
     log an error and return the dead link"""
     if course.static_asset_path or modulestore().get_modulestore_type(course.location.course_id) == XML_MODULESTORE_TYPE:
-        return '/static/' + (course.static_asset_path or getattr(course, 'data_dir', '')) + "/images/course_image.jpg"
+        # If we are a static course with the course_image attribute
+        # set different than the default, return that path so that
+        # courses can use custom course image paths, otherwise just
+        # return the default static path.
+        url = '/static/' + (course.static_asset_path or getattr(course, 'data_dir', ''))
+        if hasattr(course, 'course_image') and course.course_image != course.fields['course_image'].default:
+            url += '/' + course.course_image
+        else:
+            url += '/images/course_image.jpg'
     else:
         loc = StaticContent.compute_location(course.location.org, course.location.course, course.course_image)
-        _path = StaticContent.get_url_path_from_location(loc)
-        return _path
+        url = StaticContent.get_url_path_from_location(loc)
+    return url
 
 
 def find_file(filesystem, dirs, filename):
@@ -124,7 +135,7 @@ def find_file(filesystem, dirs, filename):
         filepath = path(directory) / filename
         if filesystem.exists(filepath):
             return filepath
-    raise ResourceNotFoundError("Could not find {0}".format(filename))
+    raise ResourceNotFoundError(u"Could not find {0}".format(filename))
 
 
 def get_course_about_section(course, section_key):
@@ -184,13 +195,20 @@ def get_course_about_section(course, section_key):
             html = ''
 
             if about_module is not None:
-                html = about_module.render('student_view').content
-
+                try:
+                    html = about_module.render('student_view').content
+                except Exception:  # pylint: disable=broad-except
+                    html = render_to_string('courseware/error-message.html', None)
+                    log.exception(
+                        u"Error rendering course={course}, section_key={section_key}".format(
+                            course=course, section_key=section_key
+                        ))
             return html
 
         except ItemNotFoundError:
-            log.warning("Missing about section {key} in course {url}".format(
-                key=section_key, url=course.location.url()))
+            log.warning(
+                u"Missing about section {key} in course {url}".format(key=section_key, url=course.location.url())
+            )
             return None
     elif section_key == "title":
         return course.display_name_with_default
@@ -230,7 +248,14 @@ def get_course_info_section(request, course, section_key):
     html = ''
 
     if info_module is not None:
-        html = info_module.render('student_view').content
+        try:
+            html = info_module.render('student_view').content
+        except Exception:  # pylint: disable=broad-except
+            html = render_to_string('courseware/error-message.html', None)
+            log.exception(
+                u"Error rendering course={course}, section_key={section_key}".format(
+                    course=course, section_key=section_key
+                ))
 
     return html
 
@@ -266,8 +291,9 @@ def get_course_syllabus_section(course, section_key):
                     static_asset_path=course.static_asset_path,
                 )
         except ResourceNotFoundError:
-            log.exception("Missing syllabus section {key} in course {url}".format(
-                key=section_key, url=course.location.url()))
+            log.exception(
+                u"Missing syllabus section {key} in course {url}".format(key=section_key, url=course.location.url())
+            )
             return "! Syllabus missing !"
 
     raise KeyError("Invalid about key " + str(section_key))
@@ -323,3 +349,27 @@ def get_cms_course_link(course):
         course.location.course_id, course.location, False, True
     )
     return "//" + settings.CMS_BASE + locator.url_reverse('course/', '')
+
+
+def get_cms_block_link(block, page):
+    """
+    Returns a link to block_index for editing the course in cms,
+    assuming that the block is actually cms-backed.
+    """
+    locator = loc_mapper().translate_location(
+        block.location.course_id, block.location, False, True
+    )
+    return "//" + settings.CMS_BASE + locator.url_reverse(page, '')
+
+
+def get_studio_url(course_id, page):
+    """
+    Get the Studio URL of the page that is passed in.
+    """
+    course = get_course_by_id(course_id)
+    is_studio_course = course.course_edit_method == "Studio"
+    is_mongo_course = modulestore().get_modulestore_type(course_id) == MONGO_MODULESTORE_TYPE
+    studio_link = None
+    if is_studio_course and is_mongo_course:
+        studio_link = get_cms_block_link(course, page)
+    return studio_link

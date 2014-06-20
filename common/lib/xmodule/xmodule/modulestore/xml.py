@@ -20,6 +20,7 @@ from xmodule.course_module import CourseDescriptor
 from xmodule.mako_module import MakoDescriptorSystem
 from xmodule.x_module import XMLParsingSystem, policy_key
 from xmodule.modulestore.xml_exporter import DEFAULT_CONTENT_FIELDS
+from xmodule.tabs import CourseTabList
 
 from xblock.fields import ScopeIds
 from xblock.field_data import DictFieldData
@@ -662,9 +663,9 @@ class XMLModuleStore(ModuleStoreReadBase):
                         # Hack because we need to pull in the 'display_name' for static tabs (because we need to edit them)
                         # from the course policy
                         if category == "static_tab":
-                            for tab in course_descriptor.tabs or []:
-                                if tab.get('url_slug') == slug:
-                                    module.display_name = tab['name']
+                            tab = CourseTabList.get_tab_by_slug(tab_list=course_descriptor.tabs, url_slug=slug)
+                            if tab:
+                                module.display_name = tab.name
                         module.data_dir = course_dir
                         module.save()
 
@@ -790,3 +791,12 @@ class XMLModuleStore(ModuleStoreReadBase):
         "split" for new-style split MongoDB backed courses.
         """
         return XML_MODULESTORE_TYPE
+
+    def get_courses_for_wiki(self, wiki_slug):
+        """
+        Return the list of courses which use this wiki_slug
+        :param wiki_slug: the course wiki root slug
+        :return: list of course locations
+        """
+        courses = self.get_courses()
+        return [course.location for course in courses if (course.wiki_slug == wiki_slug)]

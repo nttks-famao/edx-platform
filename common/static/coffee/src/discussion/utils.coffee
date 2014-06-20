@@ -51,7 +51,6 @@ class @DiscussionUtil
       follow_discussion       : "/courses/#{$$course_id}/discussion/#{param}/follow"
       unfollow_discussion     : "/courses/#{$$course_id}/discussion/#{param}/unfollow"
       create_thread           : "/courses/#{$$course_id}/discussion/#{param}/threads/create"
-      search_similar_threads  : "/courses/#{$$course_id}/discussion/#{param}/threads/search_similar"
       update_thread           : "/courses/#{$$course_id}/discussion/threads/#{param}/update"
       create_comment          : "/courses/#{$$course_id}/discussion/threads/#{param}/reply"
       delete_thread           : "/courses/#{$$course_id}/discussion/threads/#{param}/delete"
@@ -105,11 +104,11 @@ class @DiscussionUtil
       alertDiv = $("<div class='modal' role='alertdialog' id='discussion-alert' aria-describedby='discussion-alert-message'/>").css("display", "none")
       alertDiv.html(
         "<div class='inner-wrapper discussion-alert-wrapper'>" +
-        "  <button class='close-modal dismiss' aria-hidden='true'>&#10005;</button>" +
+        "  <a class='close-modal dismiss' aria-hidden='true'>×</a>" +
         "  <header><h2/><hr/></header>" +
         "  <p id='discussion-alert-message'/>" +
         "  <hr/>" +
-        "  <button class='dismiss'>" + gettext("OK") + "</button>" +
+        "  <button class='dismiss f_button radius tiny right'>" + gettext("OK") + "</button>" +
         "</div>"
       )
       @makeFocusTrap(alertDiv.find("button"))
@@ -200,6 +199,8 @@ class @DiscussionUtil
     @wmdEditors["#{cls_identifier}-#{id}"] = editor
     if placeholder?
       elem.find("#wmd-input#{appended_id}").attr('placeholder', placeholder)
+    ## スマホ・タブレットではwmdエディタを非表示とする
+    elem.find("div[id^=wmd-button-bar]").addClass("hide-for-medium-down")
     editor
 
   @getWmdEditor: ($content, $local, cls_identifier) ->
@@ -300,3 +301,18 @@ class @DiscussionUtil
         minLength++
       return text.substr(0, minLength) + gettext('…')
 
+  @getPaginationParams: (curPage, numPages, pageUrlFunc) =>
+    delta = 2
+    minPage = Math.max(curPage - delta, 1)
+    maxPage = Math.min(curPage + delta, numPages)
+    pageInfo = (pageNum) -> {number: pageNum, url: pageUrlFunc(pageNum)}
+    params =
+      page: curPage
+      lowPages: _.range(minPage, curPage).map(pageInfo)
+      highPages: _.range(curPage+1, maxPage+1).map(pageInfo)
+      previous: if curPage > 1 then pageInfo(curPage - 1) else null
+      next: if curPage < numPages then pageInfo(curPage + 1) else null
+      leftdots: minPage > 2
+      rightdots: maxPage < numPages-1
+      first: if minPage > 1 then pageInfo(1) else null
+      last: if maxPage < numPages then pageInfo(numPages) else null

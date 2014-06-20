@@ -25,16 +25,19 @@ FEATURES['DISABLE_START_DATES'] = True
 
 # Most tests don't use the discussion service, so we turn it off to speed them up.
 # Tests that do can enable this flag, but must use the UrlResetMixin class to force urls.py
-# to reload
+# to reload. For consistency in user-experience, keep the value of this setting in sync with
+# the one in cms/envs/test.py
 FEATURES['ENABLE_DISCUSSION_SERVICE'] = False
 
 FEATURES['ENABLE_SERVICE_STATUS'] = True
 
 FEATURES['ENABLE_HINTER_INSTRUCTOR_VIEW'] = True
 
-FEATURES['ENABLE_INSTRUCTOR_BETA_DASHBOARD'] = True
+FEATURES['ENABLE_INSTRUCTOR_LEGACY_DASHBOARD'] = True
 
 FEATURES['ENABLE_SHOPPING_CART'] = True
+
+FEATURES['ENABLE_VERIFIED_CERTIFICATES'] = True
 
 # Enable this feature for course staff grade downloads, to enable acceptance tests
 FEATURES['ENABLE_S3_GRADE_DOWNLOADS'] = True
@@ -179,6 +182,9 @@ SECRET_KEY = '85920908f28904ed733fe576320db18cabd7b6cd'
 # hide ratelimit warnings while running tests
 filterwarnings('ignore', message='No request passed to the backend, unable to rate-limit')
 
+######### Third-party auth ##########
+FEATURES['ENABLE_THIRD_PARTY_AUTH'] = True
+
 ################################## OPENID #####################################
 FEATURES['AUTH_USE_OPENID'] = True
 FEATURES['AUTH_USE_OPENID_PROVIDER'] = True
@@ -256,6 +262,7 @@ LETTUCE_SERVER_PORT = 8003
 XQUEUE_PORT = 8040
 YOUTUBE_PORT = 8031
 LTI_PORT = 8765
+VIDEO_SOURCE_PORT = 8777
 
 ################### Make tests faster
 
@@ -268,6 +275,9 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     # 'django.contrib.auth.hashers.CryptPasswordHasher',
 )
+
+### This enables the Metrics tab for the Instructor dashboard ###########
+FEATURES['CLASS_DASHBOARD'] = True
 
 ################### Make tests quieter
 
@@ -296,16 +306,20 @@ MICROSITE_CONFIGURATION = {
         "course_index_overlay_text": "This is a Test Microsite Overlay Text.",
         "course_index_overlay_logo_file": "test_microsite/images/header-logo.png",
         "homepage_overlay_html": "<h1>This is a Test Microsite Overlay HTML</h1>"
+    },
+    "default": {
+        "university": "default_university",
+        "domain_prefix": "www",
     }
 }
-
-if len(MICROSITE_CONFIGURATION.keys()) > 0:
-    enable_microsites(
-        MICROSITE_CONFIGURATION,
-        SUBDOMAIN_BRANDING,
-        VIRTUAL_UNIVERSITIES,
-        microsites_root=COMMON_ROOT / "test" / 'test_microsites'
-    )
+MICROSITE_ROOT_DIR = COMMON_ROOT / 'test' / 'test_microsites'
+FEATURES['USE_MICROSITES'] = True
 
 ######### LinkedIn ########
 LINKEDIN_API['COMPANY_ID'] = '0000000'
+
+# Setting for the testing of Software Secure Result Callback
+VERIFY_STUDENT["SOFTWARE_SECURE"] = {
+        "API_ACCESS_KEY": "BBBBBBBBBBBBBBBBBBBB",
+        "API_SECRET_KEY": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+}

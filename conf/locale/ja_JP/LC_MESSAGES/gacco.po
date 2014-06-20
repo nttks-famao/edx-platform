@@ -1,0 +1,746 @@
+# edX translation file
+# Copyright (C) 2014 edX
+# This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
+#
+# Translators:
+# yokose-ks <ayokose.gacco@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: edx-platform\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2014-03-25 10:00+0900\n"
+"PO-Revision-Date: 2014-03-25 10:00+0900\n"
+"Last-Translator: yokose-ks <ayokose.gacco@gmail.com>\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/edx-platform/language/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: lms/templates/register.html lms/templates/login.html
+msgid "Welcome, {platform_name}!"
+msgstr "ようこそ！{platform_name}へ。"
+
+#: lms/templates/register.html
+msgid "{platform_name} is an educational Web Service. For everyone, for free."
+msgstr "{platform_name}は誰でも無料で受講できるウェブサービスです。"
+
+#: lms/templates/register.html
+msgid "If you're already registerd. Here to Login."
+msgstr "すでに登録済の方はログイン"
+
+#: lms/templates/register.html
+msgid "If you are under 20 years old, you have to get permission of your parents to regist this site."
+msgstr "※未成年の方がお申し込みをいただく場合は、親権者の同意が必要となります。"
+
+#: lms/templates/registration/activation_complete.html
+msgid "{link_start}My Page{link_end}"
+msgstr "{link_start}マイページ{link_end}"
+
+#: lms/templates/registration/activation_complete.html
+msgid "{link_start}Log In{link_end}"
+msgstr "{link_start}ログイン{link_end}"
+
+#: lms/templates/login.html
+msgid "Let's login and enjoy your courses!"
+msgstr "ログインして学習をはじめましょう。"
+
+#: lms/templates/login.html
+msgid "If you're not registerd. Here to Register."
+msgstr "会員登録はこちら"
+
+#: lms/templates/courseware/course_about.html
+msgid "Play PV! PLAY Button above!!"
+msgstr "上の画像をクリックしてPVを再生！"
+
+#: lms/templates/courseware/course_about.html
+msgid "Period"
+msgstr "標準学習期間"
+
+#: lms/templates/courseware/course_about.html
+msgid "Weeks"
+msgstr "週間"
+
+#: lms/templates/courseware/course_about.html
+msgid "Share with friends"
+msgstr "ともだちに教えよう！"
+
+#: lms/templates/dashboard.html lms/templates/navigation.html
+msgid "My Page"
+msgstr "マイページ"
+
+#: lms/templates/navigation.html
+msgid "Navi Menu"
+msgstr "ナビメニュー"
+
+#: lms/templates/navigation.html
+msgid "Top Page"
+msgstr "トップページ"
+
+#: lms/templates/navigation.html
+msgid "Login"
+msgstr "ログイン"
+
+#: lms/templates/navigation.html
+msgid "Study Menu"
+msgstr "学習メニュー"
+
+#: lms/templates/courseware/courseware.html
+msgid "Unit List"
+msgstr "単元リスト"
+
+#: lms/templates/dashboard.html
+msgid "Resign"
+msgstr "退会手続き"
+
+#: lms/templates/dashboard.html
+msgid "Resign Email Sent"
+msgstr "退会確認メールが送信されました"
+
+#: lms/templates/dashboard.html
+msgid "An email has been sent to {email}. Follow the link in the email to resign."
+msgstr "まだ退会手続きは完了していません。「{email}」宛に確認メールが送信されます。メール文中にある退会確認用のリンクをクリックをすることで、退会処理をすることができます。別途メールを確認いただき、メール文中の案内をご覧ください。<br /></br /><span style=\"color: red;\">なお、同じメールアドレスでの新規登録はできませんのでご注意ください。</span>"
+
+#: lms/templates/registration/resign_subject.txt
+msgid "Resignation from %(site_name)s"
+msgstr "%(site_name)s からの退会手続き"
+
+#: lms/templates/registration/resign_email.html
+msgid "You're receiving this e-mail because you requested a resignation from %(site_name)s."
+msgstr "このメールは退会処理をするために送信されています。"
+
+#: lms/templates/registration/resign_email.html
+msgid "Please go to the following page and click the resign button:"
+msgstr "次のページで退会するボタンをクリックしてください。"
+
+#: lms/templates/registration/resign_email.html
+msgid ""
+"If you didn't request this change, you can disregard this email - we have "
+"not yet resign your account."
+msgstr "この処理を要求していない場合はこのメールは無視してください。退会処理はまだ行われていません。"
+
+#: lms/templates/registration/resign_confirm.html
+msgid ""
+"\n"
+"      Resignation from %(platform_name)s\n"
+"  "
+msgstr ""
+"\n"
+"%(platform_name)sからの退会手続き"
+
+#: lms/templates/registration/resign_confirm.html
+msgid ""
+"\n"
+"          Resignation from %(platform_name)s\n"
+"          "
+msgstr ""
+"\n"
+"%(platform_name)sからの退会手続き"
+
+# common/djangoapps/student/forms.py
+msgid "Resign reason is required."
+msgstr "退会理由は必須です。"
+
+# lms/templates/registration/resign_confirm.html
+msgid ""
+"To resign, enter your reason for resignation and click the resign button. <br />"
+"Required fields are noted by <strong class=\"indicator\">bold text and an asterisk (*)</strong>. <br />"
+"If you do not wish to resign, click the cancel button."
+msgstr ""
+"退会理由を記入し、退会するボタンをクリックすることで退会処理が行われます。<br />"
+"<strong class=\"indicator\">(*)付きの太字</strong>は必須項目となります。全角半角を問わず、1000文字以内でご回答ください。<br />"
+"退会を希望されない方は、キャンセルボタンをクリックしてください。"
+
+# lms/templates/registration/resign_confirm.html
+msgid "Resign Reason"
+msgstr "退会理由"
+
+#: lms/templates/resign_confirm.html
+msgid "The following errors occurred while processing your resignation:"
+msgstr "退会処理をする際にエラーが発生しました："
+
+#: lms/templates/resign_confirm.html
+msgid "We're sorry, our systems seem to be having trouble processing your resignation"
+msgstr "申し訳ございません。退会処理の途中で、システムに障害が発生したと考えられます。"
+
+#: lms/templates/resign_confirm.html
+msgid "Resign Now"
+msgstr "退会する"
+
+#: lms/templates/registration/resign_confirm.html
+msgid "Your Resignation Was Unsuccessful"
+msgstr "退会処理は失敗しました。"
+
+#: lms/templates/registration/resign_confirm.html
+msgid ""
+"\n"
+"            The resignation link was invalid, possibly because the link has already been used.  Please return to the %(start_link)slogin page%(end_link)s and start the resignation process again.\n"
+"        "
+msgstr ""
+"\n"
+"退会処理のリンクに異常が見られました。このリンクは既に利用された可能性があります。%(start_link)sログインページ%(end_link)sより、退会手続きを改めて行っていただけますでしょうか。"
+
+#: lms/templates/registration/resign_confirm.html
+msgid "Resign Help"
+msgstr "退会手続きに関するヘルプ"
+
+#: lms/templates/registration/resign_confirm.html
+msgid ""
+"\n"
+"              View our <a href=\"%(mktg_url_faq)s\">help section for contact information and answers to commonly asked questions</a>\n"
+"          "
+msgstr ""
+"\n"
+"<a href=\"%(mktg_url_faq)s\">連絡先情報、および、よくある質問</a>のページを見る"
+
+#: lms/templates/registration/resign_complete.html
+msgid ""
+"\n"
+"      Resignation from %(platform_name)s is Complete\n"
+"  "
+msgstr ""
+"\n"
+"%(platform_name)sからの退会手続き完了"
+
+#: lms/templates/registration/resign_complete.html
+msgid ""
+"\n"
+"          Resignation from %(platform_name)s is Complete\n"
+"          "
+msgstr ""
+"\n"
+"%(platform_name)sからの退会手続き完了"
+
+#: lms/templates/registration/resign_complete.html
+msgid ""
+"\n"
+"      Your resignation has been completed successfully. <br />\n"
+"      If you have any questions, please contact us at\n"
+"      <a href=\"mailto:%(support_email)s?subject=Resign\">%(support_email)s</a>.\n"
+"      "
+msgstr ""
+"\n"
+"退会手続きが完了しました。<br />\n"
+"何か不明な点がございましたら、<a href=\"mailto:%(support_email)s?subject=退会手続き\">%(support_email)s</a> へご連絡ください。"
+
+#: lms/templates/dashboard.html
+msgid "You'll receive a confirmation in your in-box. Please click the link in the email to confirm the email change."
+msgstr "メールアドレス変更メールを送信いたしました。メール文中にあるリンクをクリックすることで、メールアドレス変更確認画面が開きます。"
+
+#: lms/templates/registration/password_reset_confirm.html
+msgid "The following errors occurred while processing your password reset: "
+msgstr "パスワード変更処理をする際にエラーが発生しました："
+
+#: common/djangoapps/student/forms.py
+msgid "New password is required."
+msgstr "新パスワードは必須です。"
+
+#: common/djangoapps/student/forms.py
+msgid "New password confirmation is required."
+msgstr "新パスワード(再入力)は必須です。"
+
+#: Temporary Transifex only has {CERT_SHORT_NAME} version
+#: lms/templates/dashboard.py
+msgid "Enter your desired full name, as it will appear on the {platform} certificates:"
+msgstr "新しい氏名を入力してください。{platform}の修了書で表示されます："
+
+#: lms/templates/help_modal.html
+msgid "Do you have any questions?"
+msgstr "他にご質問がありますか？"
+
+#: lms/templates/help_modal.html
+msgid "See {link_start}FAQ{link_end}."
+msgstr "まずは、gacco<a href=\"https://support.gacco.org/\" target=\"_blank\">サポートサイト</a>をご覧ください。こちらに一般的なご質問に対しての情報が掲載されています。"
+
+#: lms/templates/help_modal.html
+msgid "If you have further questions, please send questions below."
+msgstr "お手数をお掛けしますが、サポートサイトにて記載のない内容については、改めてお問合せください。なお、返信には１〜３営業日（土日祝日等を除く）を頂いております。また、一般的な端末の操作方法等については、私どもにてご案内できかねますことご承知おきいただけますと幸いです。"
+
+#: lms/templates/help_modal.html
+msgid "Please provide a subject."
+msgstr "概要を入力してください"
+
+#: lms/templates/help_modal.html
+msgid "Please provide details."
+msgstr "詳細を入力してください"
+
+#: lms/djangoapps/open_ended_grading/views.py
+msgid "Problems you have submitted"
+msgstr "あなたが投稿した問題"
+
+#: lms/djangoapps/open_ended_grading/views.py
+msgid "Flagged Submission"
+msgstr "フラグされた投稿"
+
+#: Temporary Show Answer(s) has been deleted
+msgid "Show Answer(s)"
+msgstr "答えを見る"
+
+#: lms/templates/video.html
+msgid "Download timed transcript"
+msgstr "字幕をダウンロード"
+
+#: lms/templates/discussion/_user_profile.html
+msgid "User Role:"
+msgstr "ユーザー種別:"
+
+#: lms/templates/discussion/_user_profile.html
+msgid "Posted Discussion:"
+msgstr "投稿状況:"
+
+#: lms/templates/discussion/_user_profile.html
+msgid "Posted Comments:"
+msgstr "コメント状況:"
+
+#: lms/djangoapps/instructor/views/instructor_dashboard.py
+msgid "Survey"
+msgstr "アンケート"
+
+#: lms/templates/instructor/instructor_dashboard_2/survey.html
+msgid "Survey Download"
+msgstr "アンケート結果ダウンロード"
+
+#: lms/templates/instructor/instructor_dashboard_2/survey.html
+msgid "The survey result can be downloaded as a CSV file."
+msgstr "アンケート結果がCSVファイルでダウンロードできます。"
+
+#: lms/templates/instructor/instructor_dashboard_2/survey.html
+msgid "Get Survey CSV"
+msgstr "アンケート結果をCSVとしてダウンロードする"
+
+#: lms/templates/dashboard/_dashboard_certificate_information.html
+msgid "Congratulations! You've got the {cert_name_short} of this course. Download your {cert_name_short} and Share it below."
+msgstr "おめでとうございます！{cert_name_short}が授与されました。下のボタンから{cert_name_short}をダウンロードできます。"
+
+#: lms/templates/dashboard/_dashboard_certificate_information.html
+msgid "Download Your Certificate (PDF)"
+msgstr "修了証の表示"
+
+#: lms/templates/dashboard/_dashboard_certificate_information.html
+msgid "Successfully passed the Certificate of gacco"
+msgstr "gaccoの修了証を取得しました"
+
+#: lms/templates/dashboard/_dashboard_certificate_information.html
+msgid "Grade required for a certificate:"
+msgstr "修了証取得に必要な成績："
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_base.html
+msgid "Skip to a specific step"
+msgstr "特定のステップをスキップする"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_base.html
+msgid "Your grade for this problem"
+msgstr "あなたのこの課題に対する評価"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_base.html
+msgid "This assignment has several steps. In the first step, you'll provide a response to the question. The other steps appear below the <strong>Your Response</strong> field."
+msgstr "相互採点にはいくつかのステップがあります。はじめにあなたのレポートを提出します。その後、次のステップが<strong>あなたのレポート</strong>欄の下に表示されます。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_base.html
+msgid "The prompt for this assignment"
+msgstr "入力の割り当て"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_base.html
+msgid "Loading"
+msgstr "読み込み中"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_closed.html
+msgid "The Due Date for This Step Has Passed"
+msgstr "このステップの終了期限をすぎました"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_closed.html
+msgid "This step is now closed. You can no longer complete a self assessment or continue with this assignment, and you'll receive a grade of Incomplete."
+msgstr "このステップは終了して閉じられました。今後継続して他者の評価、自己評価を行うことはできません。あなたの結果は未完了となります。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Assess Your Response"
+msgstr "あなたのレポートを採点する"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "This step's status"
+msgstr "このステップのステータス"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "We could not submit your assessment"
+msgstr "採点することができません"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Submit Your Assessment"
+msgstr "自己採点を完了する"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/self/oa_self_complete.html
+msgid "Complete"
+msgstr "完了"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_edit.html
+msgid "Save"
+msgstr "一時保存"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/oa_edit.html
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_incomplete.html
+msgid "Your Grade"
+msgstr "あなたの得点"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_incomplete.html
+msgid "Not Completed"
+msgstr "未完了"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_not_started.html
+msgid "Not Started"
+msgstr "未開始"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_not_started.html
+msgid "You have not started this problem yet."
+msgstr "あなたのレポートの採点はまだ開始されていません"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_waiting.html
+msgid "Waiting for Peer Assessment"
+msgstr "採点待ち状態"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_waiting.html
+msgid "Your response is still undergoing peer assessment. After your peers have assessed your response, you'll see their comments and receive your final grade."
+msgstr "あなたのレポートは現在採点中です。他の受講者からの採点が完了しますと取得した得点やコメントが表示されます。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Overall Grade"
+msgstr "総得点"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Assessor"
+msgstr "採点者"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Peer's Assessment"
+msgstr "他者からの評価"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Grade Earned"
+msgstr "取得した得点"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "points"
+msgstr "点"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Your Self Assessment"
+msgstr "自己採点結果"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Your Assessment"
+msgstr "あなたの評価"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Additional Comments"
+msgstr "追加コメント"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Peer"
+msgstr "採点者"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Additional comments on your response"
+msgstr "あなたのレポートへの追加コメント"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Peer assessor"
+msgstr "採点者"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Peer's assessment"
+msgstr "他者の評価"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Provide Feedback on Peer Assessments"
+msgstr "相互採点についてのコメント"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Submitting Feedback"
+msgstr "コメントの提出"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Your Feedback Has Been Submitted"
+msgstr "コメントが提出されました"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Your feedback has been submitted. Course staff will be able to see this feedback when they review course records."
+msgstr "コメントが提出されました。講座スタッフは講座データを確認する際にこの内容を参照します。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Course staff will be able to see any feedback that you provide here when they review course records."
+msgstr "ここで提出したコメントは講座スタッフが講座データを確認する際に参照します。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Select the statements below that best reflect your experience with peer assessments"
+msgstr "他の受講者から採点を受けたことに対して、以下の当てはまるものを選択してください"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "These assessments were useful."
+msgstr "採点は有用である"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "These assessments were not useful."
+msgstr "採点は有用でない"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "I disagree with one or more of the peer assessments of my response."
+msgstr "受けた採点のうち１つ以上に異論がある"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Some comments I received were inappropriate."
+msgstr "受けた採点は不適切なものがある"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Please provide any feedback on the grade or comments that you received from your peers."
+msgstr "あなたが他の受講者から受けた採点や評価コメントに対してのご意見を記述してください"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "I feel the feedback I received was..."
+msgstr "私が他の受講者から受けた採点は..."
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "We could not submit your feedback"
+msgstr "コメントを提出することができません"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_complete.html
+msgid "Submit Feedback on Peer Assessments"
+msgstr "相互採点へのコメントを提出する"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_closed.html
+msgid "Incomplete"
+msgstr "完了できず"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/grade/oa_grade_closed.html
+msgid "You have not completed all the steps of this problem."
+msgstr "あなたはこの課題の全てのステップを完了していません"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Course Staff Information"
+msgstr "講座スタッフ情報"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Response total"
+msgstr "採点の総数"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Location"
+msgstr "場所"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Where are your students currently in this problem"
+msgstr "この課題での受講者の状態"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Student Progress"
+msgstr "受講者の進捗"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Active Students in Step"
+msgstr "ステップでアクティブな受講者"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Dates"
+msgstr "日付"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Problem Step"
+msgstr "課題のステップ"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Release Date"
+msgstr "リリース日"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "Due Date"
+msgstr "期限"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/staff_debug.html
+msgid "N/A"
+msgstr "N/A"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response_submitted.html
+msgid "Your Response Has Been Submitted"
+msgstr "あなたのレポートは提出されました"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response_submitted.html
+msgid "You'll receive your grade after some of your peers have assessed your response and you complete the <a data-behavior=\"ui-scroll\" href=\"#openassessment__peer-assessment\">peer assessment</a> and <a data-behavior=\"ui-scroll\" href=\"#openassessment__self-assessment\">self assessment</a> steps"
+msgstr "あなたの得点は<a data-behavior=\"ui-scroll\" href=\"#openassessment__peer-assessment\">相互採点</a> と <a data-behavior=\"ui-scroll\" href=\"#openassessment__self-assessment\">自己採点</a> が終わり、数名から採点を受け次第表示されます"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response_closed.html
+msgid "This step is now closed. You can no longer submit a response or continue with this problem, and you'll receive a grade of Incomplete. If you saved but did not submit a response, the response appears in the course records."
+msgstr "このステップは終了して閉じられました。今後継続して採点行うことはできません。あなたの結果は未完了となります。一時保存のみして、提出されていない場合は講座レコードには解答が表示されます。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Your Response"
+msgstr "あなたのレポート"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "You can save your progress and return to complete your response at any time before the due date"
+msgstr "期限内であれば記入途中のレポートを一時保存して後から提出することができます。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "You can save your progress and return to complete your response at any time."
+msgstr "記入途中のレポート一時保存して後から提出することができます。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "After you submit your response, you cannot edit it"
+msgstr "レポートを提出した後は編集したり新たに提出することはできません"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Enter your response to the question."
+msgstr "課題に対するレポートを入力してください。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "You may continue to work on your response until you submit it."
+msgstr "提出するまではレポートを編集することができます。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "We could not save your progress"
+msgstr "レポートを一時保存をすることができませんでした"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Your Submission Status"
+msgstr "あなたの提出状況"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "We could not submit your response"
+msgstr "レポートを提出することができませんでした"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Submit your response and move to the next step"
+msgstr "次のステップに進む（レポートを提出する）"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_unavailable.html
+msgid "Not Available"
+msgstr "実施不可"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_waiting.html
+msgid "Waiting for Peer Responses"
+msgstr "他の受講者からの採点待ち状態"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_turbo_mode.html
+msgid "I noticed that this response..."
+msgstr "他の受講者がこのコメントを読むことに配慮し、簡潔かつ根拠を明確に記述しましょう"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_closed.html
+msgid "This step is now closed. You can no longer complete peer assessments or continue with this assignment, and you'll receive a grade of Incomplete."
+msgstr "このステップは終了して閉じられました。今後継続して採点行うことはできません。あなたの結果は未完了となります。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "Assess Peers"
+msgstr "他の受講者のレポートを採点する"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "available"
+msgstr "有効"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "due"
+msgstr "期限"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "In Progress"
+msgstr "実施中"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "Read and assess the following response from one of your peers."
+msgstr "以下にある他の受講者のレポートを読んで採点をしてください。採点にあたってはルーブリック（評価基準）の内容をよく読み、実施してください。また全ての項目の採点が完了した後、最下部のコメント欄になぜあなたがそのように採点したのかを簡潔に記入してください。このことはあなたに採点された受講者が採点結果を元にレポートの内容を振り返る際に大切ですので、必ず行うようにしましょう。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "Assessment #"
+msgstr "採点回数："
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "Required"
+msgstr "必須"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_assessment.html
+msgid "Comments"
+msgstr "コメント"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_turbo_mode_waiting.html
+msgid "Peer Assessments Complete"
+msgstr "相互採点完了"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_turbo_mode_waiting.html
+msgid "You have successfully completed all of the required peer assessments for this assignment. You may assess additional peer responses if you want to. Completing additional assessments will not affect your final grade."
+msgstr "この相互採点に必要な数の採点を完了しました。さらに他の受講者の採点を実施することも可能です。この追加の採点は完了しなくても最終得点の取得には影響しません。"
+
+#: /edx/app/edxapp/venvs/edxapp/src/edx-ora2/apps/openassessment/templates/openassessmentblock/peer/oa_peer_turbo_mode_waiting.html
+msgid "All submitted peer responses have been assessed. Check back later to see if more students have submitted responses."
+msgstr "現在提出されている他の受講者のレポートを全て採点しました。しばらくしてからこのページを開き、他の受講者が提出したレポートがないか確認してください。"
+
+msgid ""
+"\n"
+"                         <span class=\"grade__value__earned\">%(points_earned)s</span>\n"
+"                         out of\n"
+"                         <span class=\"grade__value__potential\">%(points_possible)s</span>\n"
+"                         "
+msgstr ""
+"\n"
+"                         <span class=\"grade__value__earned\">%(points_earned)s</span>\n"
+"                         /\n"
+"                         <span class=\"grade__value__potential\">%(points_possible)s</span> 点\n"
+"                         "
+
+msgid ""
+"\n"
+"                                  <span class=\"question__score__value\">%(score)s</span>\n"
+"                                  <span class=\"label label--divider sr\">out of</span>\n"
+"                                  <span class=\"question__score__potential\">\n"
+"                                    %(total)s\n"
+"                                    <span class=\"unit\">Points</span>\n"
+"                                  </span>\n"
+"                                  "
+msgstr ""
+"\n"
+"                                  <span class=\"question__score__value\">%(score)s</span>\n"
+"                                  <span class=\"label label--divider sr\">/</span>\n"
+"                                  <span class=\"question__score__potential\">\n"
+"                                    %(total)s\n"
+"                                    <span class=\"unit\">点</span>\n"
+"                                  </span>\n"
+"                                  "
+
+msgid ""
+"\n"
+"                                                      Peer %(peer_num)s\n"
+"                                                      "
+msgstr ""
+"\n"
+"                                                      採点者 %(peer_num)s\n"
+"                                                      "
+
+msgid "More information about %(name)s"
+msgstr "%(name)s についての追加情報"
+
+msgid "Peer %(peer_num)s"
+msgstr "採点者 %(peer_num)s"
+
+msgid "All submitted peer responses have been assessed. Check back later to see if more students have submitted responses. You'll receive your grade after you complete the <a data-behavior=\"ui-scroll\" href=\"#openassessment__peer-assessment\">peer assessment</a> and <a data-behavior=\"ui-scroll\" href=\"#openassessment__self-assessment\">self assessment</a> steps, and after your peers have assessed your response."
+msgstr "すべての提出されたレポートが採点されました。しばらくしてから再度このページを開き、他の受講者が採点を完了していないか確認してください。 あなたの得点は <a data-behavior=\"ui-scroll\" href=\"#openassessment__peer-assessment\">相互採点</a> （あなたが右上に表示されている規定数分の他の受講者のレポートを採点しなくてはなりません）と <a data-behavior=\"ui-scroll\" href=\"#openassessment__self-assessment\">自己採点</a>（ご自身のレポートも採点しなくてはなりません） が終わり、あなたのレポートが別途規定された数の他の受講者から採点されると表示されます"
+
+
+msgid "This response has not been saved."
+msgstr "このレポートは一時保存されていません"
+
+msgid "This response has been saved but not submitted."
+msgstr "このレポートは一時保存されていますが提出されていません"
+
+msgid "Save Your Progress"
+msgstr "一時保存"
+
+msgid "Submit your assessment & move to response #{}"
+msgstr "このレポートに対する採点を完了し、次のレポートの採点を行う #{}"
+
+msgid "Submit your assessment & review another response"
+msgstr "このレポートに対する採点を完了し、次のレポートの採点を行う"
+
+msgid "Submit your assessment & move onto next step"
+msgstr "このレポートに対する採点を完了し、次のステップへ進む"
+
+msgid "Assessments of Your Response"
+msgstr "あなたのレポートに対する評価"

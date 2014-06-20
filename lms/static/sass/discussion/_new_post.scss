@@ -1,0 +1,169 @@
+.new-post-article {
+  margin-top: 30px;
+
+  .form-topic-drop{
+    .topic_dropdown_button{
+      position: relative;
+      z-index: 1000;
+      display: block;
+      padding: 10px 30px 10px 15px;
+      width: 100%;
+      min-height: 40px;
+      margin-top : 15px;
+      margin-bottom: 0;
+      font-size: 0.8rem;
+      line-height: 18px;
+   
+      span{
+        display: block;
+        height: 100%;
+	width: 2.625rem;
+	border-left:solid 1px rgba(255,255,255,0.5);
+	position:absolute;
+	top:0;
+	right:0px;
+      }
+    }
+ 
+    .topic_menu_wrapper{
+      display: none;
+      position: absolute;
+      top: 90px;
+      left : 0px;
+      z-index : 9999;
+      width : 100%;
+      height: 320px; 
+      margin-left: 15px;
+    }
+    .topic_menu_wrapper.panel{
+      padding: 0;
+    }
+    .topic_menu{  
+      height: 257px;
+      overflow-y : scroll;
+      dd {
+        margin: 0px;
+        padding-right: 5px;
+ 
+        .content {
+          width: 100%;
+          padding: 0;
+        }
+
+        li {
+          list-style-type: none;
+        }
+
+        a {
+          border-top: 1px solid #e5e5e5;
+          padding: 0.5rem; 
+          font-size: 12px;
+          font-weight: 700;
+          line-height: 12px;
+          color: #333;
+
+          span{
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 12px;
+            color: #333;
+          }
+         
+          &.hidden {
+            display: none;
+          }
+
+          &:hover, &:focus {
+            background-color: #dfdfdf;
+          }
+        }
+        .newpost-parent-category.active{
+          background-color: #e3e3e3;
+        } 
+        .newpost-entry{
+          background-color: #f5f5f5;
+          padding-left: 1.5rem;
+        }
+      }
+    }
+  }
+
+
+  .new-post-form {
+    width: 100%;
+    min-height: 550px;
+    box-shadow: none;
+
+    .form-row {
+      margin-bottom: $baseline;
+    }
+
+    .new-post-title{
+      width: 100%;
+      height: 40px;
+      padding: 0 $baseline/2;
+      border-radius: 3px;
+      border: 1px solid #333;
+      font-size: 16px;
+      font-weight: 700;
+      font-family:  "Meiryo", "Hiragino Kaku Gothic ProN", "MS P Gothic", Verdana, Arial, Helvetica, sans-serif;
+      color: #333;
+    }
+    .new-post-form-error{
+      color: #f00;
+    }
+
+    .wmd-input{
+      height: 200px; 
+      font-family:  "Meiryo", "Hiragino Kaku Gothic ProN", "MS P Gothic", Verdana, Arial, Helvetica, sans-serif;
+    }
+    
+    .wmd-preview-container{
+      max-height: 200px;
+      overflow-y: scroll;
+    }
+    .button {
+      float: left;
+      border-left: 1px solid;
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .options {
+      margin-top: 5px;
+
+      label {
+        display: inline;
+        margin-left: 8px;
+        font-size: 15px;
+        text-shadow: none;
+      }
+    }
+  }
+
+  .thread-title {
+    display: block;
+    margin-bottom: $baseline;
+    font-size: 21px;
+    color: #333;
+    font-weight: 700;
+  }
+
+  .button-area{
+    margin-top: 10px;
+  }
+
+  .new-post-cancel{
+    display: block;
+    margin-left: 20px;
+  }
+
+}
+
+.discussion.container{
+  .new-post-btn{
+    padding-top : 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+}

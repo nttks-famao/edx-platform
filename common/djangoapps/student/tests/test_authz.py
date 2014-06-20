@@ -4,7 +4,7 @@ Tests authz.py
 import mock
 
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from xmodule.modulestore import Location
 from django.core.exceptions import PermissionDenied
 
@@ -76,18 +76,23 @@ class CreatorGroupTest(TestCase):
         """
         Tests that adding to creator group fails if user is not authenticated
         """
-        with mock.patch.dict('django.conf.settings.FEATURES',
-                             {'DISABLE_COURSE_CREATION': False, "ENABLE_CREATOR_GROUP": True}):
-            self.user.is_authenticated = False
-            add_users(self.admin, CourseCreatorRole(), self.user)
-            self.assertFalse(has_access(self.user, CourseCreatorRole()))
+        with mock.patch.dict(
+            'django.conf.settings.FEATURES',
+            {'DISABLE_COURSE_CREATION': False, "ENABLE_CREATOR_GROUP": True}
+        ):
+            anonymous_user = AnonymousUser()
+            role = CourseCreatorRole()
+            add_users(self.admin, role, anonymous_user)
+            self.assertFalse(has_access(anonymous_user, role))
 
     def test_add_user_not_active(self):
         """
         Tests that adding to creator group fails if user is not active
         """
-        with mock.patch.dict('django.conf.settings.FEATURES',
-                             {'DISABLE_COURSE_CREATION': False, "ENABLE_CREATOR_GROUP": True}):
+        with mock.patch.dict(
+            'django.conf.settings.FEATURES',
+            {'DISABLE_COURSE_CREATION': False, "ENABLE_CREATOR_GROUP": True}
+        ):
             self.user.is_active = False
             add_users(self.admin, CourseCreatorRole(), self.user)
             self.assertFalse(has_access(self.user, CourseCreatorRole()))
@@ -107,7 +112,7 @@ class CreatorGroupTest(TestCase):
 
     def test_add_user_to_group_requires_authenticated(self):
         with self.assertRaises(PermissionDenied):
-            self.admin.is_authenticated = False
+            self.admin.is_authenticated = mock.Mock(return_value=False)
             add_users(self.admin, CourseCreatorRole(), self.user)
 
     def test_remove_user_from_group_requires_staff_access(self):
@@ -122,7 +127,7 @@ class CreatorGroupTest(TestCase):
 
     def test_remove_user_from_group_requires_authenticated(self):
         with self.assertRaises(PermissionDenied):
-            self.admin.is_authenticated = False
+            self.admin.is_authenticated = mock.Mock(return_value=False)
             remove_users(self.admin, CourseCreatorRole(), self.user)
 
 

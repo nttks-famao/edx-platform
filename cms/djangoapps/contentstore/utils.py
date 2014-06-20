@@ -1,4 +1,4 @@
-#pylint: disable=E1103, E1101
+# pylint: disable=E1103, E1101
 
 import copy
 import logging
@@ -7,16 +7,15 @@ import re
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
+from student.roles import CourseInstructorRole, CourseStaffRole
 from xmodule.contentstore.content import StaticContent
 from xmodule.contentstore.django import contentstore
-from xmodule.modulestore import Location
-from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from django_comment_common.utils import unseed_permissions_roles
-from xmodule.modulestore.store_utilities import delete_course
 from xmodule.course_module import CourseDescriptor
+from xmodule.modulestore import Location
+from xmodule.modulestore.django import loc_mapper, modulestore
 from xmodule.modulestore.draft import DIRECT_ONLY_CATEGORIES
-from student.roles import CourseInstructorRole, CourseStaffRole
+from xmodule.modulestore.exceptions import ItemNotFoundError
+from xmodule.modulestore.store_utilities import delete_course
 
 
 log = logging.getLogger(__name__)
@@ -51,6 +50,9 @@ def delete_course_and_groups(course_id, commit=False):
                 instructor_role.remove_users(*instructor_role.users_with_role())
             except Exception as err:
                 log.error("Error in deleting course groups for {0}: {1}".format(loc, err))
+
+            # remove location of this course from loc_mapper and cache
+            loc_mapper().delete_course_mapping(loc)
 
 
 def get_modulestore(category_or_location):
@@ -194,30 +196,35 @@ def course_image_url(course):
     return path
 
 
-class UnitState(object):
+class PublishState(object):
+    """
+    The publish state for a given xblock-- either 'draft', 'private', or 'public'.
+
+    Currently in CMS, an xblock can only be in 'draft' or 'private' if it is at or below the Unit level.
+    """
     draft = 'draft'
     private = 'private'
     public = 'public'
 
 
-def compute_unit_state(unit):
+def compute_publish_state(xblock):
     """
-    Returns whether this unit is 'draft', 'public', or 'private'.
+    Returns whether this xblock is 'draft', 'public', or 'private'.
 
     'draft' content is in the process of being edited, but still has a previous
         version visible in the LMS
     'public' content is locked and visible in the LMS
-    'private' content is editabled and not visible in the LMS
+    'private' content is editable and not visible in the LMS
     """
 
-    if getattr(unit, 'is_draft', False):
+    if getattr(xblock, 'is_draft', False):
         try:
-            modulestore('direct').get_item(unit.location)
-            return UnitState.draft
+            modulestore('direct').get_item(xblock.location)
+            return PublishState.draft
         except ItemNotFoundError:
-            return UnitState.private
+            return PublishState.private
     else:
-        return UnitState.public
+        return PublishState.public
 
 
 def add_extra_panel_tab(tab_type, course):

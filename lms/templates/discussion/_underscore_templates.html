@@ -3,16 +3,19 @@
 <%! from django_comment_client.permissions import has_permission %>
 
 <script aria-hidden="true" type="text/template" id="thread-template">
-    <article class="discussion-article" data-id="${'<%- id %>'}">
+    ## ※ちょこちょこスタイル指定が挿入されているため注意※
+    <article class="discussion-article" data-id="${'<%- id %>'}" style="margin-bottom:15px;">
         <div class="thread-content-wrapper"></div>
-        <div class="response-count"/>
+##        <div class="response-count"/>
         <div class="add-response">
-            <button class="button add-response-btn">
+            <span class="f_button tiny radius add-response-btn right">
                 <i class="icon icon-reply"></i>
-                <span class="add-response-btn-text">${_('Add A Response')}</span>
-            </button>
+                ##<span class="add-response-btn-text">
+		${_('Add A Response')}
+		##</span>
+            </span>
         </div>
-        <ol class="responses"/>
+        <ol class="responses" style="margin-top:60px;"/>
         <div class="response-pagination"/>
         <div class="post-status-closed bottom-post-status" style="display: none">
           ${_("This thread is closed.")}
@@ -23,7 +26,7 @@
             <ul class="discussion-errors"></ul>
             <div class="reply-body" data-id="${'<%- id %>'}"></div>
             <div class="reply-post-control">
-                <a class="discussion-submit-post control-button" href="#">${_("Submit")}</a>
+                <a class="discussion-submit-post control-button f_button tiny radius success right" style="margin-top:5px; margin-bottom:5px;" href="#">${_("Submit")}</a>
             </div>
         </form>
         % endif
@@ -38,10 +41,10 @@
               ${"<% }  %>"}
 
           <a href="#" class="vote-btn" role="button" aria-pressed="false"><!-- DiscussionContentView.renderVote populates this --></a>
-          <h1>${'<%- title %>'}</h1>
+          <h1 style="margin-bottom: 10px;">${'<%- title %>'}</h1>
           <p class="posted-details">
               ${"<% if (obj.username) { %>"}
-              <a href="${'<%- user_url %>'}" class="username">${'<%- username %>'}</a>
+              <a href="${'<%- user_url %>'}" class="username" style="text-decoration: italic;">Posted by ${'<%- username %>'}</a>
               ${"<% } else { %>"}
               ${_('anonymous') | h}
               ${"<% } %>"}
@@ -56,7 +59,7 @@
           </a>
       </header>
 
-      <div class="post-body">${'<%- body %>'}</div>
+      <div class="post-body" style="margin-top:1.25rem; margin-bottom:1.25rem;">${'<%- body %>'}</div>
       <div class="discussion-flag-abuse notflagged" data-role="thread-flag" role="button" aria-pressed="false" tabindex="0">
       <i class="icon icon-flag"></i><span class="flag-label">${_("Report Misuse")}</span></div>
 
@@ -81,13 +84,13 @@
               )
       %>
       ${'<% if (obj.courseware_url) { %>'}
-          <div class="post-context">${'<%'}${js_block}${'%>'}</div>
+          <div class="post-context" style="margin-bottom:10px;">${'<%'}${js_block}${'%>'}</div>
       ${'<% } %>'}
 
       <ul class="moderator-actions">
-          <li style="display: none"><a class="action-edit" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Edit")}</a></li>
-          <li style="display: none"><a class="action-delete" href="javascript:void(0)"><span class="delete-icon"></span> ${_("Delete")}</a></li>
-          <li style="display: none"><a class="action-openclose" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Close")}</a></li>
+          <li style="display: none"><a class="action-edit" style="box-shadow:none; background-color:#fff;" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Edit")}</a></li>
+          <li style="display: none"><a class="action-delete" style="box-shadow:none; background-color:#fff;" href="javascript:void(0)"><span class="delete-icon"></span> ${_("Delete")}</a></li>
+          <li style="display: none"><a class="action-openclose" style="box-shadow:none; background-color:#fff;" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Close")}</a></li>
       </ul>
   </div>
 </script>
@@ -103,13 +106,13 @@
     <div class="form-row">
       <div class="edit-post-body" name="body">${"<%- body %>"}</div>
     </div>
-    <input type="submit" id="edit-post-submit" class="post-update" value="${_("Update post") | h}">
-    <a href="#" class="post-cancel">${_("Cancel")}</a>
+    <input type="submit" id="edit-post-submit" class="post-update f_button radius tiny success" value="${_("Update post") | h}">
+    <a href="#" class="post-cancel" style="margin-left:20px;">${_("Cancel")}</a>
   </div>
 </script>
 
 <script aria-hidden="true" type="text/template" id="thread-response-template">
-    <div class="discussion-response"></div>
+    <div class="discussion-response" style="margin-bottom:60px"></div>
     <ol class="comments">
         <li class="new-comment response-local">
             % if course is UNDEFINED or has_permission(user, 'create_sub_comment', course.id):
@@ -118,8 +121,8 @@
                 <label class="sr" for="add-new-comment">${_("Add a comment")}</label>
                 <div class="comment-body" id="add-new-comment" data-id="${'<%- wmdId %>'}"
                 data-placeholder="${_('Add a comment...') | h}"></div>
-                <div class="comment-post-control">
-                    <a class="discussion-submit-comment control-button" href="#">${_("Submit")}</a>
+                <div class="comment-post-control" style="padding-bottom:40px;">
+                    <a class="discussion-submit-comment control-button f_button tiny radius success right" href="#">${_("Submit")}</a>
                 </div>
             </form>
             % endif
@@ -138,14 +141,14 @@
         ${"<% } %>"}
         <p class="posted-details" title="${'<%- created_at %>'}">${'<%- created_at %>'}</p>
     </header>
-    <div class="response-local"><div class="response-body">${"<%- body %>"}</div>
+    <div class="response-local"><div class="response-body" style="margin-bottom:1.25rem;">${"<%- body %>"}</div>
     <div class="discussion-flag-abuse notflagged" data-role="thread-flag" role="button" aria-pressed="false" tabindex="0">
       <i class="icon icon-flag"></i><span class="flag-label">${_("Report Misuse")}</span></div>
     </div>
     <ul class="moderator-actions response-local">
-        <li style="display: none"><a class="action-edit" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Edit")}</a></li>
-        <li style="display: none"><a class="action-delete" href="javascript:void(0)"><span class="delete-icon"></span> ${_("Delete")}</a></li>
-        <li style="display: none"><a class="action-openclose" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Close")}</a></li>
+        <li style="display: none"><a class="action-edit" style="box-shadow:none; background-color:#fafafa;" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Edit")}</a></li>
+        <li style="display: none"><a class="action-delete" style="box-shadow:none; background-color:#fafafa;" href="javascript:void(0)"><span class="delete-icon"></span> ${_("Delete")}</a></li>
+        <li style="display: none"><a class="action-openclose" style="box-shadow:none; background-color:#fafafa;" href="javascript:void(0)"><span class="edit-icon"></span> ${_("Close")}</a></li>
     </ul>
 </script>
 
@@ -156,14 +159,14 @@
     <div class="form-row">
       <div class="edit-post-body" name="body" data-id="${'<%- id %>'}">${"<%- body %>"}</div>
     </div>
-    <input type="submit" id="edit-response-submit"class="post-update" value="${_("Update response") | h}">
-    <a href="#" class="post-cancel">${_("Cancel")}</a>
+    <input type="submit" id="edit-response-submit" class="post-update f_button radius tiny success" value="${_("Update response") | h}">
+    <a href="#" class="post-cancel" style="margin-left:20px;">${_("Cancel")}</a>
   </div>
 </script>
 
 <script aria-hidden="true" type="text/template" id="response-comment-show-template">
   <div id="comment_${'<%- id %>'}">
-    <div class="response-body">${'<%- body %>'}</div>
+    <div class="response-body" style="padding-top: 10px; padding-bottom:1.25rem;">${'<%- body %>'}</div>
     <div class="discussion-flag-abuse notflagged" data-role="thread-flag" data-tooltip="${_('Report Misuse') | h}" role="button" aria-pressed="false" tabindex="0">
       <i class="icon icon-flag"></i><span class="sr flag-label">${_("Report Misuse")}</span></div>
     <div style="display: none" class="discussion-delete-comment action-delete" data-tooltip="${_('Delete Comment') | h}" role="button" tabindex="0">
@@ -193,7 +196,7 @@
 </script>
 
 <script aria-hidden="true" type="text/template" id="response-comment-edit-template">
-  <div class="edit-post-form">
+  <div class="edit-post-form" id="comment_${'<%- id %>'}">
     <h1>${_("Editing comment")}</h1>
     <ul class="edit-comment-form-errors"></ul>
     <div class="form-row">
@@ -224,9 +227,11 @@
         print(interpolate(fmt, data, true));
         """.format(
                 ## Translators: 'comments_count' and 'unread_comments_count' are numerical placeholders for a specific discussion thread; 'span_*' placeholders refer to HTML markup.  Please translate the word 'comments'.
-                markup_with_unread=escapejs(_('%(comments_count)s %(span_sr_open)scomments (%(unread_comments_count)s unread comments)%(span_close)s')),
+                ## markup_with_unread=escapejs(_('%(comments_count)s %(span_sr_open)scomments (%(unread_comments_count)s unread comments)%(span_close)s')),
+                markup_with_unread=escapejs(_('%(comments_count)s %(span_sr_open)s (%(unread_comments_count)s )%(span_close)s')),
                 ## Translators: 'comments_count' is a numerical placeholder for a specific discussion thread; 'span_*' placeholders refer to HTML markup.  Please translate the word 'comments'.
-                markup_none_unread=escapejs(_('%(comments_count)s %(span_sr_open)scomments %(span_close)s'))
+##                markup_none_unread=escapejs(_('%(comments_count)s %(span_sr_open)scomments %(span_close)s'))
+                markup_none_unread=escapejs(_('%(comments_count)s %(span_sr_open)s %(span_close)s'))
             )
         %>
         <span class="comments-count">
@@ -241,7 +246,8 @@
                 )
         """.format(
                 ## Translators: 'votes_up_count' is a numerical placeholder for a specific discussion thread; 'span_*' placeholders refer to HTML markup.  Please translate the word 'votes'.
-                escapejs( _('%(votes_up_count)s%(span_sr_open)s votes %(span_close)s'))
+##                escapejs( _('%(votes_up_count)s%(span_sr_open)s votes %(span_close)s'))
+                escapejs( _('%(votes_up_count)s%(span_sr_open)s %(span_close)s'))
             )
         %>
         <span class="votes-count">+${'<%='}${js_block}${'%>'}</span>
@@ -250,19 +256,20 @@
 <script aria-hidden="true" type="text/template" id="discussion-home">
   <div class="discussion-article blank-slate">
     <section class="home-header">
-      <span class="label">${_("DISCUSSION HOME:")}</span>
+      <span class="label" style="background-color:#b9b9b9; color:#333;">${_("DISCUSSION HOME:")}</span>
       % if course and course.display_name_with_default:
         <h1 class="home-title">${course.display_name_with_default}</h1>
       % endif
     </section>
   
       % if settings.FEATURES.get('ENABLE_DISCUSSION_HOME_PANEL'):
-        <span class="label label-settings">${_("HOW TO USE EDX DISCUSSIONS")}</span>
+        <span class="label label-settings" style="background-color:#b9b9b9; color:#333; margin-top:2rem;">${_("HOW TO USE EDX DISCUSSIONS")}</span>
         <table class="home-helpgrid">
           <tr class="helpgrid-row helpgrid-row-navigation">
             <td class="row-title">${_("Find discussions")}</td>
             <td class="row-item">
-              <i class="icon icon-reorder"></i>
+##              <i class="icon icon-reorder"></i>
+              <i class="icon"><span>▼</span></i>
               <span class="row-description">${_("Focus in on specific topics")}</span>
             </td>
             <td class="row-item">
@@ -270,7 +277,8 @@
               <span class="row-description">${_("Search for specific posts ")}</span>
             </td>
             <td class="row-item">
-              <i class="icon icon-sort"></i>
+##              <i class="icon icon-sort"></i>
+              <span class="icon"><img src="/static/images/icon-sort-gacco.png" style="width:26px; height:26px; max-width:inherit;"></span>
               <span class="row-description">${_("Sort by date, vote, or comments")}</span>
             </td>
           </tr>
@@ -303,6 +311,26 @@
             </td>
           </tr>
         </table>
+
+<span class="label" style="background-color:#b9b9b9; color:#333; margin-top:2.5rem;">ディスカッションガイドライン</span>
+<p style="font-size:0.8rem">gaccoは、受講するみなさんが創り上げる新しい学びの場です。
+目標を共にする世界中の受講生への質問や、意見の交換を通し、お互いがより深く学ぶことができます。
+また、受講生とのやりとりが、学びの継続につながります。
+その為、以下のガイドラインをお読みの上、適切な発言をしていただけますよう、ご協力お願いします。</p>
+<ul style="font-size:0.8rem;">
+<li>礼儀正しく発言しましょう。gaccoは教室と同じです。相手の人格を思いやった発言は、議論を健全化します。</li>
+<li>多様な仲間へ配慮をしましょう。gaccoは、あなたと異なる性別、世代、国籍、価値観をもつ仲間が利用しています。特に人種や宗教、政治問題などについて議論をする際には、他の受講生の人格を思いやり、誹謗中傷などはやめましょう。</li>
+<li>わかりやすいタイトルをつけましょう。タイトルで、あなたの投稿の内容を端的に表現してください。仲間があなたの投稿を見つけやすくなり、議論が深まります。</li>
+<li>良い発言、役立つ発言に投票（【＋】）ボタンを押しましょう。</li>
+<li>具体的に書きましょう。理由を簡潔かつ明快に。</li>
+<li>スレッドの乱立を避けましょう。掲示板の検索機能を活用してください。</li>
+<li>用途にそったスレッドを利用しましょう。</li>
+<li>ディスカッションは議論の場であり、答えを教えあう場ではありません。選択肢の正誤が判明してしまう書き込みは控えてください。<br/>
+良い例：問Xについて、私は〜と解釈し、〜と回答しました。<br/>
+悪い例：問Xについて、私は〜と解釈し、〜と回答した結果、正答or誤答でした。<br/>
+悪い例：私は全問正解でしたが、問Xについては〜と回答しました。</li>
+</ul>
+
       % endif
 
   </div>

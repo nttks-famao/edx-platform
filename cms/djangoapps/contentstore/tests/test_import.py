@@ -1,4 +1,5 @@
-#pylint: disable=E1101
+# -*- coding: utf-8 -*-
+# pylint: disable=E1101
 """
 Tests for import_from_xml using the mongo modulestore.
 """
@@ -66,16 +67,59 @@ class ContentStoreImportTest(ModuleStoreTestCase):
 
     def load_test_import_course(self):
         '''
-        Load the standard course used to test imports (for do_import_static=False behavior).
+        Load the standard course used to test imports
+        (for do_import_static=False behavior).
         '''
         content_store = contentstore()
         module_store = modulestore('direct')
-        import_from_xml(module_store, 'common/test/data/', ['test_import_course'], static_content_store=content_store, do_import_static=False, verbose=True)
-        course_location = CourseDescriptor.id_to_location('edX/test_import_course/2012_Fall')
+        import_from_xml(
+            module_store,
+            'common/test/data/',
+            ['test_import_course'],
+            static_content_store=content_store,
+            do_import_static=False,
+            verbose=True,
+        )
+        course_location = CourseDescriptor.id_to_location(
+            'edX/test_import_course/2012_Fall'
+        )
         course = module_store.get_item(course_location)
         self.assertIsNotNone(course)
 
         return module_store, content_store, course, course_location
+
+    def test_import_course_into_similar_namespace(self):
+        # Checks to make sure that a course with an org/course like
+        # edx/course can be imported into a namespace with an org/course
+        # like edx/course_name
+        module_store, __, __, course_location = self.load_test_import_course()
+        __, course_items = import_from_xml(
+            module_store,
+            'common/test/data',
+            ['test_import_course_2'],
+            target_location_namespace=course_location,
+            verbose=True,
+        )
+        self.assertEqual(len(course_items), 1)
+
+    def test_unicode_chars_in_course_name_import(self):
+        """
+        # Test that importing course with unicode 'id' and 'display name' doesn't give UnicodeEncodeError
+        """
+        module_store = modulestore('direct')
+        target_location = Location(['i4x', u'Юникода', 'unicode_course', 'course', u'échantillon'])
+        import_from_xml(
+            module_store,
+            'common/test/data/',
+            ['2014_Uni'],
+            target_location_namespace=target_location
+        )
+
+        course = module_store.get_item(target_location)
+        self.assertIsNotNone(course)
+
+        # test that course 'display_name' same as imported course 'display_name'
+        self.assertEqual(course.display_name, u"Φυσικά το όνομα Unicode")
 
     def test_static_import(self):
         '''
@@ -178,4 +222,25 @@ class ContentStoreImportTest(ModuleStoreTestCase):
         self.assertEqual(
             u'i4x://testX/peergrading_copy/combinedopenended/SampleQuestion',
             peergrading_module.link_to_location
+        )
+
+    def test_rewrite_reference_value_dict(self):
+        module_store = modulestore('direct')
+        target_location = Location(['i4x', 'testX', 'split_test_copy', 'course', 'copy_run'])
+        import_from_xml(
+            module_store,
+            'common/test/data/',
+            ['split_test_module'],
+            target_location_namespace=target_location
+        )
+        split_test_module = module_store.get_item(
+            Location(['i4x', 'testX', 'split_test_copy', 'split_test', 'split1'])
+        )
+        self.assertIsNotNone(split_test_module)
+        self.assertEqual(
+            {
+                "0": "i4x://testX/split_test_copy/vertical/sample_0",
+                "2": "i4x://testX/split_test_copy/vertical/sample_2",
+            },
+            split_test_module.group_id_to_child,
         )

@@ -21,6 +21,8 @@ class Comment(models.Model):
 
     initializable_fields = updatable_fields
 
+    metrics_tag_fields = ['course_id', 'endorsed', 'closed']
+
     base_url = "{prefix}/comments".format(prefix=settings.PREFIX)
     type = 'comment'
 
@@ -50,8 +52,14 @@ class Comment(models.Model):
         else:
             raise CommentClientRequestError("Can only flag/unflag threads or comments")
         params = {'user_id': user.id}
-        request = perform_request('put', url, params)
-        voteable.update_attributes(request)
+        response = perform_request(
+            'put',
+            url,
+            params,
+            metric_tags=self._metric_tags,
+            metric_action='comment.abuse.flagged'
+        )
+        voteable._update_from_response(response)
 
     def unFlagAbuse(self, user, voteable, removeAll):
         if voteable.type == 'thread':
@@ -65,8 +73,14 @@ class Comment(models.Model):
         if removeAll:
             params['all'] = True
 
-        request = perform_request('put', url, params)
-        voteable.update_attributes(request)
+        response = perform_request(
+            'put',
+            url,
+            params,
+            metric_tags=self._metric_tags,
+            metric_action='comment.abuse.unflagged'
+        )
+        voteable._update_from_response(response)
 
 
 def _url_for_thread_comments(thread_id):

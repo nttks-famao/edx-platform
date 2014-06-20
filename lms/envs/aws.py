@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This is the default template for our main set of AWS servers. This does NOT
 cover the content machines, which use content.py
@@ -42,9 +43,6 @@ TEMPLATE_DEBUG = False
 EMAIL_BACKEND = 'django_ses.SESBackend'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-# Enable Berkeley forums
-FEATURES['ENABLE_DISCUSSION_SERVICE'] = True
 
 # IMPORTANT: With this enabled, the server must always be behind a proxy that
 # strips the header HTTP_X_FORWARDED_PROTO from client requests. Otherwise,
@@ -137,6 +135,7 @@ EMAIL_HOST = ENV_TOKENS.get('EMAIL_HOST', 'localhost')  # django default is loca
 EMAIL_PORT = ENV_TOKENS.get('EMAIL_PORT', 25)  # django default is 25
 EMAIL_USE_TLS = ENV_TOKENS.get('EMAIL_USE_TLS', False)  # django default is False
 SITE_NAME = ENV_TOKENS['SITE_NAME']
+HTTPS = ENV_TOKENS.get('HTTPS', HTTPS)
 SESSION_ENGINE = ENV_TOKENS.get('SESSION_ENGINE', SESSION_ENGINE)
 SESSION_COOKIE_DOMAIN = ENV_TOKENS.get('SESSION_COOKIE_DOMAIN')
 REGISTRATION_EXTRA_FIELDS = ENV_TOKENS.get('REGISTRATION_EXTRA_FIELDS', REGISTRATION_EXTRA_FIELDS)
@@ -258,6 +257,25 @@ SSL_AUTH_EMAIL_DOMAIN = ENV_TOKENS.get("SSL_AUTH_EMAIL_DOMAIN", "MIT.EDU")
 SSL_AUTH_DN_FORMAT_STRING = ENV_TOKENS.get("SSL_AUTH_DN_FORMAT_STRING",
                                            "/C=US/ST=Massachusetts/O=Massachusetts Institute of Technology/OU=Client CA v1/CN={0}/emailAddress={1}")
 
+# Django CAS external authentication settings
+CAS_EXTRA_LOGIN_PARAMS = ENV_TOKENS.get("CAS_EXTRA_LOGIN_PARAMS", None)
+if FEATURES.get('AUTH_USE_CAS'):
+    CAS_SERVER_URL = ENV_TOKENS.get("CAS_SERVER_URL", None)
+    AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+        'django_cas.backends.CASBackend',
+    )
+    INSTALLED_APPS += ('django_cas',)
+    MIDDLEWARE_CLASSES += ('django_cas.middleware.CASMiddleware',)
+    CAS_ATTRIBUTE_CALLBACK = ENV_TOKENS.get('CAS_ATTRIBUTE_CALLBACK', None)
+    if CAS_ATTRIBUTE_CALLBACK:
+        import importlib
+        CAS_USER_DETAILS_RESOLVER = getattr(
+            importlib.import_module(CAS_ATTRIBUTE_CALLBACK['module']),
+            CAS_ATTRIBUTE_CALLBACK['function']
+        )
+
+
 HOSTNAME_MODULESTORE_DEFAULT_MAPPINGS = ENV_TOKENS.get('HOSTNAME_MODULESTORE_DEFAULT_MAPPINGS',{})
 
 ############################## SECURE AUTH ITEMS ###############
@@ -342,6 +360,7 @@ STUDENT_FILEUPLOAD_MAX_SIZE = ENV_TOKENS.get("STUDENT_FILEUPLOAD_MAX_SIZE", STUD
 
 # Event tracking
 TRACKING_BACKENDS.update(AUTH_TOKENS.get("TRACKING_BACKENDS", {}))
+EVENT_TRACKING_BACKENDS.update(AUTH_TOKENS.get("EVENT_TRACKING_BACKENDS", {}))
 
 # Student identity verification settings
 VERIFY_STUDENT = AUTH_TOKENS.get("VERIFY_STUDENT", VERIFY_STUDENT)
@@ -356,14 +375,7 @@ MAX_FAILED_LOGIN_ATTEMPTS_ALLOWED = ENV_TOKENS.get("MAX_FAILED_LOGIN_ATTEMPTS_AL
 MAX_FAILED_LOGIN_ATTEMPTS_LOCKOUT_PERIOD_SECS = ENV_TOKENS.get("MAX_FAILED_LOGIN_ATTEMPTS_LOCKOUT_PERIOD_SECS", 15 * 60)
 
 MICROSITE_CONFIGURATION = ENV_TOKENS.get('MICROSITE_CONFIGURATION', {})
-MICROSITE_ROOT_DIR = ENV_TOKENS.get('MICROSITE_ROOT_DIR')
-if MICROSITE_CONFIGURATION:
-    enable_microsites(
-        MICROSITE_CONFIGURATION,
-        SUBDOMAIN_BRANDING,
-        VIRTUAL_UNIVERSITIES,
-        microsites_root=path(MICROSITE_ROOT_DIR)
-    )
+MICROSITE_ROOT_DIR = path(ENV_TOKENS.get('MICROSITE_ROOT_DIR', ''))
 
 #### PASSWORD POLICY SETTINGS #####
 PASSWORD_MIN_LENGTH = ENV_TOKENS.get("PASSWORD_MIN_LENGTH")
@@ -378,3 +390,40 @@ SESSION_INACTIVITY_TIMEOUT_IN_SECONDS = AUTH_TOKENS.get("SESSION_INACTIVITY_TIME
 ##### LMS DEADLINE DISPLAY TIME_ZONE #######
 TIME_ZONE_DISPLAYED_FOR_DEADLINES = ENV_TOKENS.get("TIME_ZONE_DISPLAYED_FOR_DEADLINES",
                                                    TIME_ZONE_DISPLAYED_FOR_DEADLINES)
+
+##### X-Frame-Options response header settings #####
+X_FRAME_OPTIONS = ENV_TOKENS.get('X_FRAME_OPTIONS', X_FRAME_OPTIONS)
+
+
+##### Third-party auth options ################################################
+THIRD_PARTY_AUTH = AUTH_TOKENS.get('THIRD_PARTY_AUTH', THIRD_PARTY_AUTH)
+
+##### ADVANCED_SECURITY_CONFIG #####
+ADVANCED_SECURITY_CONFIG = ENV_TOKENS.get('ADVANCED_SECURITY_CONFIG', {})
+
+##### GOOGLE ANALYTICS IDS #####
+GOOGLE_ANALYTICS_ACCOUNT = AUTH_TOKENS.get('GOOGLE_ANALYTICS_ACCOUNT')
+GOOGLE_ANALYTICS_LINKEDIN = AUTH_TOKENS.get('GOOGLE_ANALYTICS_LINKEDIN')
+
+########################## CERTIFICATE NAME ########################
+CERT_NAME_SHORT = u"修了証"
+CERT_NAME_LONG = u"修了証"
+
+PDFGEN_BUCKENT_NAME = ENV_TOKENS.get('PDFGEN_BUCKENT_NAME')
+PDFGEN_ACCESS_KEY_ID = ENV_TOKENS.get('PDFGEN_ACCESS_KEY_ID')
+PDFGEN_SECRET_ACCESS_KEY = ENV_TOKENS.get('PDFGEN_SECRET_ACCESS_KEY')
+PDFGEN_BASE_IMG_DIR = ENV_TOKENS.get('PDFGEN_BASE_IMG_DIR', CONFIG_ROOT)
+PDFGEN_BASE_PDF_DIR = ENV_TOKENS.get('PDFGEN_BASE_PDF_DIR', CONFIG_ROOT)
+PDFGEN_CERT_AUTHOR = ENV_TOKENS.get('PDFGEN_CERT_AUTHOR', 'gacco')
+PDFGEN_CERT_TITLE = ENV_TOKENS.get('PDFGEN_CERT_TITLE', 'gacco Certificate')
+
+FB_URL = ENV_TOKENS.get('FB_URL',"#")
+TW_URL = ENV_TOKENS.get('TW_URL',"#")
+FB_APPID =  ENV_TOKENS.get('FB_APPID', "")
+FB_SITE = ENV_TOKENS.get('FB_SITE', "")
+FB_TITLE = ENV_TOKENS.get('FB_TITLE', "")
+FB_TYPE = ENV_TOKENS.get('FB_TYPE', "")
+FB_DESC = ENV_TOKENS.get('FB_DESC', "")
+FB_URL = ENV_TOKENS.get('FB_URL', "")
+FB_IMG = ENV_TOKENS.get('FB_IMG', "")
+FB_ACTION_TYPE = ENV_TOKENS.get('FB_ACTION_TYPE', "")

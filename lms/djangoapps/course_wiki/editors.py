@@ -20,7 +20,8 @@ class CodeMirrorWidget(forms.Widget):
         super(CodeMirrorWidget, self).__init__(default_attrs)
 
     def render(self, name, value, attrs=None):
-        if value is None: value = ''
+        if value is None:
+            value = ''
 
         final_attrs = self.build_attrs(attrs, name=name)
 
@@ -56,8 +57,8 @@ class CodeMirror(BaseEditor):
             'all': ("js/vendor/CodeMirror/codemirror.css",)
         }
         js = ("js/vendor/CodeMirror/codemirror.js",
-              "js/vendor/CodeMirror/xml.js",
-              "js/vendor/CodeMirror/edx_markdown.js",
+              "js/vendor/CodeMirror/addons/xml.js",
+              "js/vendor/CodeMirror/addons/edx_markdown.js",
               "js/wiki/accessible.js",
               "js/wiki/CodeMirror.init.js",
               )

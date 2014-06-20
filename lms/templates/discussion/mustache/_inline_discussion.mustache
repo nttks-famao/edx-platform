@@ -1,33 +1,11 @@
 <%! from django.utils.translation import ugettext as _ %>
 
-<section class="discussion" data-discussion-id="{{discussionId}}">
-    <article class="new-post-article">
-        <span class="topic"  data-discussion-id="{{discussionId}}" />
-        <div class="inner-wrapper">
-            <div class="new-post-form-errors">
-            </div>
-            <form class="new-post-form">
-                <div class="form-row">
-                    <input type="text" class="new-post-title" name="title" placeholder="${_("Title")}">
-                </div>
-                <div class="form-row">
-                    <div class="new-post-body" name="body" placeholder="${_(u"Enter your question or comment…")}"></div>
-                </div>
-                <input type="submit" class="submit" value="${_("Add post")}">
-                <a href="#" class="new-post-cancel">${_("Cancel")}</a>
-                <div class="options">
-                    <input type="checkbox" name="follow" class="discussion-follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
-                    <br>
-                    {{#allow_anonymous}}
-                        <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous"><label for="new-post-anonymous">${_("post anonymously")}</label>
-                    {{/allow_anonymous}}
-                    {{#allow_anonymous_to_peers}}
-                        <input type="checkbox" name="anonymous" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers"><label for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
-                    {{/allow_anonymous_to_peers}}
-                </div>
-            </form>
-        </div>
-    </article>
+<section class="discussion" data-discussion-id="{{discussionId}}" style="overflow:visible!important;">
+    <section class="newpost">
+      <a href="#" class="f_button tiny radius success right" data-reveal-id="discussion_inline_new_post_modal" onclick="$('#discussion_inline_new_post_modal').foundation('reveal','open'); return false;" style="margin-top:-55px;">
+        <span class="icon icon-edit new-post-icon" style="color:#fff;"></span>${_("New Post")}
+      </a>
+    </section>
 
     <section class="threads">
         {{#threads}}
@@ -35,7 +13,7 @@
             </article>
         {{/threads}}
     </section>
-
+ 
     <section class="pagination">
     </section>
 </section>

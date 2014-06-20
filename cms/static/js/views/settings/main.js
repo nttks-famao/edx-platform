@@ -1,5 +1,6 @@
-define(["js/views/validation", "codemirror", "underscore", "jquery", "jquery.ui", "tzAbbr", "js/models/uploads", "js/views/uploads", "jquery.timepicker", "date"],
-    function(ValidatingView, CodeMirror, _, $, ui, tzAbbr, FileUploadModel, FileUploadDialog) {
+define(["js/views/validation", "codemirror", "underscore", "jquery", "jquery.ui", "tzAbbr", "js/models/uploads",
+    "js/views/uploads", "js/utils/change_on_enter", "jquery.timepicker", "date"],
+    function(ValidatingView, CodeMirror, _, $, ui, tzAbbr, FileUploadModel, FileUploadDialog, TriggerChangeEventOnEnter) {
 
 var DetailsView = ValidatingView.extend({
     // Model class is CMS.Models.Settings.CourseDetails
@@ -121,7 +122,7 @@ var DetailsView = ValidatingView.extend({
 
         // Using the change event causes setfield to be triggered twice, but it is necessary
         // to pick up when the date is typed directly in the field.
-        datefield.change(setfield);
+        datefield.change(setfield).keyup(TriggerChangeEventOnEnter);
         timefield.on('changeTime', setfield);
         timefield.on('input', setfield);
 
@@ -206,15 +207,14 @@ var DetailsView = ValidatingView.extend({
             var cachethis = this;
             var field = this.selectorToField[thisTarget.id];
             this.codeMirrors[thisTarget.id] = CodeMirror.fromTextArea(thisTarget, {
-                mode: "text/html", lineNumbers: true, lineWrapping: true,
-                onChange: function (mirror) {
+                mode: "text/html", lineNumbers: true, lineWrapping: true});
+            this.codeMirrors[thisTarget.id].on('change', function (mirror) {
                     mirror.save();
                     cachethis.clearValidationErrors();
                     var newVal = mirror.getValue();
                     if (cachethis.model.get(field) != newVal) {
                         cachethis.setAndValidate(field, newVal);
                     }
-                }
             });
         }
     },
@@ -276,7 +276,7 @@ var DetailsView = ValidatingView.extend({
                 $('#course-image').attr('src', self.model.get('course_image_asset_path'));
             }
         });
-        $('.wrapper-view').after(modal.show().el);
+        modal.show();
     }
 });
 

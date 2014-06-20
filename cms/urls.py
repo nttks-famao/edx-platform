@@ -115,6 +115,12 @@ if settings.FEATURES.get('ENABLE_SERVICE_STATUS'):
         url(r'^status/', include('service_status.urls')),
     )
 
+if settings.FEATURES.get('AUTH_USE_CAS'):
+    urlpatterns += (
+        url(r'^cas-auth/login/$', 'external_auth.views.cas_login', name="cas-login"),
+        url(r'^cas-auth/logout/$', 'django_cas.views.logout', {'next_page': '/'}, name="cas-logout"),
+    )
+
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)),)
 
 # enable automatic login
@@ -131,6 +137,12 @@ if settings.DEBUG:
         pass
 
 # Custom error pages
-#pylint: disable=C0103
+# pylint: disable=C0103
 handler404 = 'contentstore.views.render_404'
 handler500 = 'contentstore.views.render_500'
+
+# display error page templates, for testing purposes
+urlpatterns += (
+    url(r'404', handler404),
+    url(r'500', handler500),
+)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # pylint: disable=W0223
 """Video is ungraded Xmodule for support video content.
 It's new improved video module, which support additional feature:
@@ -9,165 +10,43 @@ in-browser HTML5 video method (when in HTML5 mode).
 - Navigational subtitles can be disabled altogether via an attribute
 in XML.
 """
-
-import os
 import json
 import logging
 from operator import itemgetter
 
 from lxml import etree
 from pkg_resources import resource_string
-import datetime
 import copy
-from webob import Response
+
 from collections import OrderedDict
 
 from django.conf import settings
 
+from xblock.fields import ScopeIds
+from xblock.runtime import KvsFieldData
+
+from xmodule.modulestore.inheritance import InheritanceKeyValueStore
 from xmodule.x_module import XModule, module_attr
 from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
-from xmodule.exceptions import NotFoundError
-from xblock.core import XBlock
-from xblock.fields import Scope, String, Float, Boolean, List, Dict, ScopeIds
-from xmodule.fields import RelativeTime
-from .transcripts_utils import (
-    generate_srt_from_sjson,
-    asset,
-    get_or_create_sjson,
-    TranscriptException,
-    generate_sjson_for_all_speeds,
-    youtube_speed_dict
-)
-from .video_utils import create_youtube_string
 
-from xmodule.modulestore.inheritance import InheritanceKeyValueStore
-from xblock.runtime import KvsFieldData
+from .video_utils import create_youtube_string
+from .video_xfields import VideoFields
+from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
+
+from urlparse import urlparse
+
+def get_ext(filename):
+    # Prevent incorrectly parsing urls like 'http://abc.com/path/video.mp4?xxxx'.
+    path = urlparse(filename).path
+    return path.rpartition('.')[-1]
+
 
 log = logging.getLogger(__name__)
 
 
-class VideoFields(object):
-    """Fields for `VideoModule` and `VideoDescriptor`."""
-    display_name = String(
-        display_name="Display Name", help="Display name for this module.",
-        default="Video",
-        scope=Scope.settings
-    )
-    saved_video_position = RelativeTime(
-        help="Current position in the video",
-        scope=Scope.user_state,
-        default=datetime.timedelta(seconds=0)
-    )
-    # TODO: This should be moved to Scope.content, but this will
-    # require data migration to support the old video module.
-    youtube_id_1_0 = String(
-        help="This is the Youtube ID reference for the normal speed video.",
-        display_name="Youtube ID",
-        scope=Scope.settings,
-        default="OEoXaMPEzfM"
-    )
-    youtube_id_0_75 = String(
-        help="Optional, for older browsers: the Youtube ID for the .75x speed video.",
-        display_name="Youtube ID for .75x speed",
-        scope=Scope.settings,
-        default=""
-    )
-    youtube_id_1_25 = String(
-        help="Optional, for older browsers: the Youtube ID for the 1.25x speed video.",
-        display_name="Youtube ID for 1.25x speed",
-        scope=Scope.settings,
-        default=""
-    )
-    youtube_id_1_5 = String(
-        help="Optional, for older browsers: the Youtube ID for the 1.5x speed video.",
-        display_name="Youtube ID for 1.5x speed",
-        scope=Scope.settings,
-        default=""
-    )
-    start_time = RelativeTime(  # datetime.timedelta object
-        help="Start time for the video (HH:MM:SS). Max value is 23:59:59.",
-        display_name="Start Time",
-        scope=Scope.settings,
-        default=datetime.timedelta(seconds=0)
-    )
-    end_time = RelativeTime(  # datetime.timedelta object
-        help="End time for the video (HH:MM:SS). Max value is 23:59:59.",
-        display_name="End Time",
-        scope=Scope.settings,
-        default=datetime.timedelta(seconds=0)
-    )
-    #front-end code of video player checks logical validity of (start_time, end_time) pair.
-
-    # `source` is deprecated field and should not be used in future.
-    # `download_video` is used instead.
-    source = String(
-        help="The external URL to download the video.",
-        display_name="Download Video",
-        scope=Scope.settings,
-        default=""
-    )
-    download_video = Boolean(
-        help="Show a link beneath the video to allow students to download the video. Note: You must add at least one video source below.",
-        display_name="Video Download Allowed",
-        scope=Scope.settings,
-        default=False
-    )
-    html5_sources = List(
-        help="A list of filenames to be used with HTML5 video. The first supported filetype will be displayed.",
-        display_name="Video Sources",
-        scope=Scope.settings,
-    )
-    track = String(
-        help="The external URL to download the timed transcript track. This appears as a link beneath the video.",
-        display_name="Download Transcript",
-        scope=Scope.settings,
-        default=''
-    )
-    download_track = Boolean(
-        help="Show a link beneath the video to allow students to download the transcript. Note: You must add a link to the HTML5 Transcript field above.",
-        display_name="Transcript Download Allowed",
-        scope=Scope.settings,
-        default=False
-    )
-    sub = String(
-        help="The name of the timed transcript track (for non-Youtube videos).",
-        display_name="Transcript (primary)",
-        scope=Scope.settings,
-        default=""
-    )
-    show_captions = Boolean(
-        help="This controls whether or not captions are shown by default.",
-        display_name="Transcript Display",
-        scope=Scope.settings,
-        default=True
-    )
-    # Data format: {'de': 'german_translation', 'uk': 'ukrainian_translation'}
-    transcripts = Dict(
-        help="Add additional transcripts in other languages",
-        display_name="Transcript Translations",
-        scope=Scope.settings,
-        default={}
-    )
-    transcript_language = String(
-        help="Preferred language for transcript",
-        display_name="Preferred language for transcript",
-        scope=Scope.preferences,
-        default="en"
-    )
-    speed = Float(
-        help="The last speed that was explicitly set by user for the video.",
-        scope=Scope.user_state,
-    )
-    global_speed = Float(
-        help="Default speed in cases when speed wasn't explicitly for specific video",
-        scope=Scope.preferences,
-        default=1.0
-    )
-
-
-class VideoModule(VideoFields, XModule):
+class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
     """
     XML source example:
 
@@ -190,10 +69,14 @@ class VideoModule(VideoFields, XModule):
         'js': [
             resource_string(module, 'js/src/video/00_video_storage.js'),
             resource_string(module, 'js/src/video/00_resizer.js'),
+            resource_string(module, 'js/src/video/00_async_process.js'),
+            resource_string(module, 'js/src/video/00_sjson.js'),
+            resource_string(module, 'js/src/video/00_iterator.js'),
             resource_string(module, 'js/src/video/01_initialize.js'),
             resource_string(module, 'js/src/video/025_focus_grabber.js'),
             resource_string(module, 'js/src/video/02_html5_video.js'),
             resource_string(module, 'js/src/video/03_video_player.js'),
+            resource_string(module, 'js/src/video/035_video_accessible_menu.js'),
             resource_string(module, 'js/src/video/04_video_control.js'),
             resource_string(module, 'js/src/video/05_video_quality_control.js'),
             resource_string(module, 'js/src/video/06_video_progress_slider.js'),
@@ -203,34 +86,16 @@ class VideoModule(VideoFields, XModule):
             resource_string(module, 'js/src/video/10_main.js')
         ]
     }
-    css = {'scss': [resource_string(module, 'css/video/display.scss')]}
+    css = {'scss': [
+        resource_string(module, 'css/video/display.scss'),
+        resource_string(module, 'css/video/accessible_menu.scss'),
+    ]}
     js_module_name = "Video"
-
-    def handle_ajax(self, dispatch, data):
-        accepted_keys = ['speed', 'saved_video_position', 'transcript_language']
-        if dispatch == 'save_user_state':
-
-            for key in data:
-                if hasattr(self, key) and key in accepted_keys:
-                    if key == 'saved_video_position':
-                        relative_position = RelativeTime.isotime_to_timedelta(data[key])
-                        self.saved_video_position = relative_position
-                    else:
-                        setattr(self, key, json.loads(data[key]))
-                    if key == 'speed':
-                        self.global_speed = self.speed
-
-            return json.dumps({'success': True})
-
-        log.debug(u"GET {0}".format(data))
-        log.debug(u"DISPATCH {0}".format(dispatch))
-
-        raise NotFoundError('Unexpected dispatch type')
 
     def get_html(self):
         track_url = None
+        transcript_download_format = self.transcript_download_format
 
-        get_ext = lambda filename: filename.rpartition('.')[-1]
         sources = {get_ext(src): src for src in self.html5_sources}
 
         if self.download_video:
@@ -242,22 +107,24 @@ class VideoModule(VideoFields, XModule):
         if self.download_track:
             if self.track:
                 track_url = self.track
-            elif self.sub:
-                track_url = self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/download'
+                transcript_download_format = None
+            elif self.sub or self.transcripts:
+                track_url = self.runtime.handler_url(self, 'transcript', 'download').rstrip('/?')
 
         if not self.transcripts:
-            transcript_language = 'en'
+            transcript_language = u'en'
             languages = {'en': 'English'}
         else:
             if self.transcript_language in self.transcripts:
                 transcript_language = self.transcript_language
             elif self.sub:
-                transcript_language = 'en'
+                transcript_language = u'en'
             else:
                 transcript_language = sorted(self.transcripts.keys())[0]
 
+            native_languages = {lang: label for lang, label in settings.LANGUAGES if len(lang) == 2}
             languages = {
-                lang: display
+                lang: native_languages.get(lang, display)
                 for lang, display in settings.ALL_LANGUAGES
                 if lang in self.transcripts
             }
@@ -276,6 +143,7 @@ class VideoModule(VideoFields, XModule):
             'data_dir': getattr(self, 'data_dir', None),
             'display_name': self.display_name_with_default,
             'end': self.end_time.total_seconds(),
+            'handout': self.handout,
             'id': self.location.html_id(),
             'show_captions': json.dumps(self.show_captions),
             'sources': sources,
@@ -289,158 +157,21 @@ class VideoModule(VideoFields, XModule):
             # TODO: Later on the value 1500 should be taken from some global
             # configuration setting field.
             'yt_test_timeout': 1500,
-            'yt_test_url': settings.YOUTUBE_TEST_URL,
+            'yt_api_url': settings.YOUTUBE['API'],
+            'yt_test_url': settings.YOUTUBE['TEST_URL'],
+            'transcript_download_format': transcript_download_format,
+            'transcript_download_formats_list': self.descriptor.fields['transcript_download_format'].values,
             'transcript_language': transcript_language,
             'transcript_languages': json.dumps(sorted_languages),
-            'transcript_translation_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/translation',
-            'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript').rstrip('/?') + '/available_translations',
+            'transcript_translation_url': self.runtime.handler_url(self, 'transcript', 'translation').rstrip('/?'),
+            'transcript_available_translations_url': self.runtime.handler_url(self, 'transcript', 'available_translations').rstrip('/?'),
         })
 
-    def get_transcript(self):
-        """
-        Returns transcript in *.srt format.
 
-        Raises:
-            - NotFoundError if cannot find transcript file in storage.
-            - ValueError if transcript file is empty or incorrect JSON.
-            - KeyError if transcript file has incorrect format.
-        """
-        lang = self.transcript_language
-        subs_id = self.sub if lang == 'en' else self.youtube_id_1_0
-        data = asset(self.location, subs_id, lang).data
-        str_subs = generate_srt_from_sjson(json.loads(data), speed=1.0)
-        if not str_subs:
-            log.debug('generate_srt_from_sjson produces no subtitles')
-            raise ValueError
-
-        return str_subs
-
-    @XBlock.handler
-    def transcript(self, request, dispatch):
-        """
-        Entry point for transcript handlers.
-
-        Request GET should contains 2-char language code for `download`
-        and additionally `videoId` for `translation`.
-
-        Dispatches:
-        `download`: returns SRT file.
-        `translation`: returns jsoned translation text.
-        `available_translations`: returns list of languages, for which SRT files exist. For 'en' check if SJSON exists.
-        """
-        if dispatch == 'translation':
-            if 'language' not in request.GET or 'videoId' not in request.GET:
-                log.info("Invalid /transcript GET parameters.")
-                return Response(status=400)
-
-            lang = request.GET.get('language')
-            if lang not in ['en'] + self.transcripts.keys():
-                log.info("Video: transcript facilities are not available for given language.")
-                return Response(status=404)
-            if lang != self.transcript_language:
-                self.transcript_language = lang
-
-            try:
-                transcript = self.translation(request.GET.get('videoId'))
-            except TranscriptException as ex:
-                log.info(ex.message)
-                response = Response(status=404)
-            else:
-                response = Response(transcript)
-                response.content_type = 'application/json'
-
-        elif dispatch == 'download':
-            try:
-                subs = self.get_transcript()
-            except (NotFoundError, ValueError, KeyError):
-                log.debug("Video@download exception")
-                response = Response(status=404)
-            else:
-                response = Response(
-                    subs,
-                    headerlist=[
-                        ('Content-Disposition', 'attachment; filename="{0}.srt"'.format(self.transcript_language)),
-                    ]
-                )
-                response.content_type = "application/x-subrip"
-
-        elif dispatch == 'available_translations':
-            available_translations = []
-            if self.sub:  # check if sjson exists for 'en'.
-                try:
-                    asset(self.location, self.sub, 'en')
-                except NotFoundError:
-                    pass
-                else:
-                    available_translations = ['en']
-            for lang in self.transcripts:
-                try:
-                   asset(self.location, None, None, self.transcripts[lang])
-                except NotFoundError:
-                    continue
-                available_translations.append(lang)
-            if available_translations:
-                response = Response(json.dumps(available_translations))
-                response.content_type = 'application/json'
-            else:
-                response = Response(status=404)
-        else:  # unknown dispatch
-            log.debug("Dispatch is not allowed")
-            response = Response(status=404)
-
-        return response
-
-    def translation(self, subs_id):
-        """
-        This is called to get transcript file for specific language.
-
-        subs_id: str: must be on of: self.sub or one of youtube_ids.
-
-        Logic flow:
-
-        If english -> give back `sub` subtitles:
-            Return what we have in contentstore for given subs_id,
-            We should not regenerate needed transcripts, if, for example, they present for youtube 1.0 speed,
-            and we need for other speeds. Such generation should be done in transcripts workflow.
-        If non-english:
-            a) extract subs_id from srt file name
-            if non-youtube:
-                b) try to find sjson by subs_id and return if sucessful
-                c) otherwise generate sjson from srt and return it.
-            if youtube:
-                b) try to find sjson by subs_id and return if sucessful
-                c) generate sjson from srt for all youtube speeds
-
-        Filenames naming:
-            en: subs_videoid.srt.sjson
-            non_en: uk_subs_videoid.srt.sjson
-        """
-        if self.transcript_language == 'en':
-            return asset(self.location, subs_id).data
-
-        if not self.youtube_id_1_0:  # Non-youtube (HTML5) case:
-            return get_or_create_sjson(self)
-
-        # Youtube case:
-        youtube_ids = youtube_speed_dict(self)
-        assert subs_id in youtube_ids
-
-        try:
-            sjson_transcript = asset(self.location, subs_id, self.transcript_language).data
-        except (NotFoundError):
-            log.info("Can't find content in storage for %s transcript: generating.", subs_id)
-            generate_sjson_for_all_speeds(
-                self,
-                self.transcripts[self.transcript_language],
-                {speed: subs_id for subs_id, speed in youtube_ids.iteritems()},
-                self.transcript_language
-            )
-        sjson_transcript = asset(self.location, subs_id, self.transcript_language).data
-        return sjson_transcript
-
-
-class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor):
-    """Descriptor for `VideoModule`."""
+class VideoDescriptor(VideoFields, VideoStudioViewHandlers, TabsEditingDescriptor, EmptyDataRawDescriptor):
+    """
+    Descriptor for `VideoModule`.
+    """
     module_class = VideoModule
     transcript = module_attr('transcript')
 
@@ -469,14 +200,13 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             field. `download_video` field has value True.
         """
         super(VideoDescriptor, self).__init__(*args, **kwargs)
-        # For backwards compatibility -- if we've got XML data, parse
-        # it out and set the metadata fields
+        # For backwards compatibility -- if we've got XML data, parse it out and set the metadata fields
         if self.data:
             field_data = self._parse_video_xml(self.data)
             self._field_data.set_many(self, field_data)
             del self.data
 
-        editable_fields = self.editable_metadata_fields
+        editable_fields = super(VideoDescriptor, self).editable_metadata_fields
 
         self.source_visible = False
         if self.source:
@@ -509,11 +239,17 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
     def editable_metadata_fields(self):
         editable_fields = super(VideoDescriptor, self).editable_metadata_fields
 
-        if hasattr(self, 'source_visible'):
-            if self.source_visible:
-                editable_fields['source']['non_editable'] = True
-            else:
-                editable_fields.pop('source')
+        if self.source_visible:
+            editable_fields['source']['non_editable'] = True
+        else:
+            editable_fields.pop('source')
+
+        languages = [{'label': label, 'code': lang} for lang, label in settings.ALL_LANGUAGES if lang != u'en']
+        languages.sort(key=lambda l: l['label'])
+        editable_fields['transcripts']['languages'] = languages
+        editable_fields['transcripts']['type'] = 'VideoTranslations'
+        editable_fields['transcripts']['urlRoot'] = self.runtime.handler_url(self, 'studio_transcript', 'translation').rstrip('/?')
+        editable_fields['handout']['type'] = 'FileUploader'
 
         return editable_fields
 
@@ -587,6 +323,11 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
             ele.set('src', self.track)
             xml.append(ele)
 
+        if self.handout:
+            ele = etree.Element('handout')
+            ele.set('src', self.handout)
+            xml.append(ele)
+
         # sorting for easy testing of resulting xml
         for transcript_language in sorted(self.transcripts.keys()):
             ele = etree.Element('transcript')
@@ -616,8 +357,8 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
 
         _ = self.runtime.service(self, "i18n").ugettext
         video_url.update({
-            'help': _('A YouTube URL or a link to a file hosted anywhere on the web.'),
-            'display_name': 'Video URL',
+            'help': _('The URL for your video. This can be a YouTube URL or a link to an .mp4, .ogg, or .webm video file hosted elsewhere on the Internet.'),
+            'display_name': 'Default Video URL',
             'field_name': 'video_url',
             'type': 'VideoList',
             'default_value': [get_youtube_link(youtube_id_1_0['default_value'])]
@@ -688,6 +429,10 @@ class VideoDescriptor(VideoFields, TabsEditingDescriptor, EmptyDataRawDescriptor
         track = xml.find('track')
         if track is not None:
             field_data['track'] = track.get('src')
+
+        handout = xml.find('handout')
+        if handout is not None:
+            field_data['handout'] = handout.get('src')
 
         transcripts = xml.findall('transcript')
         if transcripts:

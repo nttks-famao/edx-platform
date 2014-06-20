@@ -1,6 +1,7 @@
 $ ->
   new TooltipManager
 
+##  横幅が画面いっぱいになってしまうのを修正する
 class @TooltipManager
   constructor: () ->
     @$body = $('body')
@@ -18,12 +19,15 @@ class @TooltipManager
     @$body.append(@$tooltip)
 
     tooltipCoords =
-      x: e.pageX - (@$tooltip.outerWidth() / 2)
-      y: e.pageY - (@$tooltip.outerHeight() + 15)
+##      x: e.pageX - (@$tooltip.outerWidth() / 2)
+##      y: e.pageY - (@$tooltip.outerHeight() + 15)
+      x: $(e.target).offset().x
+      y: $(e.target).offset().y - 30
 
     @$tooltip.css
     'left': tooltipCoords.x,
     'top': tooltipCoords.y
+    'width': "auto"
 
     @tooltipTimer = setTimeout ()=>
 
@@ -35,12 +39,15 @@ class @TooltipManager
 
   moveTooltip: (e) =>
     tooltipCoords =
-      x: e.pageX - (@$tooltip.outerWidth() / 2)
-      y: e.pageY - (@$tooltip.outerHeight() + 15)
+##      x: e.pageX - (@$tooltip.outerWidth() / 2)
+##      y: e.pageY - (@$tooltip.outerHeight() + 15)
+      x: $(e.target).offset().left
+      y: $(e.target).offset().top - 30
 
     @$tooltip.css
       'left': tooltipCoords.x
       'top': tooltipCoords.y
+      'width': "auto"
 
   hideTooltip: (e) =>
     @$tooltip.hide().css('opacity', 0)

@@ -26,6 +26,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LMS_BASE = "localhost:8000"
 FEATURES['PREVIEW_LMS_BASE'] = "preview." + LMS_BASE
 
+############################# ADVANCED COMPONENTS #############################
+
+# Make it easier to test advanced components in local dev
+FEATURES['ALLOW_ALL_ADVANCED_COMPONENTS'] = True
+
 ################################# CELERY ######################################
 
 # By default don't use a worker, execute tasks as if they were local functions
@@ -54,7 +59,8 @@ DEBUG_TOOLBAR_PANELS = (
 )
 
 DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False
+    'INTERCEPT_REDIRECTS': False,
+    'SHOW_TOOLBAR_CALLBACK': lambda _: True,
 }
 
 # To see stacktraces for MongoDB queries, set this to True.

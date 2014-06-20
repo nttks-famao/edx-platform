@@ -54,6 +54,13 @@ DESCRIPTION_DICT = {
     'Flagged Submissions': _("View submissions that have been flagged by students as inappropriate."),
 }
 
+NAME_DICT = {
+    'Peer Grading': _("Peer Grading"),
+    'Staff Grading': _("Staff grading"),
+    'Problems you have submitted': _("Problems you have submitted"),
+    'Flagged Submissions': _("Flagged Submission"),
+}
+
 ALERT_DICT = {
     'Peer Grading': _("New submissions to grade"),
     'Staff Grading': _("New submissions to grade"),
@@ -197,8 +204,7 @@ def flagged_problem_list(request, course_id):
     # Make a service that can query edX ORA.
     controller_qs = create_controller_query_service()
     try:
-        problem_list_json = controller_qs.get_flagged_problem_list(course_id)
-        problem_list_dict = json.loads(problem_list_json)
+        problem_list_dict = controller_qs.get_flagged_problem_list(course_id)
         success = problem_list_dict['success']
         if 'error' in problem_list_dict:
             error_text = problem_list_dict['error']
@@ -260,6 +266,11 @@ def combined_notifications(request, course_id):
             else:
                 description = ""
 
+            if human_name in NAME_DICT:
+                name = NAME_DICT[human_name]
+            else:
+                name = ""
+
             if human_name in ALERT_DICT:
                 alert_message = ALERT_DICT[human_name]
             else:
@@ -267,7 +278,7 @@ def combined_notifications(request, course_id):
 
             notification_item = {
                 'url': url,
-                'name': human_name,
+                'name': name,
                 'alert': has_img,
                 'description': description,
                 'alert_message': alert_message
@@ -326,7 +337,7 @@ def take_action_on_flags(request, course_id):
     controller_qs = create_controller_query_service()
     try:
         response = controller_qs.take_action_on_flags(course_id, student_id, submission_id, action_type)
-        return HttpResponse(response, mimetype="application/json")
+        return HttpResponse(json.dumps(response), mimetype="application/json")
     except GradingServiceError:
         log.exception(
             u"Error taking action on flagged peer grading submissions, "

@@ -26,34 +26,60 @@ from django.conf import settings
 <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.stack.js')}"></script>
 <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.symbol.js')}"></script>
 <script>
-${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph", not course.no_grade, not course.no_grade)}
+  ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph", not course.no_grade, not course.no_grade)}
 </script>
 </%block>
 
 <%include file="/dashboard/_dashboard_prompt_midcourse_reverify.html" />
+
 <%include file="/courseware/course_navigation.html" args="active_page='progress'" />
 
-<div class="container">
-  <div class="profile-wrapper">
+<div class="container row">
+  <div class="profile-wrapper" style="border: none; box-shadow: none;">
 
     <div class="course-info" id="course-info-progress" aria-label="${_('Course Progress')}">
+      % if staff_access and studio_url is not None:
+        <div class="wrap-instructor-info">
+          <a class="instructor-info-action studio-view" href="${studio_url}">${_("View Grading in studio")}</a>
+        </div>
+      % endif
+      
       <header>
-      <h1>${_("Course Progress for Student '{username}' ({email})").format(username=student.username, email=student.email)}</h1>
+        <h1>${_("Course Progress for Student '{username}' ({email})").format(username=student.username, email=student.email)}</h1>
       </header>
 
-      %if not course.disable_progress_graph:
-        <div id="grade-detail-graph" aria-hidden="true"></div>
+      %if settings.FEATURES.get("SHOW_PROGRESS_SUCCESS_BUTTON"):
+        <%
+          SUCCESS_BUTTON_URL = settings.PROGRESS_SUCCESS_BUTTON_URL.format(
+            course_id=course.id, student_id=student.id)
+          nonzero_cutoffs = [cutoff for cutoff in course.grade_cutoffs.values() if cutoff > 0]
+          success_cutoff = min(nonzero_cutoffs) if nonzero_cutoffs else None
+        %>
+        %if success_cutoff and grade_summary['percent'] > success_cutoff:
+          <div id="course-success">
+            <a href="${SUCCESS_BUTTON_URL}" class="f_button small radius expand success center">
+              ${settings.PROGRESS_SUCCESS_BUTTON_TEXT_OVERRIDE or _("Download your certificate")}
+            </a>
+          </div>
+        %endif
       %endif
 
-      <div class="chapters">
+      %if not course.disable_progress_graph:
+        <div id="grade-detail-graph" aria-hidden="true" class=""></div>
+      %endif
+
+      <div class="chapters row" style="border-top:none;">
         %for chapter in courseware_summary:
         %if not chapter['display_name'] == "hidden":
         <section>
-          <h2>${ chapter['display_name'] }</h2>
+            <div class="columns small-12 medium-3 large-3">
+            <h2>${ chapter['display_name'] }</h2>
+            </div>
 
-          <div class="sections">
+            <div class="columns small-12 medium-9 large-9">
+            <div class="sections">
             %for section in chapter['sections']:
-            <div>
+            <div style="padding-bottom:5px;">
               <%
               earned = section['section_total'].earned
               total = section['section_total'].possible
@@ -72,7 +98,7 @@ ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph",
                   <span> ${"({0:.3n}/{1:.3n}) {2}".format( float(earned), float(total), percentageString )}</span>
                 %endif
               </h3>
-              <p>
+              <p style="margin-top:-8px; margin-bottom:5px;">
                 ${section['format']}
 
                 %if section.get('due') is not None:
@@ -86,7 +112,7 @@ ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph",
                 %endif
               </p>
 
-              <div class="scores">
+              <div class="scores" style="margin-top:5px; margin-bottom:5px;">
                 %if len(section['scores']) > 0:
                   <h3> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
                   <ol>
@@ -103,6 +129,7 @@ ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph",
             </div> <!--End section-->
             %endfor
           </div> <!--End sections-->
+          </div> <!--End columns-->
         </section> <!--End chapter-->
         %endif
         %endfor

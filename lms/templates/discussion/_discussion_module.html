@@ -2,6 +2,50 @@
 <%include file="_underscore_templates.html" />
 
 <div class="discussion-module" data-discussion-id="${discussion_id | h}">
-    <a class="discussion-show control-button" href="javascript:void(0)" data-discussion-id="${discussion_id | h}" role="button"><span class="show-hide-discussion-icon"></span><span class="button-text">${_("Show Discussion")}</span></a>
-    <a href="#" class="new-post-btn" role="button"><span class="icon icon-edit new-post-icon"></span>${_("New Post")}</a>
+    <a class="discussion-show control-button f_button tiny radius" href="javascript:void(0)" data-discussion-id="${discussion_id | h}" role="button">
+      <span class="show-hide-discussion-icon"></span>
+      <span class="button-text" style="color:#fff;">${_("Show Discussion")}</span>
+    </a>
+
+    ## move new post button inside discussion area (_inline_discussion.mustache)
+##    <a href="#" class="f_button small radius success right" data-reveal-id="discussion_inline_new_post_modal" onclick="$('#discussion_inline_new_post_modal').foundation('reveal','open'); return false;">
+##      <span class="icon icon-edit new-post-icon" style="color:#fff;"></span>${_("New Post")}
+##    </a>
+
+    ## moved from _inline_discussion.mustache
+    <div id="discussion_inline_new_post_modal" class="reveal-modal large" data-reveal>
+      <a class="close-reveal-modal" onclick="$('#discussion_inline_new_post_modal').foundation('reveal', 'close');">×</a>
+      <article class="new-post-article">
+	<span class="topic"  data-discussion-id="${discussion_id | h}"></span>
+	<div class="inner-wrapper">
+	  <div class="new-post-form-errors">
+	  </div>
+	  <form class="new-post-form">
+	    <div class="form-row">
+              <input type="text" class="new-post-title" name="title" placeholder="${_("Title")}">
+	    </div>
+            <div class="form-row">
+              <div class="new-post-body" name="body" placeholder="${_(u"Enter your question or comment…")}"
+              </div>
+            </div>
+	    <div class="button-area">
+              <input type="submit" class="submit f_button tiny radius success right" value="${_("Add post")}" style="box-shadow:none; background-image:none; text-shadow:none;">
+              <a href="#" class="new-post-cancel f_button tiny radius alert right" onclick="$('#discussion_inline_new_post_modal').foundation('reveal', 'close'); return false;">${_("Cancel")}</a>
+
+	    </div>
+            <div class="options">
+              <input type="checkbox" name="follow" class="discussion-follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
+              <br>
+	      ## need to fix to control anonymous submission
+              ## % if allow_anonymous:
+                <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous"><label for="new-post-anonymous">${_("post anonymously")}</label>
+              ## %elif allow_anonymous_to_peers:
+              ##  <input type="checkbox" name="anonymous" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers"><label for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
+              ## %endif
+            </div>
+	  </form>
+	</div>
+      </article>
+    </div>
 </div>
+

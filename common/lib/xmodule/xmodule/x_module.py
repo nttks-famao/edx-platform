@@ -26,9 +26,13 @@ from xmodule.errortracker import exc_info_to_str
 from xmodule.modulestore import Location
 from xmodule.modulestore.exceptions import ItemNotFoundError, InsufficientSpecificationError, InvalidLocationError
 from xmodule.modulestore.locator import BlockUsageLocator
+from xmodule.exceptions import UndefinedContext
+from dogapi import dog_stats_api
 
 
 log = logging.getLogger(__name__)
+
+XMODULE_METRIC_NAME = 'edxapp.xmodule'
 
 
 def dummy_track(_event_type, _event):
@@ -63,10 +67,12 @@ class HTMLSnippet(object):
         # this means we need to make sure that all xmodules include this dependency which had been previously implicitly
         # fulfilled in a different area of code
         coffee = cls.js.setdefault('coffee', [])
-        fragment = resource_string(__name__, 'js/src/xmodule.coffee')
+        js = cls.js.setdefault('js', [])
 
-        if fragment not in coffee:
-            coffee.insert(0, fragment)
+        fragment = resource_string(__name__, 'js/src/xmodule.js')
+
+        if fragment not in js:
+            js.insert(0, fragment)
 
         return cls.js
 
@@ -217,6 +223,31 @@ class XModuleMixin(XBlockMixin):
         self.save()
         return self._field_data._kvs  # pylint: disable=protected-access
 
+    def get_content_titles(self):
+        """
+        Returns list of content titles for all of self's children.
+
+                         SEQUENCE
+                            |
+                         VERTICAL
+                        /        \
+                 SPLIT_TEST      DISCUSSION
+                /        \
+           VIDEO A      VIDEO B
+
+        Essentially, this function returns a list of display_names (e.g. content titles)
+        for all of the leaf nodes.  In the diagram above, calling get_content_titles on
+        SEQUENCE would return the display_names of `VIDEO A`, `VIDEO B`, and `DISCUSSION`.
+
+        This is most obviously useful for sequence_modules, which need this list to display
+        tooltips to users, though in theory this should work for any tree that needs
+        the display_names of all its leaf nodes.
+        """
+        if self.has_children:
+            return sum((child.get_content_titles() for child in self.get_children()), [])
+        else:
+            return [self.display_name_with_default]
+
     def get_children(self):
         """Returns a list of XBlock instances for the children of
         this module"""
@@ -274,6 +305,16 @@ class XModuleMixin(XBlockMixin):
         Return a css class identifying this module in the context of an icon
         """
         return self.icon_class
+
+    def has_dynamic_children(self):
+        """
+        Returns True if this descriptor has dynamic children for a given
+        student when the module is created.
+
+        Returns False if the children of this descriptor are the same
+        children that the module will return for any student.
+        """
+        return False
 
     # Functions used in the LMS
 
@@ -580,22 +621,6 @@ class ResourceTemplates(object):
                     return template
 
 
-def prefer_xmodules(identifier, entry_points):
-    """Prefer entry_points from the xmodule package"""
-    from_xmodule = [entry_point for entry_point in entry_points if entry_point.dist.key == 'xmodule']
-    if from_xmodule:
-        return default_select(identifier, from_xmodule)
-    else:
-        return default_select(identifier, entry_points)
-
-
-def only_xmodules(identifier, entry_points):
-    """Only use entry_points that are supplied by the xmodule package"""
-    from_xmodule = [entry_point for entry_point in entry_points if entry_point.dist.key == 'xmodule']
-
-    return default_select(identifier, from_xmodule)
-
-
 @XBlock.needs("i18n")
 class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
     """
@@ -646,16 +671,6 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
         # definition_locator is only used by mongostores which separate definitions from blocks
         self.edited_by = self.edited_on = self.previous_version = self.update_version = self.definition_locator = None
         self.xmodule_runtime = None
-
-    def has_dynamic_children(self):
-        """
-        Returns True if this descriptor has dynamic children for a given
-        student when the module is created.
-
-        Returns False if the children of this descriptor are the same
-        children that the module will return for any student.
-        """
-        return False
 
     @classmethod
     def _translate(cls, key):
@@ -811,7 +826,8 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
         Returns the XModule corresponding to this descriptor. Expects that the system
         already supports all of the attributes needed by xmodules
         """
-        assert self.xmodule_runtime is not None
+        if self.xmodule_runtime is None:
+            raise UndefinedContext()
         assert self.xmodule_runtime.error_descriptor_class is not None
         if self.xmodule_runtime.xmodule_instance is None:
             try:
@@ -913,7 +929,52 @@ def descriptor_global_local_resource_url(block, uri):  # pylint: disable=invalid
     raise NotImplementedError("Applications must monkey-patch this function before using local_resource_url for studio_view")
 
 
-class DescriptorSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abstract-method
+class MetricsMixin(object):
+    """
+    Mixin for adding metric logging for render and handle methods in the DescriptorSystem and ModuleSystem.
+    """
+
+    def render(self, block, view_name, context=None):
+        try:
+            status = "success"
+            return super(MetricsMixin, self).render(block, view_name, context=context)
+
+        except:
+            status = "failure"
+            raise
+
+        finally:
+            course_id = getattr(self, 'course_id', '')
+            dog_stats_api.increment(XMODULE_METRIC_NAME, tags=[
+                u'view_name:{}'.format(view_name),
+                u'action:render',
+                u'action_status:{}'.format(status),
+                u'course_id:{}'.format(course_id),
+                u'block_type:{}'.format(block.scope_ids.block_type)
+            ])
+
+    def handle(self, block, handler_name, request, suffix=''):
+        handle = None
+        try:
+            status = "success"
+            return super(MetricsMixin, self).handle(block, handler_name, request, suffix=suffix)
+
+        except:
+            status = "failure"
+            raise
+
+        finally:
+            course_id = getattr(self, 'course_id', '')
+            dog_stats_api.increment(XMODULE_METRIC_NAME, tags=[
+                u'handler_name:{}'.format(handler_name),
+                u'action:handle',
+                u'action_status:{}'.format(status),
+                u'course_id:{}'.format(course_id),
+                u'block_type:{}'.format(block.scope_ids.block_type)
+            ])
+
+
+class DescriptorSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abstract-method
     """
     Base class for :class:`Runtime`s to be used with :class:`XModuleDescriptor`s
     """
@@ -1048,11 +1109,13 @@ class DescriptorSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable
         """
         raise NotImplementedError("edX Platform doesn't currently implement XBlock resource urls")
 
-    def publish(self, block, event):
+    def publish(self, block, event_type, event):
         """
         See :meth:`xblock.runtime.Runtime:publish` for documentation.
         """
-        raise NotImplementedError("edX Platform doesn't currently implement XBlock publish")
+        xmodule_runtime = getattr(block, 'xmodule_runtime', None)
+        if xmodule_runtime is not None:
+            return xmodule_runtime.publish(block, event_type, event)
 
     def add_block_as_child_node(self, block, node):
         child = etree.SubElement(node, "unknown")
@@ -1071,7 +1134,7 @@ class XMLParsingSystem(DescriptorSystem):
         self.process_xml = process_xml
 
 
-class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abstract-method
+class ModuleSystem(MetricsMixin, ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abstract-method
     """
     This is an abstraction such that x_modules can function independent
     of the courseware (e.g. import into other types of courseware, LMS,
@@ -1091,7 +1154,7 @@ class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abs
             open_ended_grading_interface=None, s3_interface=None,
             cache=None, can_execute_unsafe_code=None, replace_course_urls=None,
             replace_jump_to_id_urls=None, error_descriptor_class=None, get_real_user=None,
-            field_data=None, get_user_role=None,
+            field_data=None, get_user_role=None, rebind_noauth_module_to_user=None,
             **kwargs):
         """
         Create a closure around the system environment.
@@ -1150,6 +1213,9 @@ class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abs
             for LMS and Studio.
 
         field_data - the `FieldData` to use for backing XBlock storage.
+
+        rebind_noauth_module_to_user - rebinds module bound to AnonymousUser to a real user...used in LTI
+           modules, which have an anonymous handler, to set legitimate users' data
         """
 
         # Usage_store is unused, and field_data is often supplanted with an
@@ -1188,6 +1254,7 @@ class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abs
 
         self.get_user_role = get_user_role
         self.descriptor_runtime = descriptor_runtime
+        self.rebind_noauth_module_to_user = rebind_noauth_module_to_user
 
     def get(self, attr):
         """	provide uniform access to attributes (like etree)."""
@@ -1217,7 +1284,7 @@ class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abs
     def resource_url(self, resource):
         raise NotImplementedError("edX Platform doesn't currently implement XBlock resource urls")
 
-    def publish(self, block, event):
+    def publish(self, block, event_type, event):
         pass
 
 

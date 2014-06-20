@@ -4,6 +4,7 @@ Provide tests for sysadmin dashboard feature in sysadmin.py
 
 import glob
 import os
+import re
 import shutil
 import unittest
 
@@ -45,6 +46,10 @@ class SysadminBaseTestCase(ModuleStoreTestCase):
     Base class with common methods used in XML and Mongo tests
     """
 
+    TEST_REPO = 'https://github.com/mitocw/edx4edx_lite.git'
+    TEST_BRANCH = 'testing_do_not_delete'
+    TEST_BRANCH_COURSE = 'MITx/edx4edx_branch/edx4edx'
+
     def setUp(self):
         """Setup test case by adding primary user."""
         super(SysadminBaseTestCase, self).setUp()
@@ -58,11 +63,12 @@ class SysadminBaseTestCase(ModuleStoreTestCase):
         GlobalStaff().add_users(self.user)
         self.client.login(username=self.user.username, password='foo')
 
-    def _add_edx4edx(self):
+    def _add_edx4edx(self, branch=None):
         """Adds the edx4edx sample course"""
-        return self.client.post(reverse('sysadmin_courses'), {
-            'repo_location': 'https://github.com/mitocw/edx4edx_lite.git',
-            'action': 'add_course', })
+        post_dict = {'repo_location': self.TEST_REPO, 'action': 'add_course', }
+        if branch:
+            post_dict['repo_branch'] = branch
+        return self.client.post(reverse('sysadmin_courses'), post_dict)
 
     def _rm_edx4edx(self):
         """Deletes the sample course from the XML store"""
@@ -154,13 +160,13 @@ class TestSysadmin(SysadminBaseTestCase):
                                     {'action': 'create_user',
                                      'student_fullname': 'blah',
                                      'student_password': 'foozor', })
-        self.assertIn(_('Must provide username'), response.content)
+        self.assertIn(_('Must provide username'), response.content.decode('utf-8'))
         # no full name
         response = self.client.post(reverse('sysadmin'),
                                     {'action': 'create_user',
                                      'student_uname': 'test_cuser+sysadmin@edx.org',
                                      'student_password': 'foozor', })
-        self.assertIn(_('Must provide full name'), response.content)
+        self.assertIn(_('Must provide full name'), response.content.decode('utf-8'))
 
         # Test create valid user
         self.client.post(reverse('sysadmin'),
@@ -185,20 +191,20 @@ class TestSysadmin(SysadminBaseTestCase):
         # Try no username
         response = self.client.post(reverse('sysadmin'),
                                     {'action': 'del_user', })
-        self.assertIn(_('Must provide username'), response.content)
+        self.assertIn(_('Must provide username'), response.content.decode('utf-8'))
 
         # Try bad usernames
         response = self.client.post(reverse('sysadmin'),
                                     {'action': 'del_user',
                                      'student_uname': 'flabbergast@example.com',
                                      'student_fullname': 'enigma jones', })
-        self.assertIn(_('Cannot find user with email address'), response.content)
+        self.assertIn(_('Cannot find user with email address'), response.content.decode('utf-8'))
 
         response = self.client.post(reverse('sysadmin'),
                                     {'action': 'del_user',
                                      'student_uname': 'flabbergast',
                                      'student_fullname': 'enigma jones', })
-        self.assertIn(_('Cannot find user with username'), response.content)
+        self.assertIn(_('Cannot find user with username'), response.content.decode('utf-8'))
 
         self.client.post(reverse('sysadmin'),
                          {'action': 'del_user',
@@ -263,7 +269,7 @@ class TestSysadmin(SysadminBaseTestCase):
 
         self.assertIn('{0} test0'.format(_('Failed in authenticating')),
                       response.content)
-        self.assertIn(_('fixed password'), response.content)
+        self.assertIn(_('fixed password'), response.content.decode('utf-8'))
 
         self.assertTrue(self.client.login(username='test0',
                                           password=eamap.internal_password))
@@ -272,7 +278,7 @@ class TestSysadmin(SysadminBaseTestCase):
         self._setstaff_login()
         response = self.client.post(reverse('sysadmin'),
                                     {'action': 'repair_eamap', })
-        self.assertIn(_('All ok!'), response.content)
+        self.assertIn(_('All ok!'), response.content.decode('utf-8'))
 
     def test_xml_course_add_delete(self):
         """add and delete course from xml module store"""
@@ -301,10 +307,23 @@ class TestSysadmin(SysadminBaseTestCase):
         self.assertIsNotNone(course)
 
         # Delete a course
-        response = self._rm_edx4edx()
+        self._rm_edx4edx()
         course = def_ms.courses.get('{0}/edx4edx_lite'.format(
             os.path.abspath(settings.DATA_DIR)), None)
         self.assertIsNone(course)
+
+        # Load a bad git branch
+        response = self._add_edx4edx('asdfasdfasdf')
+        self.assertIn(GitImportError.REMOTE_BRANCH_MISSING,
+                      response.content.decode('utf-8'))
+
+        # Load a course from a git branch
+        self._add_edx4edx(self.TEST_BRANCH)
+        course = def_ms.courses.get('{0}/edx4edx_lite'.format(
+            os.path.abspath(settings.DATA_DIR)), None)
+        self.assertIsNotNone(course)
+        self.assertIn(self.TEST_BRANCH_COURSE, course.location.course_id)
+        self._rm_edx4edx()
 
         # Try and delete a non-existent course
         response = self.client.post(reverse('sysadmin_courses'),
@@ -435,6 +454,31 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
         self._rm_edx4edx()
         course = def_ms.get_course('MITx/edx4edx/edx4edx')
         self.assertIsNone(course)
+
+    def test_course_info(self):
+        """
+        Check to make sure we are getting git info for courses
+        """
+        # Regex of first 3 columns of course information table row for
+        # test course loaded from git. Would not have sha1 if
+        # git_info_for_course failed.
+        table_re = re.compile(r"""
+            <tr>\s+
+            <td>edX\sAuthor\sCourse</td>\s+  # expected test git course name
+            <td>MITx/edx4edx/edx4edx</td>\s+  # expected test git course_id
+            <td>[a-fA-F\d]{40}</td>  # git sha1 hash
+        """, re.VERBOSE)
+
+        self._setstaff_login()
+        self._mkdir(getattr(settings, 'GIT_REPO_DIR'))
+
+        # Make sure we don't have any git hashes on the page
+        response = self.client.get(reverse('sysadmin_courses'))
+        self.assertNotRegexpMatches(response.content, table_re)
+
+        # Now add the course and make sure it does match
+        response = self._add_edx4edx()
+        self.assertRegexpMatches(response.content, table_re)
 
     def test_gitlogs(self):
         """

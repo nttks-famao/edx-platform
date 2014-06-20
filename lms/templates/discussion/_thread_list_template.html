@@ -1,52 +1,59 @@
 <%! from django.utils.translation import ugettext as _ %>
 <script type="text/template" id="thread-list-template">
-    <div class="browse-search">
-        <div class="home">
-            <a href="#" class="home-icon">
-                <i class="icon icon-home"></i>
-                <span class="sr">${_("Discussion Home")}</span>
-            </a>
-        </div>
-        <div class="browse is-open">
-            <a href="#" class="browse-topic-drop-icon">
-                <i class="icon icon-reorder"></i>
-                <span class="sr">${_("Discussion Topics")}</span>
-            </a>
-            <a href="#" class="browse-topic-drop-btn" aria-haspopup="true" aria-owns="browse-topic-drop-menu">
-                <span class="sr">${_("Discussion topics; current selection is: ")}</span>
-                <span class="current-board">${_("Show All Discussions")}</span>
-                <span class="drop-arrow" aria-hidden="true">▾</span>
-            </a>
-        </div>
-        <%include file="_filter_dropdown.html" />
-        <div class="search">
-            <form class="post-search">
-                <label class="sr" for="search-discussions">${_("Search")}</label>
-                <input type="text" id="search-discussions" placeholder="${_("Search all discussions")}" class="post-search-field">
-            </form>
-        </div>
-    </div>
-    <div class="sort-bar">
-        <span class="sort-label" id="sort-label">${_("Sort by:")}</span>
-        <ul role="radiogroup" aria-labelledby="sort-label">
-            <li><a href="#" role="radio" aria-checked="true" class="active" data-sort="date">${_("date")}</a></li>
-            <li><a href="#" role="radio" aria-checked="false" data-sort="votes">${_("votes")}</a></li>
-            <li><a href="#" role="radio" aria-checked="false" data-sort="comments">${_("comments")}</a></li>
-        </ul>
 
+  <div class="browse-search" style="border-bottom:none;">
+    <div class="browse" style="background-color:transparent;">
+      <a href="#" class="f_button secondary expand split button" style="margin-bottom:0; padding-left:0.5rem; padding-right:3rem;">
+        <p class="current-board" style="margin-bottom:0; line-height:1rem;">${_("Show All Discussions")}</p>
+        <span class="browse-dropdown" data-dropdown="browse-topic-filter-dropdown" style="width:2.4rem;"></span>
+      </a>
+    </div>
+    <div id="browse-topic-filter-dropdown" class="f-dropdown" style="top:60px; z-index:10001;">
+      <%include file="_filter_dropdown.html" />
+    </div>
+  </div>
+  <div class="topic-list hide-for-small">
+  </div> 
+  <div class="hide-for-medium-up browse-search">
+    <div class="browse" style="background-color:#fff;">
+      <a href="#" class="split f_button secondary expand small button" style="padding-left:0.5rem;">
+        <p class="current-thread"  style="margin-bottom:0; line-height:1rem;">スレッドリスト</p>
+        <span class="browse-dropdown" data-dropdown="browse-topic-list" style="width:2.4rem;"></span>
+      </a>
+    </div>
+    <div id="browse-topic-list" class="topic-list f-dropdown" style="top:100px;">
+    </div>  
+  </div>
+</script>
 
-        %if is_course_cohorted and is_moderator:
-        <span class="group-filter-label cohort">${_("Show:")}</span>
-            <select class="group-filter-select cohort-options cohort">
-                <option value="all">${_("View All")}</option>
-                    %for c in cohorts:
-                        <option value="${c.id}">${_("View as {name}").format(name=c.name)}</option>
-                    %endfor
-            </select>
-        %endif
-    </div>
-    <div class="post-list-wrapper">
-        <ul class="post-list">
-        </ul>
-    </div>
+<script type="text/template" id="topic-list-template">
+  <div class="search" style="padding-top:10px; padding-bottom:10px;">
+    <form class="post-search">
+      <input type="text" id="search-discussions" placeholder="${_("Search all discussions")}" class="post-search-field">
+      <a href="#" class="clearButton" onclick="return false;"></a>
+    </form>
+  </div>
+  
+  <div class="sort-bar columns" style="background-color:#e7e7e7; padding-top:2px;">
+    <dl class="sub-nav" style="width:100%;">
+      <dt><img src="/static/images/icon-sort-gacco.png" style="width:24px; height:24px;"></dt>
+      ##        <dt class="sort-label">${_("Sort by:")}</dt>
+      <dd class="active"><a href="#" role="radio" aria-checked="true" class="active" data-sort="date">${_("date")}</a></dd>
+      <dd><a href="#" role="radio" aria-checked="false" data-sort="votes">${_("votes")}</a></dd>
+      <dd><a href="#" role="radio" aria-checked="false" data-sort="comments">${_("comments")}</a></dd>
+    </dl>
+    %if is_course_cohorted and is_moderator:
+    <span class="group-filter-label cohort">${_("Show:")}</span>
+    <select class="group-filter-select cohort-options cohort">
+      <option value="all">${_("View All")}</option>
+      %for c in cohorts:
+      <option value="${c.id}">${_("View as {name}").format(name=c.name)}</option>
+        %endfor
+    </select>
+    %endif
+  </div>
+  <div class="post-list-wrapper">
+    <ul class="post-list">
+    </ul>
+  </div>
 </script>

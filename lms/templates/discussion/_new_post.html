@@ -10,73 +10,101 @@
 </%def>
 
 <%def name="render_entry(entries, entry)">
-    <li role="menuitem"><a href="#" class="topic" data-discussion_id="${entries[entry]['id']}" aria-describedby="topic-name-span-${entries[entry]['id']}" cohorted = "${entries[entry]['id'] in cohorted_commentables}">${entry}</a></li>
+    <dd class="newpost-entry-dd" role="menuitem"><a href="#" class="topic" data-discussion_id="${entries[entry]['id']}" aria-describedby="topic-name-span-${entries[entry]['id']}" cohorted = "${entries[entry]['id'] in cohorted_commentables}">${entry}</a></li>
 </%def>
 
 <%def name="render_category(categories, category)">
-    <li role="menuitem">
-        <a href="#"><span class="category-menu-span">${category}</span></a>
-        <ul role="menu">
+    <dd role="menuitem">
+        <a href="#" class="newpost-parent-category"><span class="category-menu-span">${category}</span></a>
+	<div class="content">
+          <dl class="newpost-entry" role="menu">
             ${render_form_filter_dropdown(categories[category])}
-        </ul>
-    </li>
+          </dl>
+	</div>
+    </dd>
 </%def>
-<article class="new-post-article">
+
+<div id="discussion_new_post_modal" class="reveal-modal large" data-reveal>
+  <article class="new-post-article">
     <div class="inner-wrapper">
-        <form class="new-post-form">
-            <div class="left-column">
-                <span class="topic-dropdown-label" id="topic-dropdown-label">${_("Create new post about:")}</span>
-                <div class="form-topic-drop">
-                    <a href="#" aria-labelledby="topic-dropdown-label" class="topic_dropdown_button">${_("Show All Discussions")}<span class="drop-arrow" aria-hidden="true">▾</span></a>
-                    <div class="topic_menu_wrapper">
-                        <div class="topic_menu_search" role="menu">
-                            <label class="sr" for="browse-topic-newpost">${_("Filter List")}</label>
-                            <input type="text" id="browse-topic-newpost" class="form-topic-drop-search-input" placeholder="${_("Filter discussion areas")}">
-                        </div>
-                        <ul class="topic_menu" role="menu">
-                            ${render_form_filter_dropdown(category_map)}
-                        </ul>
-                    </div>
+      <form class="new-post-form">
+        <div class="row">
+	  <div class="large-12 small-12 columns">
+	    <div class="panel radius callout" style="font-size:14px; margin-right:20px;">
+	      ご投稿にあたり、以下をご確認ください。<br />
+	      <ul style="font-size:14px;">
+		<li>他に同内容のスレッドはありませんか？<br />スレッドが乱立すると、他の受講者から見づらくなってしまうので、なるべく既存のスレッド内での【返信】をご活用ください。
+		<li>投稿カテゴリは設定しましたか？<br /> カテゴリを適切に設定していただくと、他のユーザがあなたの書き込みを見つけやすくなります。
+	      </ul>
+	    </div>
+	    <div style="top: -1rem; right: -0.5rem;">
+	      <a class="close-reveal-modal" style="top: -1rem; right: -0.5rem;">×</a>
+	    </div>
+          </div>
+	</div>
+	<div class="row">
+	  <div class="large-4 small-12 columns">
+            <span class="topic-dropdown-label" id="topic-dropdown-label">${_("Create new post about:")}</span>
+            <div class="form-topic-drop">
+              <a href="#" aria-labelledby="topic-dropdown-label" class="split button f_button secondary topic_dropdown_button">
+		<p style="margin-bottom:0;">${_("Show All Discussions")}</p>
+		<span class="browse-dropdown"></span></a>
+              <div class="topic_menu_wrapper panel">
+                <div class="topic_menu_search" role="menu">
+                  <label class="sr" for="browse-topic-newpost">${_("Filter List")}</label>
+                  <input type="text" id="browse-topic-newpost" class="form-topic-drop-search-input" placeholder="${_("Filter discussion areas")}">
                 </div>
-                <div class="options">
-                    <input type="checkbox" name="follow" class="discussion-follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
-                    <br>
-                    % if course.allow_anonymous:
-                        <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous"><label for="new-post-anonymous">${_("post anonymously")}</label>
-                    %elif course.allow_anonymous_to_peers:
-                        <input type="checkbox" name="anonymous_to_peers" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers"><label for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
-                    %endif
-                    %if is_course_cohorted and is_moderator:
-                    <div class="form-group-label choose-cohort">
-                        ## Translators: This labels the selector for which group of students can view a post
-                        ${_("Make visible to:")}
-                        <select class="group-filter-select new-post-group" name = "group_id">
-                            <option value="">${_("All Groups")}</option>
-                            %for c in cohorts:
-                                <option value="${c.id}"
-                                %if user_cohort and str(user_cohort) == str(c.id):
-                                    selected
-                                %endif
-                                >${c.name}</option>
-                            %endfor
-                        </select>
-                    </div>
-                    %endif
-                </div>
+                <dl class="topic_menu accordion" style="font-size:0.8rem;" role="menu" data-accordion>
+                  ${render_form_filter_dropdown(category_map)}
+                </dl>
+              </div>
             </div>
-            <div class="right-column">
-                <ul class="new-post-form-errors"></ul>
-                <div class="form-row">
-                    <label class="sr" for="new-post-title">${_("new post title")}</label>
-                    <input type="text" id="new-post-title" class="new-post-title" name="title" placeholder="${_("Title")}">
-                </div>
-                <div class="form-row">
-                    <div class="new-post-body" name="body" placeholder="${_(u"Enter your question or comment…")}"></div>
-                    <!---<div class="new-post-preview"><span class="new-post-preview-label">Preview</span></div>-->
-                </div>
-                <input type="submit" id="new-post-submit" class="submit" value="${_("Add post")}">
-                <a href="#" class="new-post-cancel">${_("Cancel")}</a>
+	  </div>
+
+
+	  <div class="large-8 small-12 columns">
+	    <ul class="new-post-form-errors"></ul>
+            <div class="form-row">
+              <label class="sr" for="new-post-title">${_("new post title")}</label>
+              <input type="text" id="new-post-title" class="new-post-title" name="title" placeholder="${_("Title")}">
             </div>
-        </form>
+            <div class="form-row">
+              <div class="new-post-body" name="body" placeholder="${_(u"Enter your question or comment…")}"></div>
+              <!---<div class="new-post-preview"><span class="new-post-preview-label">Preview</span></div>-->
+            </div>
+	    
+            <div class="options left">
+              <input type="checkbox" name="follow" class="discussion-follow" class="discussion-follow" id="new-post-follow" checked><label for="new-post-follow">${_("follow this post")}</label>
+              <br>
+              % if course.allow_anonymous:
+              <input type="checkbox" name="anonymous" class="discussion-anonymous" id="new-post-anonymous"><label for="new-post-anonymous">${_("post anonymously")}</label>
+              %elif course.allow_anonymous_to_peers:
+              <input type="checkbox" name="anonymous_to_peers" class="discussion-anonymous-to-peers" id="new-post-anonymous-to-peers"><label for="new-post-anonymous-to-peers">${_("post anonymously to classmates")}</label>
+              %endif
+              %if is_course_cohorted and is_moderator:
+              <div class="form-group-label choose-cohort">
+                ## Translators: This labels the selector for which group of students can view a post
+                ${_("Make visible to:")}
+                <select class="group-filter-select new-post-group" name = "group_id">
+                  <option value="">${_("All Groups")}</option>
+                  %for c in cohorts:
+                  <option value="${c.id}"
+                          %if user_cohort and str(user_cohort) == str(c.id):
+                          selected
+                          %endif
+                          >${c.name}</option>
+                  %endfor
+                </select>
+              </div>
+              %endif
+            </div>
+	    <div class="button-area">
+              <input type="submit" id="new-post-submit" class="f_button tiny radius success right" value="${_("Add post")}">
+              <a href="#" class="f_button tiny radius alert right" onclick="$('a.close-reveal-modal').trigger('click');">${_("Cancel")}</a>
+            </div>
+          </div>
+	</div>
+      </form>
     </div>
-</article>
+  </article>
+</div>

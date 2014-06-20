@@ -1,29 +1,53 @@
 <%! from django.utils.translation import ugettext as _ %>
 
 <%namespace name='static' file='static_content.html'/>
+<script>
+  var isSubmitted = false;
+
+function resetSubmit(){
+  isSubmitted = false;
+}
+
+$(".submit_wrapper_button").click(function(event){
+  if(!isSubmitted){
+    isSubmitted = true;
+    setTimeout("resetSubmit", 800);
+    isConfirmed = confirm("解答を提出します。\nよろしいですか？");
+    if(isConfirmed){
+      $(this).prev('.check').trigger('click');
+    }
+    return true;
+  } else{
+    return false;
+  }
+});
+
+</script>
+
 <h2 class="problem-header">
   ${ problem['name'] }
 </h2>
 
 <div class="problem-progress"></div>
 
-<div class="problem">
+<div class="problem" role="application">
   ${ problem['html'] }
 
   <div class="action">
     <input type="hidden" name="problem_id" value="${ problem['name'] }" />
 
     % if check_button:
-    <input class="check ${ check_button }" type="button" value="${ check_button }" />
+    <input class="check f_button radius tiny success" type="button" data-checking="${ check_button_checking }" value="${ check_button }" style="display:none;" />
+    <input class="f_button tiny radius success submit_wrapper_button" type="button" value="提出"/>
     % endif
     % if reset_button:
-    <input class="reset" type="button" value="${_('Reset')}" />
+    <input class="reset f_button radius tiny secondary" type="button" value="${_('Reset')}" />
     % endif
     % if save_button:
-    <input class="save" type="button" value="${_('Save')}" />
+    <input class="save f_button radius tiny" type="button" value="${_('Save')}" />
     % endif
     % if answer_available:
-    <button class="show"><span class="show-label">${_('Show Answer(s)')}</span> <span class="sr">${_("(for question(s) above - adjacent to each field)")}</span></button>
+    <button class="show f_button radius tiny"><span class="show-label" aria-hidden="true">${_('Show Answer')}</span> <span class="sr">${_("Reveal Answer")}</span></button>
     % endif
     % if attempts_allowed :
     <div class="submission_feedback">

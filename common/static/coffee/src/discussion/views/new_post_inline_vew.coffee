@@ -2,12 +2,10 @@ if Backbone?
   class @NewPostInlineView extends Backbone.View
 
     initialize: () ->
-
       @topicId    = @$(".topic").first().data("discussion-id")
-
       @maxNameWidth = 100
-
       DiscussionUtil.makeWmdEditor @$el, $.proxy(@$, @), "new-post-body"
+      @$(".new-post-body textarea").val("").attr("prev-text", "")
 
     events:
       "submit .new-post-form":            "createPost"
@@ -50,8 +48,10 @@ if Backbone?
           # TODO: Move this out of the callback, this makes it feel sluggish
           thread = new Thread response['content']
           DiscussionUtil.clearFormErrors(@$(".new-post-form-errors"))
-          @$el.hide()
+          ## モーダル閉じる処理に変更
+          ## @$el.hide()
+          $('#discussion_inline_new_post_modal').foundation('reveal', 'close');
           @$(".new-post-title").val("").attr("prev-text", "")
           @$(".new-post-body textarea").val("").attr("prev-text", "")
-
+          @$(".wmd-preview p").html("")
           @collection.add thread

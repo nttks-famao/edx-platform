@@ -9,15 +9,16 @@ import dateutil.parser
 from lazy import lazy
 
 from xmodule.modulestore import Location
+from xmodule.partitions.partitions import UserPartition
 from xmodule.seq_module import SequenceDescriptor, SequenceModule
 from xmodule.graders import grader_from_conf
+from xmodule.tabs import CourseTabList
 import json
 
 from xblock.fields import Scope, List, String, Dict, Boolean, Integer
 from .fields import Date
 from xmodule.modulestore.locator import CourseLocator
 from django.utils.timezone import UTC
-
 
 log = logging.getLogger(__name__)
 
@@ -156,10 +157,29 @@ class TextbookList(List):
         return json_data
 
 
+class UserPartitionList(List):
+    """Special List class for listing UserPartitions"""
+    def from_json(self, values):
+        return [UserPartition.from_json(v) for v in values]
+
+    def to_json(self, values):
+        return [user_partition.to_json()
+                for user_partition in values]
+
+
 class CourseFields(object):
     lti_passports = List(help="LTI tools passports as id:client_key:client_secret", scope=Scope.settings)
     textbooks = TextbookList(help="List of pairs of (title, url) for textbooks used in this course",
                              default=[], scope=Scope.content)
+
+    # This is should be scoped to content, but since it's defined in the policy
+    # file, it is currently scoped to settings.
+    user_partitions = UserPartitionList(
+        help="List of user partitions of this course into groups, used e.g. for experiments",
+        default=[],
+        scope=Scope.settings
+    )
+
     wiki_slug = String(help="Slug that points to the wiki for this course", scope=Scope.content)
     enrollment_start = Date(help="Date that enrollment for this class is opened", scope=Scope.settings)
     enrollment_end = Date(help="Date that enrollment for this class is closed", scope=Scope.settings)
@@ -204,8 +224,9 @@ class CourseFields(object):
                           scope=Scope.content)
     show_calculator = Boolean(help="Whether to show the calculator in this course", default=False, scope=Scope.settings)
     display_name = String(help="Display name for this module", default="Empty", display_name="Display Name", scope=Scope.settings)
+    course_edit_method = String(help="Method with which this course is edited.", default="Studio", scope=Scope.settings)
     show_chat = Boolean(help="Whether to show the chat widget in this course", default=False, scope=Scope.settings)
-    tabs = List(help="List of tabs to enable in this course", scope=Scope.settings)
+    tabs = CourseTabList(help="List of tabs to enable in this course", scope=Scope.settings, default=[])
     end_of_course_survey_url = String(help="Url for the end-of-course survey", scope=Scope.settings)
     discussion_blackouts = List(help="List of pairs of start/end dates for discussion blackouts", scope=Scope.settings)
     discussion_topics = Dict(help="Map of topics names to ids", scope=Scope.settings)
@@ -348,13 +369,16 @@ class CourseFields(object):
     )
     enrollment_domain = String(help="External login method associated with user accounts allowed to register in course",
                                scope=Scope.settings)
+    certificates_show_before_end = Boolean(help="True if students may download certificates before course end",
+                                           scope=Scope.settings,
+                                           default=False)
     course_image = String(
         help="Filename of the course image",
         scope=Scope.settings,
         # Ensure that courses imported from XML keep their image
         default="images_course_image.jpg"
     )
-    
+
     ## Course level Certificate Name overrides.
     cert_name_short = String(
         help="Sitewide name of completion statements given to students (short).",
@@ -399,6 +423,10 @@ class CourseFields(object):
     max_student_enrollments_allowed = Integer(help="Limit the number of students allowed to enroll in this course.",
                                               scope=Scope.settings)
 
+    allow_public_wiki_access = Boolean(help="Whether to allow an unenrolled user to view the Wiki",
+                                       default=False,
+                                       scope=Scope.settings)
+
 class CourseDescriptor(CourseFields, SequenceDescriptor):
     module_class = SequenceModule
 
@@ -432,44 +460,15 @@ class CourseDescriptor(CourseFields, SequenceDescriptor):
             self.syllabus_present = False
         else:
             self.syllabus_present = self.system.resources_fs.exists(path('syllabus'))
-        self._grading_policy = {}
 
+        self._grading_policy = {}
         self.set_grading_policy(self.grading_policy)
 
         if self.discussion_topics == {}:
             self.discussion_topics = {_('General'): {'id': self.location.html_id()}}
 
-        # TODO check that this is still needed here and can't be by defaults.
-        if not self.tabs:
-            # When calling the various _tab methods, can omit the 'type':'blah' from the
-            # first arg, since that's only used for dispatch
-            tabs = []
-            tabs.append({'type': 'courseware'})
-            # Translators: "Course Info" is the name of the course's information and updates page
-            tabs.append({'type': 'course_info', 'name': _('Course Info')})
-
-            if self.syllabus_present:
-                tabs.append({'type': 'syllabus'})
-
-            tabs.append({'type': 'textbooks'})
-
-            # # If they have a discussion link specified, use that even if we feature
-            # # flag discussions off. Disabling that is mostly a server safety feature
-            # # at this point, and we don't need to worry about external sites.
-            if self.discussion_link:
-                tabs.append({'type': 'external_discussion', 'link': self.discussion_link})
-            else:
-                # Translators: "Discussion" is the title of the course forum page
-                tabs.append({'type': 'discussion', 'name': _('Discussion')})
-
-            # Translators: "Wiki" is the title of the course's wiki page
-            tabs.append({'type': 'wiki', 'name': _('Wiki')})
-
-            if not self.hide_progress_tab:
-                # Translators: "Progress" is the title of the student's grade information page
-                tabs.append({'type': 'progress', 'name': _('Progress')})
-
-            self.tabs = tabs
+        if not getattr(self, "tabs", []):
+            CourseTabList.initialize_default(self)
 
     def set_grading_policy(self, course_policy):
         """
@@ -579,6 +578,11 @@ class CourseDescriptor(CourseFields, SequenceDescriptor):
 
             xml_object.append(textbook_xml_object)
 
+        if self.wiki_slug is not None:
+            wiki_xml_object = etree.Element('wiki')
+            wiki_xml_object.set('slug', self.wiki_slug)
+            xml_object.append(wiki_xml_object)
+
         return xml_object
 
     def has_ended(self):
@@ -590,6 +594,12 @@ class CourseDescriptor(CourseFields, SequenceDescriptor):
             return False
 
         return datetime.now(UTC()) > self.end
+
+    def may_certify(self):
+        """
+        Return True if it is acceptable to show the student a certificate download link
+        """
+        return self.certificates_show_before_end or self.has_ended()
 
     def has_started(self):
         return datetime.now(UTC()) > self.start

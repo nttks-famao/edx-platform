@@ -17,13 +17,14 @@ if Backbone?
           
           if @$($(".topic_menu li a")[0]).attr('cohorted') != "True"
             $('.choose-cohort').hide();
-          
             
-          
       events:
           "submit .new-post-form":            "createPost"
           "click  .topic_dropdown_button":    "toggleTopicDropdown"
-          "click  .topic_menu_wrapper":       "setTopic"
+          ## アコーディオン化。
+##          "click  .topic_menu_wrapper":       "setTopic"
+          "click  .newpost-entry-dd":       "setTopic"
+          "click  .newpost-parent-category":  "toggleAccordion"
           "click  .topic_menu_search":        "ignoreClick"
           "keyup .form-topic-drop-search-input": DiscussionFilter.filterDrop
 
@@ -33,11 +34,30 @@ if Backbone?
       ignoreClick: (event) ->
           event.stopPropagation()
 
+      toggleAccordion: (event) ->
+        ## トピックのアコーディオン表示のために追加。
+        event.preventDefault()
+        event.stopPropagation()
+        if($(event.target).hasClass("category-menu-span"))
+          target = $(event.target).parent()
+        else
+          target = $(event.target)
+        target.toggleClass("active")
+        target.siblings("div.content").toggleClass("active")
+
+
+      updateTopicbar: () ->
+          @maxNameWidth = @dropdownButton.width() - 10
+          @setSelectedTopic()
+          @topicMenu.css('width', @dropdownButton.outerWidth())
+
       toggleTopicDropdown: (event) ->
+          event.preventDefault()
           event.stopPropagation()
           if @menuOpen
               @hideTopicDropdown()
           else
+              @updateTopicbar()
               @showTopicDropdown()
 
       showTopicDropdown: () ->
@@ -63,6 +83,7 @@ if Backbone?
           $("body").unbind "click", @hideTopicDropdown
 
       setTopic: (event) ->
+          event.preventDefault()
           $target = $(event.target)
           if $target.data('discussion_id')
               @topicText = $target.html()
@@ -76,12 +97,15 @@ if Backbone?
               
 
       setSelectedTopic: ->
-          @dropdownButton.html(@fitName(@topicText) + ' <span class="drop-arrow">▾</span>')
+          ##@dropdownButton.html(@fitName(@topicText) + ' <span class="drop-arrow">▾</span>')
+          @dropdownButton.find("p").html(@topicText)
 
       getFullTopicName: (topicElement) ->
           name = topicElement.html()
-          topicElement.parents('ul').not('.topic_menu').each ->
-              name = $(this).siblings('a').html() + ' / ' + name
+          ## topicElement.parents('ul').not('.topic_menu').each ->
+          ##   name = $(this).siblings('a').html() + ' / ' + name
+          topicElement.closest('.content').each ->
+            name = $(this).siblings('a').text() + '<br/>&gt; ' + name
           return name
 
       getNameWidth: (name) ->
@@ -98,25 +122,22 @@ if Backbone?
           test.remove()
           return width
 
+      ## thread_list_viewと同様、こちらも名前の調節をやめる
       fitName: (name) ->
-          width = @getNameWidth(name)
-          if width < @maxNameWidth
-              return name
-          path = (x.replace /^\s+|\s+$/g, "" for x in name.split("/"))
-          while path.length > 1
-              path.shift()
-              partialName = gettext("…") + " / " + path.join(" / ")
-              if  @getNameWidth(partialName) < @maxNameWidth
-                  return partialName
-
-          rawName = path[0]
-
-          name = gettext("…") + " / " + rawName
-
-          while @getNameWidth(name) > @maxNameWidth
-              rawName = rawName[0...rawName.length-1]
-              name =  gettext("…") + " / " + rawName + " " + gettext("…")
-
+##          width = @getNameWidth(name)
+##          if width < @maxNameWidth
+##              return name
+##          path = (x.replace /^\s+|\s+$/g, "" for x in name.split("/"))
+##          while path.length > 1
+##              path.shift()
+##              partialName = gettext("…") + " / " + path.join(" / ")
+##              if  @getNameWidth(partialName) < @maxNameWidth
+##                  return partialName
+##          rawName = path[0]
+##          name = gettext("…") + " / " + rawName
+##          while @getNameWidth(name) > @maxNameWidth
+##              rawName = rawName[0...rawName.length-1]
+##              name =  gettext("…") + " / " + rawName + " " + gettext("…")
           return name
 
 
@@ -151,7 +172,9 @@ if Backbone?
                   # TODO: Move this out of the callback, this makes it feel sluggish
                   thread = new Thread response['content']
                   DiscussionUtil.clearFormErrors(@$(".new-post-form-errors"))
-                  @$el.hide()
+                  ## モーダル閉じる処理に変更
+                  ## @$el.hide()
+                  $('#discussion_new_post_modal').foundation('reveal', 'close');
                   @$(".new-post-title").val("").attr("prev-text", "")
                   @$(".new-post-body textarea").val("").attr("prev-text", "")
                   @$(".wmd-preview p").html("")

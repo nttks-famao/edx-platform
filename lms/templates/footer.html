@@ -4,7 +4,53 @@
 <%namespace name='static' file='static_content.html'/>
 <%! from microsite_configuration.templatetags.microsite import platform_name %>
 
-<div class="wrapper wrapper-footer">
+
+<hr style="width: 100%; margin-top:6rem;">
+
+<div class="row show-for-large-up">
+  <div class="large-4 columns left" style="margin-top:10px;">
+    <p class="center" style="font-size:small;">
+		  <a href="https://support.gacco.org/hc/ja/articles/200749224">利用規約</a>&nbsp;
+			<a href="https://support.gacco.org/hc/ja/articles/200749314">プライバシーポリシー</a>&nbsp;
+			<a href="https://support.gacco.org/">よくある質問</a>
+		</p>
+  </div>
+  <div class="large-5 columns" style="margin-top:10px;">
+    <p class="center" style="font-size:small;">Copyright (c) 2014 NTT Knowledge Square Inc., except where noted, all rights reserved.</p>
+  </div>
+	<div class="large-3 columns right" style="margin-top:10px;">
+  	<small>株式会社NTTドコモ<br>NTTナレッジ・スクウェア株式会社</small>
+	</div>
+</div>
+<div class="row show-for-medium-only">
+	<div class="columns medium-7">
+	  <p class="left">
+	  	<a href="https://support.gacco.org/hc/ja/articles/200749224">利用規約</a>
+	  	<a href="https://support.gacco.org/hc/ja/articles/200749314" style="margin-left:20px">プライバシーポリシー</a>
+		  <a href="https://support.gacco.org/" style="margin-left:20px">よくある質問</a>
+	  </p>
+	</div>
+	<div class="columns medium-5">
+	  <small class="right">Copyright (c) 2014 NTT Knowledge Square Inc., except where noted, all rights reserved.</small><br>
+	  <small>株式会社NTTドコモ<br>NTTナレッジ・スクウェア株式会社</small>
+	</div>
+</div>
+<div class="row show-for-small-only">
+	<div class="columns">
+	  <p class="text-center" style="font-size:small;">
+		  <a href="https://support.gacco.org/hc/ja/articles/200749224">利用規約</a>
+			<a href="https://support.gacco.org/hc/ja/articles/200749314" style="margin-left:10px">プライバシーポリシー</a>
+			<a href="https://support.gacco.org/" style="margin-left:10px">よくある質問</a>
+			<br>Copyright (c) 2014 NTT Knowledge Square Inc.,<br> except where noted, all rights reserved.<br>
+			<small>株式会社NTTドコモ<br>NTTナレッジ・スクウェア株式会社</small>
+		</p>
+	</div>
+</div>
+	
+<div><p> </p></div>
+
+<%doc>
+<div class="wrapper_ row wrapper-footer">
   <footer>
     <div class="colophon">
       <nav class="nav-colophon">
@@ -90,3 +136,4 @@
     </div>
   </footer>
 </div>
+</%doc>

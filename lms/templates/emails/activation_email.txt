@@ -1,25 +1,38 @@
 <%namespace file="../main.html" import="stanford_theme_enabled" />
 <%! from django.utils.translation import ugettext as _ %>
+━━━━━━━━━
+■gacco 会員登録のご案内
+━━━━━━━━━
+この度は、gaccoに会員登録いただきまして、ありがとうございます。
 
-${_("Thank you for signing up for {platform_name}! To activate "
-"your account, please copy and paste this address into your web "
-"browser's address bar:").format(platform_name=settings.PLATFORM_NAME)}
-
+登録の手続きはまだ完了していません。
+以下のURLをクリックし、登録を完了してください。
+─────────
+【会員登録手続き用ＵＲＬ】
 % if is_secure:
   https://${ site }/activate/${ key }
 % else:
   http://${ site }/activate/${ key }
 % endif
+─────────
 
-## Temporary hack until we develop a better way to adjust language
-% if stanford_theme_enabled():
-  ${_("If you didn't request this, you don't need to do anything; you won't "
-      "receive any more email from us. Please do not reply to this e-mail; "
-      "if you require assistance, check the about section of the "
-      "{platform_name} Courses web site.").format(platform_name=settings.PLATFORM_NAME)}
-% else:
-  ${_("If you didn't request this, you don't need to do anything; you won't "
-      "receive any more email from us. Please do not reply to this e-mail; "
-      "if you require assistance, check the help section of the "
-      "{platform_name} web site.").format(platform_name=settings.PLATFORM_NAME)}
-% endif
+※上記手続き用URLが改行され、URLをクリックしても
+　登録ページが表示されない場合は、URLをすべてコピーして、
+　ブラウザのアドレス欄に貼り付けてアクセスしてください。
+
+─────────
+
+このメールは自動送信しています。ご返信いただいてもお答えできかね
+ますのでご了承ください。
+
+なお、このメールの内容に覚えのない方は、破棄していただきますよう
+お願い申し上げます。
+==================
+・gaccoに関する「よくあるご質問」はコチラ
+https://support.gacco.org/
+
+・お問い合わせはマイページの「ヘルプ」ボタンよりお願いします
+https://lms.gacco.org/dashboard
+
+
+gacco運営チーム

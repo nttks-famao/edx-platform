@@ -34,6 +34,8 @@ from ..utils import get_modulestore
 
 from .access import has_course_access
 from .helpers import _xmodule_recurse
+from contentstore.utils import compute_publish_state, PublishState
+from xmodule.modulestore.draft import DIRECT_ONLY_CATEGORIES
 from contentstore.views.preview import get_preview_fragment
 from edxmako.shortcuts import render_to_string
 from models.settings.course_grading import CourseGradingModel
@@ -55,11 +57,10 @@ xmodule.x_module.descriptor_global_local_resource_url = local_resource_url
 
 def hash_resource(resource):
     """
-    Hash a :class:`xblock.fragment.FragmentResource
+    Hash a :class:`xblock.fragment.FragmentResource`.
     """
     md5 = hashlib.md5()
-    for data in resource:
-        md5.update(data)
+    md5.update(repr(resource))
     return md5.hexdigest()
 
 
@@ -127,6 +128,12 @@ def xblock_handler(request, tag=None, package_id=None, branch=None, version_guid
 
             return _delete_item_at_location(old_location, delete_children, delete_all_versions, request.user)
         else:  # Since we have a package_id, we are updating an existing xblock.
+            if block == 'handouts' and old_location is None:
+                # update handouts location in loc_mapper
+                course_location = loc_mapper().translate_locator_to_location(locator, get_course=True)
+                old_location = course_location.replace(category='course_info', name=block)
+                locator = loc_mapper().translate_location(course_location.course_id, old_location)
+
             return _save_item(
                 request,
                 locator,
@@ -187,6 +194,7 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
     if 'application/json' in accept_header:
         store = get_modulestore(old_location)
         component = store.get_item(old_location)
+        is_read_only = _xblock_is_read_only(component)
 
         # wrap the generated fragment in the xmodule_editor div so that the javascript
         # can bind to it correctly
@@ -202,16 +210,22 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
                 log.debug("unable to render studio_view for %r", component, exc_info=True)
                 fragment = Fragment(render_to_string('html_error.html', {'message': str(exc)}))
 
-            store.save_xmodule(component)
+            # change not authored by requestor but by xblocks.
+            store.update_item(component, None)
+
         elif view_name == 'student_view' and component.has_children:
+            context = {
+                'runtime_type': 'studio',
+                'container_view': False,
+                'read_only': is_read_only,
+                'root_xblock': component,
+            }
             # For non-leaf xblocks on the unit page, show the special rendering
             # which links to the new container page.
-            course_location = loc_mapper().translate_locator_to_location(locator, True)
-            course = store.get_item(course_location)
-            html = render_to_string('unit_container_xblock_component.html', {
-                'course': course,
+            html = render_to_string('container_xblock_component.html', {
+                'xblock_context': context,
                 'xblock': component,
-                'locator': locator
+                'locator': locator,
             })
             return JsonResponse({
                 'html': html,
@@ -223,11 +237,11 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
             # Only show the new style HTML for the container view, i.e. for non-verticals
             # Note: this special case logic can be removed once the unit page is replaced
             # with the new container view.
-            is_read_only_view = is_container_view
             context = {
+                'runtime_type': 'studio',
                 'container_view': is_container_view,
-                'read_only': is_read_only_view,
-                'root_xblock': component
+                'read_only': is_read_only,
+                'root_xblock': component,
             }
 
             fragment = get_preview_fragment(request, component, context)
@@ -236,12 +250,9 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
             # into the preview fragment, so we don't want to add another header here.
             if not is_container_view:
                 fragment.content = render_to_string('component.html', {
+                    'xblock_context': context,
                     'preview': fragment.content,
                     'label': component.display_name or component.scope_ids.block_type,
-
-                    # Native XBlocks are responsible for persisting their own data,
-                    # so they are also responsible for providing save/cancel buttons.
-                    'show_save_cancel': isinstance(component, xmodule.x_module.XModuleDescriptor),
                 })
         else:
             raise Http404
@@ -257,6 +268,17 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
 
     else:
         return HttpResponse(status=406)
+
+
+def _xblock_is_read_only(xblock):
+    """
+    Returns true if the specified xblock is read-only, meaning that it cannot be edited.
+    """
+    # We allow direct editing of xblocks in DIRECT_ONLY_CATEGORIES (for example, static pages).
+    if xblock.category in DIRECT_ONLY_CATEGORIES:
+        return False
+    component_publish_state = compute_publish_state(xblock)
+    return component_publish_state == PublishState.public
 
 
 def _save_item(request, usage_loc, item_location, data=None, children=None, metadata=None, nullout=None,
@@ -290,9 +312,9 @@ def _save_item(request, usage_loc, item_location, data=None, children=None, meta
         if publish == 'make_private':
             _xmodule_recurse(existing_item, lambda i: modulestore().unpublish(i.location))
         elif publish == 'create_draft':
-            # This clones the existing item location to a draft location (the draft is
+            # This recursively clones the existing item location to a draft location (the draft is
             # implicit, because modulestore is a Draft modulestore)
-            modulestore().convert_to_draft(item_location)
+            _xmodule_recurse(existing_item, lambda i: modulestore().convert_to_draft(i.location))
 
     if data:
         # TODO Allow any scope.content fields not just "data" (exactly like the get below this)
@@ -521,8 +543,8 @@ def orphan_handler(request, tag=None, package_id=None, branch=None, version_guid
     if request.method == 'DELETE':
         if request.user.is_staff:
             items = modulestore().get_orphans(old_location, 'draft')
-            for item in items:
-                modulestore('draft').delete_item(item, delete_all_versions=True)
+            for itemloc in items:
+                modulestore('draft').delete_item(itemloc, delete_all_versions=True)
             return JsonResponse({'deleted': items})
         else:
             raise PermissionDenied()

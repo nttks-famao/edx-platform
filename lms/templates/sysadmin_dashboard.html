@@ -56,6 +56,7 @@ textarea {
 	  <a href="${reverse('sysadmin')}" class="${modeflag.get('users')}">${_('Users')}</a>
       <a href="${reverse('sysadmin_courses')}" class="${modeflag.get('courses')}">${_('Courses')}</a>
       <a href="${reverse('sysadmin_staffing')}" class="${modeflag.get('staffing')}">${_('Staffing and Enrollment')}</a> 
+      ## Translators: refers to http://git-scm.com/docs/git-log
       <a href="${reverse('gitlogs')}">${_('Git Logs')}</a>
     </h2>
 	<hr />
@@ -126,18 +127,30 @@ textarea {
   <ul class="list-input">
 	<li class="field text">
 	  <label for="repo_location">
-		${_('Repo location')}:
+		## Translators: Repo is short for git repository or source of
+		## courseware; see http://git-scm.com/about
+		${_('Repo Location')}:
 	  </label>
 	  <input type="text" name="repo_location" style="width:60%" />
 	</li>
+	<li class="field text">
+	  <label for="repo_location">
+		## Translators: Repo is short for git repository (http://git-scm.com/about) or source of
+		## courseware and branch is a specific version within that repository
+		${_('Repo Branch (optional)')}:
+	  </label>
+	  <input type="text" name="repo_branch" style="width:60%" />
+	</li>
   </ul>
   <div class="form-actions">
+        ## Translators: Github is a popular website for hosting code
 	<button type="submit" name="action" value="add_course">${_('Load new course from github')}</button>
   </div>
   <hr />
   <ul class="list-input">
 	<li class="field text">
 	  <label for="course_id">
+	        ## Translators: 'dir' is short for 'directory'
 		${_('Course ID or dir')}:
 	  </label>
 	  <input type="text" name="course_id" style="width:60%" />
@@ -200,7 +213,8 @@ textarea {
 %endif
 
   </section>
-  <div style="text-align:right; float: right"><span id="djangopid">${_('Django PID')}: ${djangopid}</span>
-  | <span id="mitxver">${_('Platform Version')}: ${mitx_version}</span></div>
+  <div style="text-align:right; float: right"><span id="djangopid">'Django PID': ${djangopid}</span>
+  ## Translators: A version number appears after this string
+  | <span id="edxver">${_('Platform Version')}: ${edx_platform_version}</span></div>
 </div>
 </section>

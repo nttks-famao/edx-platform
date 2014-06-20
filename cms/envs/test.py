@@ -17,6 +17,9 @@ import os
 from path import path
 from warnings import filterwarnings
 
+# import settings from LMS for consistent behavior with CMS
+from lms.envs.test import (WIKI_ENABLED)
+
 # Nose Test Runner
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -157,11 +160,6 @@ INSTALLED_APPS += ('external_auth', )
 filterwarnings('ignore', message='No request passed to the backend, unable to rate-limit')
 
 
-################################# XBLOCK ######################################
-from xmodule.x_module import prefer_xmodules
-XBLOCK_SELECT_FUNCTION = prefer_xmodules
-
-
 ################################# CELERY ######################################
 
 CELERY_ALWAYS_EAGER = True
@@ -177,6 +175,7 @@ LETTUCE_SERVER_PORT = 8003
 XQUEUE_PORT = 8040
 YOUTUBE_PORT = 8031
 LTI_PORT = 8765
+VIDEO_SOURCE_PORT = 8777
 
 
 ################### Make tests faster
@@ -196,6 +195,39 @@ FEATURES['ENABLE_SERVICE_STATUS'] = True
 
 # This is to disable a test under the common directory that will not pass when run under CMS
 FEATURES['DISABLE_RESET_EMAIL_TEST'] = True
+FEATURES['DISABLE_RESIGN_EMAIL_TEST'] = True
 
 # Toggles embargo on for testing
 FEATURES['EMBARGO'] = True
+
+# set up some testing for microsites
+MICROSITE_CONFIGURATION = {
+    "test_microsite": {
+        "domain_prefix": "testmicrosite",
+        "university": "test_microsite",
+        "platform_name": "Test Microsite",
+        "logo_image_url": "test_microsite/images/header-logo.png",
+        "email_from_address": "test_microsite@edx.org",
+        "payment_support_email": "test_microsite@edx.org",
+        "ENABLE_MKTG_SITE": False,
+        "SITE_NAME": "test_microsite.localhost",
+        "course_org_filter": "TestMicrositeX",
+        "course_about_show_social_links": False,
+        "css_overrides_file": "test_microsite/css/test_microsite.css",
+        "show_partners": False,
+        "show_homepage_promo_video": False,
+        "course_index_overlay_text": "This is a Test Microsite Overlay Text.",
+        "course_index_overlay_logo_file": "test_microsite/images/header-logo.png",
+        "homepage_overlay_html": "<h1>This is a Test Microsite Overlay HTML</h1>"
+    },
+    "default": {
+        "university": "default_university",
+        "domain_prefix": "www",
+    }
+}
+MICROSITE_ROOT_DIR = COMMON_ROOT / 'test' / 'test_microsites'
+FEATURES['USE_MICROSITES'] = True
+
+# For consistency in user-experience, keep the value of this setting in sync with
+# the one in lms/envs/test.py
+FEATURES['ENABLE_DISCUSSION_SERVICE'] = False

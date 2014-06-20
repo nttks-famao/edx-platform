@@ -1,4 +1,9 @@
+import logging
+
 from .utils import extract, perform_request, CommentClientRequestError
+
+
+log = logging.getLogger(__name__)
 
 
 class Model(object):
@@ -8,6 +13,7 @@ class Model(object):
     initializable_fields = ['id']
     base_url = None
     default_retrieve_params = {}
+    metric_tag_fields = []
 
     DEFAULT_ACTIONS_WITH_ID = ['get', 'put', 'delete']
     DEFAULT_ACTIONS_WITHOUT_ID = ['get_all', 'post']
@@ -62,19 +68,47 @@ class Model(object):
 
     def _retrieve(self, *args, **kwargs):
         url = self.url(action='get', params=self.attributes)
-        response = perform_request('get', url, self.default_retrieve_params)
-        self.update_attributes(**response)
+        response = perform_request(
+            'get',
+            url,
+            self.default_retrieve_params,
+            metric_tags=self._metric_tags,
+            metric_action='model.retrieve'
+        )
+        self._update_from_response(response)
+
+    @property
+    def _metric_tags(self):
+        """
+        Returns a list of tags to be used when recording metrics about this model.
+
+        Each field named in ``self.metric_tag_fields`` is used as a tag value,
+        under the key ``<class>.<metric_field>``. The tag model_class is used to
+        record the class name of the model.
+        """
+        tags = [
+            u'{}.{}:{}'.format(self.__class__.__name__, attr, self[attr])
+            for attr in self.metric_tag_fields
+            if attr in self.attributes
+        ]
+        tags.append(u'model_class:{}'.format(self.__class__.__name__))
+        return tags
 
     @classmethod
     def find(cls, id):
         return cls(id=id)
 
-    def update_attributes(self, *args, **kwargs):
-        for k, v in kwargs.items():
+    def _update_from_response(self, response_data):
+        for k, v in response_data.items():
             if k in self.accessible_fields:
                 self.__setattr__(k, v)
             else:
-                raise AttributeError("Field {0} does not exist".format(k))
+                log.warning(
+                    "Unexpected field {field_name} in model {model_name}".format(
+                        field_name=k,
+                        model_name=self.__class__.__name__
+                    )
+                )
 
     def updatable_attributes(self):
         return extract(self.attributes, self.updatable_fields)
@@ -94,19 +128,31 @@ class Model(object):
         self.before_save(self)
         if self.id:   # if we have id already, treat this as an update
             url = self.url(action='put', params=self.attributes)
-            response = perform_request('put', url, self.updatable_attributes())
+            response = perform_request(
+                'put',
+                url,
+                self.updatable_attributes(),
+                metric_tags=self._metric_tags,
+                metric_action='model.update'
+            )
         else:   # otherwise, treat this as an insert
             url = self.url(action='post', params=self.attributes)
-            response = perform_request('post', url, self.initializable_attributes())
+            response = perform_request(
+                'post',
+                url,
+                self.initializable_attributes(),
+                metric_tags=self._metric_tags,
+                metric_action='model.insert'
+            )
         self.retrieved = True
-        self.update_attributes(**response)
+        self._update_from_response(response)
         self.after_save(self)
 
     def delete(self):
         url = self.url(action='delete', params=self.attributes)
-        response = perform_request('delete', url)
+        response = perform_request('delete', url, metric_tags=self._metric_tags, metric_action='model.delete')
         self.retrieved = True
-        self.update_attributes(**response)
+        self._update_from_response(response)
 
     @classmethod
     def url_with_id(cls, params={}):

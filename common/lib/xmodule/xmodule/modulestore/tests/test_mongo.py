@@ -1,11 +1,14 @@
 from pprint import pprint
 # pylint: disable=E0611
 from nose.tools import assert_equals, assert_raises, \
-    assert_not_equals, assert_false
+    assert_not_equals, assert_false, assert_true
 from itertools import ifilter
 # pylint: enable=E0611
+from path import path
 import pymongo
 import logging
+import shutil
+from tempfile import mkdtemp
 from uuid import uuid4
 
 from xblock.fields import Scope
@@ -16,11 +19,12 @@ from xmodule.tests import DATA_DIR
 from xmodule.modulestore import Location, MONGO_MODULESTORE_TYPE
 from xmodule.modulestore.mongo import MongoModuleStore, MongoKeyValueStore
 from xmodule.modulestore.draft import DraftModuleStore
+from xmodule.modulestore.xml_exporter import export_to_xml
 from xmodule.modulestore.xml_importer import import_from_xml, perform_xlint
 from xmodule.contentstore.mongo import MongoContentStore
 
 from xmodule.modulestore.tests.test_modulestore import check_path_to_location
-from IPython.testing.nose_assert_methods import assert_in
+from nose.tools import assert_in
 from xmodule.exceptions import NotFoundError
 from xmodule.modulestore.exceptions import InsufficientSpecificationError
 
@@ -37,6 +41,9 @@ RENDER_TEMPLATE = lambda t_n, d, ctx = None, nsp = 'main': ''
 
 class TestMongoModuleStore(object):
     '''Tests!'''
+    # Explicitly list the courses to load (don't want the big one)
+    courses = ['toy', 'simple', 'simple_with_draft', 'test_unicode']
+
     @classmethod
     def setupClass(cls):
         cls.connection = pymongo.MongoClient(
@@ -56,6 +63,7 @@ class TestMongoModuleStore(object):
     def teardownClass(cls):
         if cls.connection:
             cls.connection.drop_database(DB)
+            cls.connection.close()
 
     @staticmethod
     def initdb():
@@ -73,9 +81,7 @@ class TestMongoModuleStore(object):
         # Also test draft store imports
         #
         draft_store = DraftModuleStore(doc_store_config, FS_ROOT, RENDER_TEMPLATE, default_class=DEFAULT_CLASS)
-        # Explicitly list the courses to load (don't want the big one)
-        courses = ['toy', 'simple', 'simple_with_draft', 'test_unicode']
-        import_from_xml(store, DATA_DIR, courses, draft_store=draft_store, static_content_store=content_store)
+        import_from_xml(store, DATA_DIR, TestMongoModuleStore.courses, draft_store=draft_store, static_content_store=content_store)
 
         # also test a course with no importing of static content
         import_from_xml(
@@ -272,6 +278,92 @@ class TestMongoModuleStore(object):
             {'displayname': 'hello'}
         )
 
+    def test_get_courses_for_wiki(self):
+        """
+        Test the get_courses_for_wiki method
+        """
+        for course_number in self.courses:
+            course_locations = self.store.get_courses_for_wiki(course_number)
+            assert_equals(len(course_locations), 1)
+            assert_equals(Location('i4x', 'edX', course_number, 'course', '2012_Fall'), course_locations[0])
+
+        course_locations = self.store.get_courses_for_wiki('no_such_wiki')
+        assert_equals(len(course_locations), 0)
+
+        # set toy course to share the wiki with simple course
+        toy_course = self.store.get_course('edX/toy/2012_Fall')
+        toy_course.wiki_slug = 'simple'
+        self.store.update_item(toy_course)
+
+        # now toy_course should not be retrievable with old wiki_slug
+        course_locations = self.store.get_courses_for_wiki('toy')
+        assert_equals(len(course_locations), 0)
+
+        # but there should be two courses with wiki_slug 'simple'
+        course_locations = self.store.get_courses_for_wiki('simple')
+        assert_equals(len(course_locations), 2)
+        for course_number in ['toy', 'simple']:
+            assert_in(Location('i4x', 'edX', course_number, 'course', '2012_Fall'), course_locations)
+
+        # configure simple course to use unique wiki_slug.
+        simple_course = self.store.get_course('edX/simple/2012_Fall')
+        simple_course.wiki_slug = 'edX.simple.2012_Fall'
+        self.store.update_item(simple_course)
+        # it should be retrievable with its new wiki_slug
+        course_locations = self.store.get_courses_for_wiki('edX.simple.2012_Fall')
+        assert_equals(len(course_locations), 1)
+        assert_in(Location('i4x', 'edX', 'simple', 'course', '2012_Fall'), course_locations)
+
+    def test_export_course_image(self):
+        """
+        Test to make sure that we have a course image in the contentstore,
+        then export it to ensure it gets copied to both file locations.
+        """
+        location = Location('c4x', 'edX', 'simple', 'asset', 'images_course_image.jpg')
+        course_location = Location('i4x', 'edX', 'simple', 'course', '2012_Fall')
+
+        # This will raise if the course image is missing
+        self.content_store.find(location)
+
+        root_dir = path(mkdtemp())
+        try:
+            export_to_xml(self.store, self.content_store, course_location, root_dir, 'test_export')
+            assert_true(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
+            assert_true(path(root_dir / 'test_export/static/images_course_image.jpg').isfile())
+        finally:
+            shutil.rmtree(root_dir)
+
+    def test_export_course_image_nondefault(self):
+        """
+        Make sure that if a non-default image path is specified that we
+        don't export it to the static default location
+        """
+        course = self.get_course_by_id('edX/toy/2012_Fall')
+        assert_true(course.course_image, 'just_a_test.jpg')
+
+        root_dir = path(mkdtemp())
+        try:
+            export_to_xml(self.store, self.content_store, course.location, root_dir, 'test_export')
+            assert_true(path(root_dir / 'test_export/static/just_a_test.jpg').isfile())
+            assert_false(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
+        finally:
+            shutil.rmtree(root_dir)
+
+    def test_course_without_image(self):
+        """
+        Make sure we elegantly passover our code when there isn't a static
+        image
+        """
+        course = self.get_course_by_id('edX/simple_with_draft/2012_Fall')
+        root_dir = path(mkdtemp())
+        try:
+            export_to_xml(self.store, self.content_store, course.location, root_dir, 'test_export')
+            assert_false(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
+            assert_false(path(root_dir / 'test_export/static/images_course_image.jpg').isfile())
+        finally:
+            shutil.rmtree(root_dir)
+
+
 
 class TestMongoKeyValueStore(object):
     """
@@ -299,7 +391,7 @@ class TestMongoKeyValueStore(object):
             assert_false(self.kvs.has(key))
 
     def test_read_non_dict_data(self):
-        self.kvs._data = 'xml_data'
+        self.kvs = MongoKeyValueStore('xml_data', self.children, self.metadata)
         assert_equals('xml_data', self.kvs.get(KeyValueStore.Key(Scope.content, None, None, 'data')))
 
     def _check_write(self, key, value):
@@ -312,7 +404,7 @@ class TestMongoKeyValueStore(object):
         yield (self._check_write, KeyValueStore.Key(Scope.settings, None, None, 'meta'), 'new_settings')
 
     def test_write_non_dict_data(self):
-        self.kvs._data = 'xml_data'
+        self.kvs = MongoKeyValueStore('xml_data', self.children, self.metadata)
         self._check_write(KeyValueStore.Key(Scope.content, None, None, 'data'), 'new_data')
 
     def test_write_invalid_scope(self):

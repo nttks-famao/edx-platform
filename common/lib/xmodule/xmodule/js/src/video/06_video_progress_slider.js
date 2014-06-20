@@ -104,8 +104,7 @@ function () {
     // whole slider). Remember that endTime === null means the end-time
     // is set to the end of video by default.
     function updateStartEndTimeRegion(params) {
-        var isFlashMode = this.currentPlayerMode === 'flash',
-            left, width, start, end, duration, rangeParams;
+        var left, width, start, end, duration, rangeParams;
 
         // We must have a duration in order to determine the area of range.
         // It also must be non-zero.
@@ -120,7 +119,7 @@ function () {
 
         if (start > duration) {
             start = 0;
-        } else if (isFlashMode) {
+        } else if (this.isFlashMode()) {
             start /= Number(this.speed);
         }
 
@@ -128,7 +127,7 @@ function () {
         // video, then we set it to the end of the video.
         if (end === null || end > duration) {
             end = duration;
-        } else if (isFlashMode) {
+        } else if (this.isFlashMode()) {
             end /= Number(this.speed);
         }
 
@@ -178,15 +177,26 @@ function () {
     }
 
     function onSlide(event, ui) {
+        var time = ui.value,
+            duration = this.videoPlayer.duration();
+
         this.videoProgressSlider.frozen = true;
 
         // Remember the seek to value so that we don't repeat ourselves on the
         // 'stop' slider event.
-        this.videoProgressSlider.lastSeekValue = ui.value;
+        this.videoProgressSlider.lastSeekValue = time;
+
+        this.trigger(
+            'videoControl.updateVcrVidTime',
+            {
+                time: time,
+                duration: duration
+            }
+        );
 
         this.trigger(
             'videoPlayer.onSlideSeek',
-            {'type': 'onSlideSeek', 'time': ui.value}
+            {'type': 'onSlideSeek', 'time': time}
         );
 
         // ARIA

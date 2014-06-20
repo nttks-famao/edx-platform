@@ -1,5 +1,6 @@
 """Implements basics of Capa, including class CapaModule."""
 import cgi
+import copy
 import datetime
 import hashlib
 import json
@@ -8,6 +9,13 @@ import os
 import traceback
 import struct
 import sys
+
+# We don't want to force a dependency on datadog, so make the import conditional
+try:
+    from dogapi import dog_stats_api
+except ImportError:
+    # pylint: disable=invalid-name
+    dog_stats_api = None
 
 from pkg_resources import resource_string
 
@@ -147,6 +155,12 @@ class CapaFields(object):
     student_answers = Dict(help="Dictionary with the current student responses", scope=Scope.user_state)
     done = Boolean(help="Whether the student has answered the problem", scope=Scope.user_state)
     seed = Integer(help="Random seed for this student", scope=Scope.user_state)
+    last_submission_time = Date(help="Last submission time", scope=Scope.user_state)
+    submission_wait_seconds = Integer(
+        display_name="Timer Between Attempts",
+        help="Seconds a student must wait between submissions for a problem with multiple attempts.",
+        scope=Scope.settings,
+        default=0)
     weight = Float(
         display_name="Problem Weight",
         help=("Defines the number of points each problem is worth. "
@@ -306,6 +320,12 @@ class CapaMixin(CapaFields):
         self.student_answers = lcp_state['student_answers']
         self.seed = lcp_state['seed']
 
+    def set_last_submission_time(self):
+        """
+        Set the module's last submission time (when the problem was checked)
+        """
+        self.last_submission_time = datetime.datetime.now(UTC())
+
     def get_score(self):
         """
         Access the problem's score
@@ -382,6 +402,24 @@ class CapaMixin(CapaFields):
             return final_check
         else:
             return check
+
+    def check_button_checking_name(self):
+        """
+        Return the "checking..." text for the "check" button.
+
+        After the user presses the "check" button, the button will briefly
+        display the value returned by this function until a response is
+        received by the server.
+
+        The text can be customized by the text_customization setting.
+
+        """
+        # Apply customizations if present
+        if 'custom_checking' in self.text_customization:
+            return self.text_customization.get('custom_checking')
+
+        _ = self.runtime.service(self, "i18n").ugettext
+        return _('Checking...')
 
     def should_show_check_button(self):
         """
@@ -541,13 +579,16 @@ class CapaMixin(CapaFields):
         except Exception as err:  # pylint: disable=broad-except
             html = self.handle_problem_html_error(err)
 
-        # The convention is to pass the name of the check button
-        # if we want to show a check button, and False otherwise
-        # This works because non-empty strings evaluate to True
+        # The convention is to pass the name of the check button if we want
+        # to show a check button, and False otherwise This works because
+        # non-empty strings evaluate to True.  We use the same convention
+        # for the "checking" state text.
         if self.should_show_check_button():
             check_button = self.check_button_name()
+            check_button_checking = self.check_button_checking_name()
         else:
             check_button = False
+            check_button_checking = False
 
         content = {
             'name': self.display_name_with_default,
@@ -559,6 +600,7 @@ class CapaMixin(CapaFields):
             'problem': content,
             'id': self.id,
             'check_button': check_button,
+            'check_button_checking': check_button_checking,
             'reset_button': self.should_show_reset_button(),
             'save_button': self.should_show_save_button(),
             'answer_available': self.answer_available(),
@@ -722,7 +764,7 @@ class CapaMixin(CapaFields):
         """
         event_info = dict()
         event_info['problem_id'] = self.location.url()
-        self.runtime.track_function('showanswer', event_info)
+        self.track_function_unmask('showanswer', event_info)
         if not self.answer_available():
             raise NotFoundError('Answer is not available')
         else:
@@ -844,8 +886,8 @@ class CapaMixin(CapaFields):
         score = self.lcp.get_score()
         self.runtime.publish(
             self,
+            'grade',
             {
-                'event_name': 'grade',
                 'value': score['score'],
                 'max_value': score['total'],
             }
@@ -853,7 +895,8 @@ class CapaMixin(CapaFields):
 
         return {'grade': score['score'], 'max_grade': score['total']}
 
-    def check_problem(self, data):
+    # pylint: disable=too-many-statements
+    def check_problem(self, data, override_time=False):
         """
         Checks whether answers to a problem are correct
 
@@ -866,37 +909,64 @@ class CapaMixin(CapaFields):
         event_info['problem_id'] = self.location.url()
 
         answers = self.make_dict_of_responses(data)
-        event_info['answers'] = convert_files_to_filenames(answers)
+        answers_without_files = convert_files_to_filenames(answers)
+        event_info['answers'] = answers_without_files
+
+        metric_name = u'capa.check_problem.{}'.format
+        # Can override current time
+        current_time = datetime.datetime.now(UTC())
+        if override_time is not False:
+            current_time = override_time
 
         _ = self.runtime.service(self, "i18n").ugettext
 
         # Too late. Cannot submit
         if self.closed():
             event_info['failure'] = 'closed'
-            self.runtime.track_function('problem_check_fail', event_info)
+            self.track_function_unmask('problem_check_fail', event_info)
+            if dog_stats_api:
+                dog_stats_api.increment(metric_name('checks'), tags=[u'result:failed', u'failure:closed'])
             raise NotFoundError(_("Problem is closed."))
 
         # Problem submitted. Student should reset before checking again
         if self.done and self.rerandomize == "always":
             event_info['failure'] = 'unreset'
-            self.runtime.track_function('problem_check_fail', event_info)
+            self.track_function_unmask('problem_check_fail', event_info)
+            if dog_stats_api:
+                dog_stats_api.increment(metric_name('checks'), tags=[u'result:failed', u'failure:unreset'])
             raise NotFoundError(_("Problem must be reset before it can be checked again."))
 
         # Problem queued. Students must wait a specified waittime before they are allowed to submit
+        # IDEA: consider stealing code from below: pretty-print of seconds, cueing of time remaining
         if self.lcp.is_queued():
-            current_time = datetime.datetime.now(UTC())
             prev_submit_time = self.lcp.get_recentmost_queuetime()
+
             waittime_between_requests = self.runtime.xqueue['waittime']
             if (current_time - prev_submit_time).total_seconds() < waittime_between_requests:
                 msg = _(u"You must wait at least {wait} seconds between submissions.").format(
                     wait=waittime_between_requests)
-                return {'success': msg, 'html': ''}  # Prompts a modal dialog in ajax callback
+                return {'success': msg, 'html': ''}
+
+        # Wait time between resets: check if is too soon for submission.
+        if self.last_submission_time is not None and self.submission_wait_seconds != 0:
+             # pylint: disable=maybe-no-member
+             # pylint is unable to verify that .total_seconds() exists
+            if (current_time - self.last_submission_time).total_seconds() < self.submission_wait_seconds:
+                remaining_secs = int(self.submission_wait_seconds - (current_time - self.last_submission_time).total_seconds())
+                msg = _(u'You must wait at least {wait_secs} between submissions. {remaining_secs} remaining.').format(
+                    wait_secs=self.pretty_print_seconds(self.submission_wait_seconds),
+                    remaining_secs=self.pretty_print_seconds(remaining_secs))
+                return {
+                    'success': msg,
+                    'html': ''
+                }
 
         try:
             correct_map = self.lcp.grade_answers(answers)
             self.attempts = self.attempts + 1
             self.lcp.done = True
             self.set_state_from_lcp()
+            self.set_last_submission_time()
 
         except (StudentInputError, ResponseError, LoncapaProblemError) as inst:
             log.warning("StudentInputError in capa_module:problem_check",
@@ -944,7 +1014,19 @@ class CapaMixin(CapaFields):
         event_info['correct_map'] = correct_map.get_dict()
         event_info['success'] = success
         event_info['attempts'] = self.attempts
-        self.runtime.track_function('problem_check', event_info)
+        event_info['submission'] = self.get_submission_metadata_safe(answers_without_files, correct_map)
+        self.track_function_unmask('problem_check', event_info)
+
+        if dog_stats_api:
+            dog_stats_api.increment(metric_name('checks'), tags=[u'result:success'])
+            dog_stats_api.histogram(
+                metric_name('correct_pct'),
+                float(published_grade['grade']) / published_grade['max_grade'],
+            )
+            dog_stats_api.histogram(
+                metric_name('attempts'),
+                self.attempts,
+            )
 
         if hasattr(self.runtime, 'psychometrics_handler'):  # update PsychometricsData using callback
             self.runtime.psychometrics_handler(self.get_state_for_lcp())
@@ -954,8 +1036,171 @@ class CapaMixin(CapaFields):
 
         return {
             'success': success,
-            'contents': html,
+            'contents': html
         }
+    # pylint: enable=too-many-statements
+
+    def track_function_unmask(self, title, event_info):
+        """
+        All calls to runtime.track_function route through here so that the
+        choice names can be unmasked.
+        """
+        # Do the unmask translates on a copy of event_info,
+        # avoiding problems where an event_info is unmasked twice.
+        event_unmasked = copy.deepcopy(event_info)
+        self.unmask_event(event_unmasked)
+        self.runtime.track_function(title, event_unmasked)
+
+    def unmask_event(self, event_info):
+        """
+        Translates in-place the event_info to account for masking
+        and adds information about permutation options in force.
+        """
+        # answers is like: {u'i4x-Stanford-CS99-problem-dada976e76f34c24bc8415039dee1300_2_1': u'mask_0'}
+        # Each response values has an answer_id which matches the key in answers.
+        for response in self.lcp.responders.values():
+            # Un-mask choice names in event_info for masked responses.
+            if response.has_mask():
+                # We don't assume much about the structure of event_info,
+                # but check for the existence of the things we need to un-mask.
+
+                # Look for answers/id
+                answer = event_info.get('answers', {}).get(response.answer_id)
+                if answer is not None:
+                    event_info['answers'][response.answer_id] = response.unmask_name(answer)
+
+                # Look for state/student_answers/id
+                answer = event_info.get('state', {}).get('student_answers', {}).get(response.answer_id)
+                if answer is not None:
+                    event_info['state']['student_answers'][response.answer_id] = response.unmask_name(answer)
+
+                # Look for old_state/student_answers/id  -- parallel to the above case, happens on reset
+                answer = event_info.get('old_state', {}).get('student_answers', {}).get(response.answer_id)
+                if answer is not None:
+                    event_info['old_state']['student_answers'][response.answer_id] = response.unmask_name(answer)
+
+            # Add 'permutation' to event_info for permuted responses.
+            permutation_option = None
+            if response.has_shuffle():
+                permutation_option = 'shuffle'
+            elif response.has_answerpool():
+                permutation_option = 'answerpool'
+
+            if permutation_option is not None:
+                # Add permutation record tuple: (one of:'shuffle'/'answerpool', [as-displayed list])
+                if not 'permutation' in event_info:
+                    event_info['permutation'] = {}
+                event_info['permutation'][response.answer_id] = (permutation_option, response.unmask_order())
+
+    def pretty_print_seconds(self, num_seconds):
+        """
+        Returns time duration nicely formated, e.g. "3 minutes 4 seconds"
+        """
+        # Here _ is the N variant ungettext that does pluralization with a 3-arg call
+        _ = self.runtime.service(self, "i18n").ungettext
+        hours = num_seconds // 3600
+        sub_hour = num_seconds % 3600
+        minutes = sub_hour // 60
+        seconds = sub_hour % 60
+        display = ""
+        if hours > 0:
+            display += _("{num_hour} hour", "{num_hour} hours", hours).format(num_hour=hours)
+        if minutes > 0:
+            if display != "":
+                display += " "
+            # translators: "minute" refers to a minute of time
+            display += _("{num_minute} minute", "{num_minute} minutes", minutes).format(num_minute=minutes)
+        # Taking care to make "0 seconds" instead of "" for 0 time
+        if seconds > 0 or (hours == 0 and minutes == 0):
+            if display != "":
+                display += " "
+            # translators: "second" refers to a second of time
+            display += _("{num_second} second", "{num_second} seconds", seconds).format(num_second=seconds)
+        return display
+
+    def get_submission_metadata_safe(self, answers, correct_map):
+        """
+        Ensures that no exceptions are thrown while generating input metadata summaries.  Returns the
+        summary if it is successfully created, otherwise an empty dictionary.
+        """
+        try:
+            return self.get_submission_metadata(answers, correct_map)
+        except Exception:  # pylint: disable=broad-except
+            # NOTE: The above process requires deep inspection of capa structures that may break for some
+            # uncommon problem types.  Ensure that it does not prevent answer submission in those
+            # cases.  Any occurrences of errors in this block should be investigated and resolved.
+            log.exception('Unable to gather submission metadata, it will not be included in the event.')
+
+        return {}
+
+    def get_submission_metadata(self, answers, correct_map):
+        """
+        Return a map of inputs to their corresponding summarized metadata.
+
+        Returns:
+            A map whose keys are a unique identifier for the input (in this case a capa input_id) and
+            whose values are:
+
+                question (str): Is the prompt that was presented to the student.  It corresponds to the
+                    label of the input.
+                answer (mixed): Is the answer the student provided.  This may be a rich structure,
+                    however it must be json serializable.
+                response_type (str): The XML tag of the capa response type.
+                input_type (str): The XML tag of the capa input type.
+                correct (bool): Whether or not the provided answer is correct.  Will be an empty
+                    string if correctness could not be determined.
+                variant (str): In some cases the same question can have several different variants.
+                    This string should uniquely identify the variant of the question that was answered.
+                    In the capa context this corresponds to the `seed`.
+
+        This function attempts to be very conservative and make very few assumptions about the structure
+        of the problem.  If problem related metadata cannot be located it should be replaced with empty
+        strings ''.
+        """
+
+        input_metadata = {}
+        for input_id, internal_answer in answers.iteritems():
+            answer_input = self.lcp.inputs.get(input_id)
+
+            if answer_input is None:
+                log.warning('Input id %s is not mapped to an input type.', input_id)
+
+            answer_response = None
+            for response, responder in self.lcp.responders.iteritems():
+                for other_input_id in self.lcp.responder_answers[response]:
+                    if other_input_id == input_id:
+                        answer_response = responder
+
+            if answer_response is None:
+                log.warning('Answer responder could not be found for input_id %s.', input_id)
+
+            user_visible_answer = internal_answer
+            if hasattr(answer_input, 'get_user_visible_answer'):
+                user_visible_answer = answer_input.get_user_visible_answer(internal_answer)
+
+            # If this problem has rerandomize enabled, then it will generate N variants of the
+            # question, one per unique seed value.  In this case we would like to know which
+            # variant was selected.  Ideally it would be nice to have the exact question that
+            # was presented to the user, with values interpolated etc, but that can be done
+            # later if necessary.
+            variant = ''
+            if self.rerandomize != 'never':
+                variant = self.seed
+
+            is_correct = correct_map.is_correct(input_id)
+            if is_correct is None:
+                is_correct = ''
+
+            input_metadata[input_id] = {
+                'question': getattr(answer_input, 'loaded_attributes', {}).get('label', ''),
+                'answer': user_visible_answer,
+                'response_type': getattr(getattr(answer_response, 'xml', None), 'tag', ''),
+                'input_type': getattr(answer_input, 'tag', ''),
+                'correct': is_correct,
+                'variant': variant,
+            }
+
+        return input_metadata
 
     def rescore_problem(self):
         """
@@ -979,13 +1224,13 @@ class CapaMixin(CapaFields):
 
         if not self.lcp.supports_rescoring():
             event_info['failure'] = 'unsupported'
-            self.runtime.track_function('problem_rescore_fail', event_info)
+            self.track_function_unmask('problem_rescore_fail', event_info)
             # Translators: 'rescoring' refers to the act of re-submitting a student's solution so it can get a new score.
             raise NotImplementedError(_("Problem's definition does not support rescoring."))
 
         if not self.done:
             event_info['failure'] = 'unanswered'
-            self.runtime.track_function('problem_rescore_fail', event_info)
+            self.track_function_unmask('problem_rescore_fail', event_info)
             raise NotFoundError(_("Problem must be answered before it can be graded again."))
 
         # get old score, for comparison:
@@ -999,12 +1244,12 @@ class CapaMixin(CapaFields):
         except (StudentInputError, ResponseError, LoncapaProblemError) as inst:
             log.warning("Input error in capa_module:problem_rescore", exc_info=True)
             event_info['failure'] = 'input_error'
-            self.runtime.track_function('problem_rescore_fail', event_info)
+            self.track_function_unmask('problem_rescore_fail', event_info)
             return {'success': u"Error: {0}".format(inst.message)}
 
         except Exception as err:
             event_info['failure'] = 'unexpected'
-            self.runtime.track_function('problem_rescore_fail', event_info)
+            self.track_function_unmask('problem_rescore_fail', event_info)
             if self.runtime.DEBUG:
                 msg = u"Error checking problem: {0}".format(err.message)
                 msg += u'\nTraceback:\n' + traceback.format_exc()
@@ -1032,7 +1277,7 @@ class CapaMixin(CapaFields):
         event_info['correct_map'] = correct_map.get_dict()
         event_info['success'] = success
         event_info['attempts'] = self.attempts
-        self.runtime.track_function('problem_rescore', event_info)
+        self.track_function_unmask('problem_rescore', event_info)
 
         # psychometrics should be called on rescoring requests in the same way as check-problem
         if hasattr(self.runtime, 'psychometrics_handler'):  # update PsychometricsData using callback
@@ -1057,7 +1302,7 @@ class CapaMixin(CapaFields):
         # Too late. Cannot submit
         if self.closed() and not self.max_attempts == 0:
             event_info['failure'] = 'closed'
-            self.runtime.track_function('save_problem_fail', event_info)
+            self.track_function_unmask('save_problem_fail', event_info)
             return {
                 'success': False,
                 # Translators: 'closed' means the problem's due date has passed. You may no longer attempt to solve the problem.
@@ -1068,7 +1313,7 @@ class CapaMixin(CapaFields):
         # again.
         if self.done and self.rerandomize == "always":
             event_info['failure'] = 'done'
-            self.runtime.track_function('save_problem_fail', event_info)
+            self.track_function_unmask('save_problem_fail', event_info)
             return {
                 'success': False,
                 'msg': _("Problem needs to be reset prior to save.")
@@ -1078,7 +1323,7 @@ class CapaMixin(CapaFields):
 
         self.set_state_from_lcp()
 
-        self.runtime.track_function('save_problem_success', event_info)
+        self.track_function_unmask('save_problem_success', event_info)
         msg = _("Your answers have been saved.")
         if not self.max_attempts == 0:
             msg = _("Your answers have been saved but not graded. Click 'Check' to grade them.")
@@ -1106,7 +1351,7 @@ class CapaMixin(CapaFields):
 
         if self.closed():
             event_info['failure'] = 'closed'
-            self.runtime.track_function('reset_problem_fail', event_info)
+            self.track_function_unmask('reset_problem_fail', event_info)
             return {
                 'success': False,
                 # Translators: 'closed' means the problem's due date has passed. You may no longer attempt to solve the problem.
@@ -1115,7 +1360,7 @@ class CapaMixin(CapaFields):
 
         if not self.done:
             event_info['failure'] = 'not_done'
-            self.runtime.track_function('reset_problem_fail', event_info)
+            self.track_function_unmask('reset_problem_fail', event_info)
             return {
                 'success': False,
                 'error': _("Refresh the page and make an attempt before resetting."),
@@ -1132,7 +1377,7 @@ class CapaMixin(CapaFields):
         self.set_state_from_lcp()
 
         event_info['new_state'] = self.lcp.get_state()
-        self.runtime.track_function('reset_problem', event_info)
+        self.track_function_unmask('reset_problem', event_info)
 
         return {
             'success': True,

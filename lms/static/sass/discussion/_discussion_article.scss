@@ -1,0 +1,143 @@
+.discussion-body,
+.discussion-module {
+  .discussion-column {
+    margin-left : 1rem;
+    @media screen and (max-width:640px) {
+      margin-left : 0;
+    }
+  }
+  .discussion-article {
+    position: relative;
+    min-width: 0px;
+    padding: 30px 30px 10px;
+    @media screen and (max-width:640px) {
+      padding: 30px 10px 10px;
+    }
+
+    a {
+      word-wrap: break-word;
+    }
+
+    h1 {
+/*      margin-bottom: $baseline/2;*/
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+
+    .posted-details {
+      font-size: 12px;
+      font-style: italic;
+      color: #888;
+
+      .username {
+        display: block;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      span {
+        font-style: italic;
+      }
+    }
+
+    .post-context{
+      font-size: 12px;
+      color: #888;
+    }
+
+    .dogear {
+      display: block;
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 52px;
+      height: 51px;
+      background: url(/static/images/follow-dog-ear.png) 0 -52px no-repeat;
+
+      &.is-followed {
+        background-position: 0 0;
+      }
+    }
+    .discussion-response{
+      .response-local{
+        clear: both;
+      }
+    }
+    .staff{
+      margin-top: 5px;
+    }
+
+    .add-response{
+      padding: 0px;
+      clear: both;
+    }
+    .discussion-reply-new {
+      padding: 0;
+
+      h4 {
+        font-size: 16px;
+        font-weight: 700;
+      }
+    }
+  }
+  .discussion-post {
+    > header .vote-btn {
+      position: relative;
+      z-index: 99;
+      margin-top: 5px;
+    }
+
+    .post-tools {
+      margin-top: 15px;
+
+      .ui-icon {
+        display: inline;
+        float: left;
+        width: 13px;
+        height: 13px;
+        margin-right: 4px;
+        background: url(/static/images/small-grey-arrows.png) no-repeat;
+
+        &.expand {
+          margin-top: 5px;
+          background-position: 0 0;
+        }
+
+        &.collapse {
+          margin-top: 6px;
+          background-position: -13px 0;
+        }
+      }
+    }
+  }
+}
+
+.discussion-module{
+  .discussion-thread{
+    padding-bottom: 2rem;
+    border: dotted 1px grey;
+    border-radius: 2px;
+    background-color: #fafafa;
+  }
+
+  .pagination{
+    margin-top: 30px;
+    .discussion-paginator{
+      float: right;
+      li{
+        list-style: none;
+        display: inline-block;
+        height: 35px;
+        padding: 0 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 32px;
+        color: #333;
+      }
+    }
+  }
+}

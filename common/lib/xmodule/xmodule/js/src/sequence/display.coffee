@@ -23,8 +23,8 @@ class @Sequence
   updatePageTitle: ->
     # update the page title to include the current section
     position_link = @link_for(@position)
-    if position_link and position_link.attr('title')
-        document.title = position_link.attr('title') + @base_page_title
+    if position_link and position_link.data('page-title')
+        document.title = position_link.data('page-title') + @base_page_title
 
   hookUpProgressEvent: ->
     $('.problems-wrapper').bind 'progressChanged', @updateProgress
@@ -73,19 +73,19 @@ class @Sequence
     @$('.sequence-nav-buttons a').unbind('click')
 
     if @contents.length == 0
-      @$('.sequence-nav-buttons .prev a').addClass('disabled')
-      @$('.sequence-nav-buttons .next a').addClass('disabled')
+      @$('.sequence-nav-buttons .prev a').addClass('disabled').attr('aria-hidden', 'true')
+      @$('.sequence-nav-buttons .next a').addClass('disabled').attr('aria-hidden', 'true')
       return
 
     if @position == 1
-      @$('.sequence-nav-buttons .prev a').addClass('disabled')
+      @$('.sequence-nav-buttons .prev a').addClass('disabled').attr('aria-hidden', 'true')
     else
-      @$('.sequence-nav-buttons .prev a').removeClass('disabled').click(@previous)
+      @$('.sequence-nav-buttons .prev a').removeClass('disabled').attr('aria-hidden', 'false').click(@previous)
 
     if @position == @contents.length
-      @$('.sequence-nav-buttons .next a').addClass('disabled')
+      @$('.sequence-nav-buttons .next a').addClass('disabled').attr('aria-hidden', 'true')
     else
-      @$('.sequence-nav-buttons .next a').removeClass('disabled').click(@next)
+      @$('.sequence-nav-buttons .next a').removeClass('disabled').attr('aria-hidden', 'false').click(@next)
 
   render: (new_position) ->
     if @position != new_position
@@ -98,10 +98,10 @@ class @Sequence
       # Added for aborting video bufferization, see ../video/10_main.js
       @el.trigger "sequence:change"
       @mark_active new_position
-      
+
       current_tab = @contents.eq(new_position - 1)
       @content_container.html(current_tab.text()).attr("aria-labelledby", current_tab.attr("aria-labelledby"))
-      
+
       XBlock.initializeBlocks(@content_container)
 
       window.update_schematics() # For embedded circuit simulator exercises in 6.002x
@@ -113,10 +113,8 @@ class @Sequence
 
       sequence_links = @content_container.find('a.seqnav')
       sequence_links.click @goto
-      # Focus on the first available xblock.
-      @content_container.find('.vert .xblock :first').focus()
-    @$("a.active").blur()  
-    
+    @$("a.active").blur()
+
   goto: (event) =>
     event.preventDefault()
     if $(event.target).hasClass 'seqnav' # Links from courseware <a class='seqnav' href='n'>...</a>
@@ -193,10 +191,12 @@ class @Sequence
 
   mark_active: (position) ->
     # Mark the correct tab as selected, for a11y helpfulness.
-    @$("#sequence-list a[aria-selected='true']").attr("aria-selected", "false")
+    @$('#sequence-list [role="tab"]').attr({
+        'aria-selected' : null
+        });
     # Don't overwrite class attribute to avoid changing Progress class
     element = @link_for(position)
     element.removeClass("inactive")
     .removeClass("visited")
     .addClass("active")
-    .attr("aria-selected", "true")
+    .attr({"aria-selected": "true", 'tabindex': '0'})

@@ -1,4 +1,4 @@
-#pylint: disable=C0111
+# pylint: disable=C0111
 
 from lettuce import step
 from lettuce import world
@@ -6,6 +6,18 @@ from lettuce import before
 from pymongo import MongoClient
 from nose.tools import assert_equals
 from nose.tools import assert_in
+
+REQUIRED_EVENT_FIELDS = [
+    'agent',
+    'event',
+    'event_source',
+    'event_type',
+    'host',
+    'ip',
+    'page',
+    'time',
+    'username'
+]
 
 
 @before.all
@@ -53,3 +65,6 @@ def event_is_emitted(_step, event_type, event_source):
     }
     for key, value in expected_field_values.iteritems():
         assert_equals(event[key], value)
+
+    for field in REQUIRED_EVENT_FIELDS:
+        assert_in(field, event)

@@ -6,8 +6,19 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
+    <meta property="fb:app_id" content="${settings.FB_APPID}"/>
+    <meta property="og:site_name" content="${settings.FB_SITE}"/>
+    <meta property="og:title" content="${settings.FB_TITLE}"/>
+    <meta property="og:type" content="${settings.FB_TYPE}"/>
+    <meta property="og:description" content="${settings.FB_DESC}"/>
+    <meta property="og:url" content="${settings.FB_URL}"/>
+    <meta property="og:image" content="${settings.FB_IMG}"/>
+##    <meta name="twitter:card" content="summary"/>
+##    <meta name="twitter:site" content=""/>
+
 <%! from django.utils.translation import ugettext as _ %>
-<%! from microsite_configuration.middleware import MicrositeConfiguration %>
+<%! from microsite_configuration import microsite %>
 <%! from microsite_configuration import page_title_breadcrumbs %>
 
 <%namespace name='static' file='static_content.html'/>
@@ -29,7 +40,7 @@
     return getattr(settings, "THEME_NAME", None) == "stanford"
   %>
 </%def>
-    
+
 ## this needs to be here to prevent the title from mysteriously appearing in the body, in one case
 <%def name="pagetitle()" />
   <%block name="title">
@@ -49,12 +60,15 @@
 
   <script type="text/javascript" src="/jsi18n/"></script>
 
-  <link rel="icon" type="image/x-icon" href="${static.url(MicrositeConfiguration.get_microsite_configuration_value('favicon_path', settings.FAVICON_PATH))}" />
+  <link rel="icon" type="image/x-icon" href="${static.url(microsite.get_value('favicon_path', settings.FAVICON_PATH))}" />
 
+  <%static:css group='style-gacco'/>
   <%static:css group='style-vendor'/>
-  <%static:css group='style-app'/>
-  <%static:css group='style-app-extend1'/>
-  <%static:css group='style-app-extend2'/>
+  <%static:css group='style-course'/>
+
+##  <%static:css group='style-app'/>
+##  <%static:css group='style-app-extend1'/>
+##  <%static:css group='style-app-extend2'/>
 
   <%static:js group='main_vendor'/>
 
@@ -71,11 +85,11 @@
 
   else:
     header_extra_file = None
-    header_file = MicrositeConfiguration.get_microsite_template_path('navigation.html')
-    google_analytics_file = MicrositeConfiguration.get_microsite_template_path('google_analytics.html')
-    footer_file = MicrositeConfiguration.get_microsite_template_path('footer.html')
+    header_file = microsite.get_template_path('navigation.html')
+    google_analytics_file = microsite.get_template_path('google_analytics.html')
+    footer_file = microsite.get_template_path('footer.html')
 
-    style_overrides_file = MicrositeConfiguration.get_microsite_configuration_value('css_overrides_file')
+    style_overrides_file = microsite.get_value('css_overrides_file')
 %>
 
   % if header_extra_file:
@@ -87,7 +101,7 @@
   <![endif]-->
 
   <meta name="path_prefix" content="${EDX_ROOT_URL}">
-  <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
+##  <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
 
   % if not course:
     <%include file="${google_analytics_file}" />
@@ -103,7 +117,15 @@
 </head>
 
 <body class="<%block name='bodyclass'/> lang_${LANGUAGE_CODE}">
-  <a class="nav-skip" href="<%block name="nav_skip">#content</%block>">${_("Skip to this view's content")}</a>
+  <a class="nav-skip hide" href="<%block name="nav_skip">#content</%block>">${_("Skip to this view's content")}</a>
+
+## Offcanvas START  --------------
+<div class="off-canvas-wrap docs-wrap" data-offcanvas>
+<div class="inner-wrap">
+## ------------------------------
+
+
+  <div id="fb-root"></div>
 
   <%include file="mathjax_accessible.html" />
 
@@ -111,7 +133,7 @@
   <%include file="${header_file}" />
 %endif
 
-  <div class="content-wrapper" id="content">
+  <div class="content-wrapper_" id="content">
     ${self.body()}
     <%block name="bodyextra"/>
   </div>
@@ -120,16 +142,32 @@
   <%include file="${footer_file}" />
 % endif
 
+## -----------------------------
+<a class="exit-off-canvas"></a>
+</div>
+</div>
+## Offcanvas END  --------------
+
+
+
+
   <script>window.baseUrl = "${settings.STATIC_URL}";</script>
   <%static:js group='application'/>
   <%static:js group='module-js'/>
 
   <%block name="js_extra"/>
+
+  <%static:js group='foundation'/>
+
+<script>
+  $(document).foundation();
+</script>
+
 </body>
 </html>
 
 <%def name="login_query()">${
-  "?course_id={0}&enrollment_action={1}".format(
+  u"?course_id={0}&enrollment_action={1}".format(
     html.escape(course_id),
     html.escape(enrollment_action)
   ) if course_id and enrollment_action else ""

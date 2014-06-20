@@ -12,28 +12,109 @@
       cart_link = ""
 %>
 <%namespace name='static' file='../static_content.html'/>
-<%! from microsite_configuration.middleware import MicrositeConfiguration %>
+<%! from microsite_configuration import microsite %>
 
 <%inherit file="../main.html" />
 
 <%block name="headextra">
 
+<%static:css group='style-course'/>
+<%static:css group='style-gacco'/>
+
   <%
     if self.theme_enabled():
-      google_analytics_file = u'../' + MicrositeConfiguration.get_microsite_configuration_value('google_analytics_file', 'theme-google-analytics.html')
+      google_analytics_file = u'../{ga}'.format(
+        ga=microsite.get_value('google_analytics_file', 'theme-google-analytics.html')
+      )
     else:
       google_analytics_file = '../google_analytics.html'
   %>
 
   <%include file="${google_analytics_file}" />
-  
+
   ## OG (Open Graph) title and description added below to give social media info to display
   ## (https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content#tags)
   <meta property="og:title" content="${get_course_about_section(course, 'title')}" />
   <meta property="og:description" content="${get_course_about_section(course, 'short_description')}" />
+  <meta property="og:image" content="${course_image_url(course)}">
+  
+  <style type="text/css">
+    <!--
+div .videowrap{
+	margin: 0 auto;
+	width: auto;
+	height: auto;
+	position: relative;
+	z-index: 2;
+	background: #000;
+	filter: alpha(opacity=50);
+	-moz-opacity: 0.5;
+	-webkit-opacity: 0.5;
+	-o-opacity: 0.5;
+	-ms-opacity: 0.5;
+	opacity: 0.5;
+}
+
+div .videoplaywrap{
+	width:75px;
+	height:75px;
+	position:absolute;
+	background-color:transparent;
+	margin:auto;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+}
+
+div .videoplaycircle {
+	z-index: 3;
+	border-color: #333;
+	border-style: solid;
+	border-width: 5px;
+	border-radius:52px;
+	-webkit-border-radius:52px;
+	-moz-border-radius:52px;
+	width: 70px;
+	height: 70px;
+	position: absolute;
+	##top: 30%;
+	##left: 115px;
+	box-shadow: 0 5px 5px -5px #000;
+	margin: 0 auto;
+}
+
+div .videoplaytriangle{
+	z-index: 4;
+	width: 0;
+	height: 0;
+	border-top: 20px solid transparent;
+	##border-right: 40px solid transparent;
+	border-right-width:0;
+	border-bottom: 20px solid transparent;
+	border-left: 40px solid #333;
+	position: absolute;
+	##top: 10px;
+	##left: 15px;
+	margin: 10px 15px auto;
+        ##box-shadow: 0 5px 5px -5px #000;
+}
+    -->
+  </style>
+  
 </%block>
 
 <%block name="js_extra">
+  <script type="text/javascript">
+  window.onload = function(){
+    document.getElementById("facebookLink").setAttribute('href','http://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href));
+    document.getElementById("twitterLink").setAttribute('href','//twitter.com/share?text=${get_course_about_section(course, "title")}');
+    document.getElementById("gplusLink").setAttribute('href','https://plusone.google.com/_/+1/confirm?hl=ja&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent (document.title));
+    document.getElementById("lineLink").setAttribute('href','line://msg/text/${get_course_about_section(course, "title")}%0d%0a'+encodeURIComponent(location.href));
+    return false;
+  }
+  </script>
+
 
   <script type="text/javascript">
   (function() {
@@ -120,6 +201,175 @@
 
 <%block name="pagetitle">${_("About {course.display_number_with_default}").format(course=course) | h}</%block>
 
+## ------------------
+<div class="row" style="margin-top:5rem;">
+  <div class="columns">
+    <h1>${course.display_number_with_default | h}: ${get_course_about_section(course, "title")}</h1>
+    <hr>
+  </div>
+  <div class="columns hide-for-medium-up">
+    % if get_course_about_section(course, "video"):
+    <a href="#video-modal" class="media" rel="" data-reveal-id="video-modal">
+    <div class="videowrap">
+      <div class="videoplaywrap">
+        <div class="videoplaycircle">
+          <div class="videoplaytriangle"></div>
+        </div>
+      </div>
+    <img src="${course_image_url(course)}" alt="${get_course_about_section(course, "title")}" style="width:100%" />
+    </div>
+    </a>
+    <label class="expand secondary text-center" style="background-color:#ccc;">${_("Play PV! PLAY Button above!!")}</label>
+    % else:
+    <img src="${course_image_url(course)}" alt="${get_course_about_section(course, "title")}" style="width:100%" />
+    % endif
+    <ul class="pricing-table hide-for-medium-up">
+      <li class="bullet-item">${_("Course Number")}:${course.display_number_with_default | h}</li>
+      <li class="bullet-item">${_("Classes Start")}:${course.start_date_text}</li>
+      % if get_course_about_section(course, "end_date") or course.end:
+      <li class="bullet-item">${_("Classes End")}:
+      % if get_course_about_section(course, "end_date"):
+        ${get_course_about_section(course, "end_date")}
+      % else:
+        ${course.end_date_text}
+      % endif</li>
+    % endif
+    % if get_course_about_section(course, "effort"):
+       <li class="bullet-item">${_("Estimated Effort")}:${get_course_about_section(course, "effort")}</li>
+    % endif
+       <li class="bullet-item">${_("Period")}:${_('{number}').format(number=4)}週間</li>
+    % if get_course_about_section(course, "prerequisites"):
+       <li class="bullet-item">${_("Prerequisites")}:${get_course_about_section(course, "prerequisites")}</li>
+    % endif
+##      <li class="bullet-item">${_("Course Number")}:${course.display_number_with_default | h}</li>
+##      % if not course.start_date_is_still_default:
+##      <li class="bullet-item">${_("Classes Start")}:${course.start_date_text}</li>
+##      % endif
+##      % if get_course_about_section(course, "end_date") or course.end:
+##      <li class="bullet-item">${_("Classes End")}:
+##        % if get_course_about_section(course, "end_date"):
+##          ${get_course_about_section(course, "end_date")}
+##        % else:
+##          ${course.end_date_text}
+##        % endif
+##      </li>
+##      % endif
+##      % if get_course_about_section(course, "effort"):
+##      <li class="bullet-item">${_("Estimated Effort")}:${get_course_about_section(course, "effort")}</li>
+##      % endif
+##      % if get_course_about_section(course, "prerequisites"):
+##      <li class="bullet-item">${_("Prerequisites")}:${get_course_about_section(course, "prerequisites")}</li>
+##      % endif
+    </ul>
+    <hr>
+  </div>
+  <div class="columns large-8 medium-8">
+     ## Course About from CMS
+     ${get_course_about_section(course, "overview")}
+  </div>
+  <div class="columns large-4 medium-4 show-for-medium-up">
+    % if get_course_about_section(course, "video"):
+    <a href="#video-modal" class="media" rel="" data-reveal-id="video-modal">
+    <div class="videowrap">
+    <div class="videoplaywrap">
+      <div class="videoplaycircle">
+      <div class="videoplaytriangle"></div>
+      </div>
+    </div>
+    <img src="${course_image_url(course)}" alt="${get_course_about_section(course, "title")}" style="width:100%" />
+    </div>
+    </a>
+    <label class="expand secondary text-center" style="background-color:#ccc;">${_("Play PV! PLAY Button above!!")}</label>
+    % else:
+    <img src="${course_image_url(course)}" alt="${get_course_about_section(course, "title")}" style="width:100%" />
+    % endif
+    </div>
+    <div class="columns large-4 medium-4">
+    <div class="panel radius" style="margin-top:0.5rem;">
+      <h5>※受講登録するとお客様の利用者情報は講座提供者（講師）に共有されます。詳しくは<a href="https://support.gacco.org/hc/ja/articles/200749224" target="_blank">利用規約</a>と<a href
+="https://support.gacco.org/hc/ja/articles/200749314" target="_blank">プライバシーポリシー</a>をご覧ください。</h5>
+    </div>
+    %if user.is_authenticated() and registered:
+      %if show_courseware_link:
+      <a href="${course_target}" class="f_button small radius expand">
+        <span class>${_("View Courseware")}</span>
+      </a>
+      % endif
+      <p class="text-center" style="margin-bottom:0.5rem;"><span class="f_label success" style="line-height:1rem; margin-right:0.2rem;">登録状況</span>${_("You are registered for this course")}</p>
+    % elif is_course_full:
+      <span class="register f_button small expand radius disabled">${_("Course is full")}</span>
+    %else:
+      <a href="#" class="register f_button small radius expand">
+      ${_("Register for {course.display_number_with_default}").format(course=course) | h}
+      </a>
+      <div id="register_error"></div>
+    % endif
+    <ul class="pricing-table show-for-medium-up">
+      <li class="bullet-item">${_("Course Number")}:${course.display_number_with_default | h}</li>
+      <li class="bullet-item">${_("Classes Start")}:${course.start_date_text}</li>
+      % if get_course_about_section(course, "end_date") or course.end:
+      <li class="bullet-item">${_("Classes End")}：                                  
+      % if get_course_about_section(course, "end_date"):
+        ${get_course_about_section(course, "end_date")}
+      % else:
+        ${course.end_date_text}
+      % endif</li>
+    % endif
+    % if get_course_about_section(course, "effort"):
+       <li class="bullet-item">${_("Estimated Effort")}:${get_course_about_section(course, "effort")}</li>
+    % endif
+       <li class="bullet-item">${_("Period")}:${_('{number}').format(number=4)} ${_("Weeks")}</li>
+    % if get_course_about_section(course, "prerequisites"):
+       <li class="bullet-item">${_("Prerequisites")}:${get_course_about_section(course, "prerequisites")}</li>
+    % endif
+##      <li class="bullet-item">${_("Course Number")}:${course.display_number_with_default | h}</li>
+##      % if not course.start_date_is_still_default:
+##      <li class="bullet-item">${_("Classes Start")}:${course.start_date_text}</li>
+##      % endif
+##      % if get_course_about_section(course, "end_date") or course.end:
+##      <li class="bullet-item">${_("Classes End")}:
+##        % if get_course_about_section(course, "end_date"):
+##          ${get_course_about_section(course, "end_date")}
+##        % else:
+##          ${course.end_date_text}
+##        % endif
+##      </li>
+##      % endif
+##      % if get_course_about_section(course, "effort"):
+##      <li class="bullet-item">${_("Estimated Effort")}:${get_course_about_section(course, "effort")}</li>
+##      % endif
+##      % if get_course_about_section(course, "prerequisites"):
+##      <li class="bullet-item">${_("Prerequisites")}:${get_course_about_section(course, "prerequisites")}</li>
+##      % endif
+    </ul>
+    <div class="panel radius">
+      <p style="margin: 0px;" class="text-center">${_("Share with friends")}</br>
+            <a id="facebookLink">
+              <img src="/static/images/gacco_icon_facebook.png" alt="Facebookで共有する" width="40px" height="40px" >
+            </a>
+            <a id="twitterLink">
+              <img src="/static/images/gacco_icon_twitter.png" alt="Twitterで共有する" width="40px" height="40px" >
+            </a>
+            <a id="gplusLink">
+              <img src="/static/images/gacco_icon_gplus.png" alt="googleで共有する" width="40px" height="40px" >
+            </a>
+            <a id="lineLink">
+              <img src="/static/images/gacco_icon_line.png" alt="Lineで共有する" width="40px" height="40px" >
+            </a>
+<%doc>
+          <div style="width: 40px;height: 40px;margin: 0 5px;display: inline-block;">
+            <a href="mailto:?subject=無料オンライン大学講座「gacco」登録受付中！&amp;body=gaccoでは大学講師陣による無料のオンライン講座を提供しています。%0d%0agaccoは日本初のMOOC（大規模オープンオンライ>ン講座）として、多彩な講師陣を迎えて新しい教育サービスを提供します。%0d%0a受講は基本無料ですのでお気軽に登録を！%0d%0ahttp://gacco.org/">
+              <img src="/static/images/gacco_icon_mail.png" alt="blank" width="40px" height="40px" >
+            </a>
+          </div>
+</%doc>
+      </p>
+    </div>
+  </div>
+</div>
+## ------------------
+
+<%doc>
 <section class="course-info">
   <header class="course-profile">
     <div class="intro-inner-wrapper">
@@ -141,7 +391,7 @@
           %endif
 
           <span class="register disabled">${_("You are registered for this course")}</span>
-          
+
           %if show_courseware_link:
             <strong>${_("View Courseware")}</strong>
             </a>
@@ -169,7 +419,7 @@
         % elif is_course_full:
           <span class="register disabled">
             ${_("Course is full")}
-          </span>          
+          </span>
         %else:
           <a href="#" class="register">
             ${_("Register for {course.display_number_with_default}").format(course=course) | h}
@@ -199,6 +449,12 @@
 
   <section class="container">
     <section class="details">
+      % if staff_access and studio_url is not None:
+        <div class="wrap-instructor-info studio-view">
+          <a class="instructor-info-action" href="${studio_url}">${_("View About Page in studio")}</a>
+        </div>
+      % endif
+      
       <nav>
         <a href="#" class="active">${_("Overview")}</a>
       ##  <a href="#">${_("FAQ")}</a>
@@ -216,7 +472,7 @@
     <section class="course-sidebar">
       <section class="course-summary">
         <header>
-          % if MicrositeConfiguration.get_microsite_configuration_value('course_about_show_social_links', True):
+          % if microsite.get_value('course_about_show_social_links', True):
           <div class="social-sharing">
             <div class="sharing-message">${_("Share with friends and family!")}</div>
             ## TODO: this should probably be an overrideable block,
@@ -230,15 +486,37 @@
                 <img src="${static.url('images/social/email-sharing.png')}" alt="Email someone to say you've registered for this course">
               </a>
             % else:
-              <% 
-                site_domain = MicrositeConfiguration.get_microsite_configuration_value('site_domain', 'www.edx.org')
-                platform_name = MicrositeConfiguration.get_microsite_configuration_value('platform_name', 'edX')
-                
-                tweet_action = "http://twitter.com/intent/tweet?text=I+just+registered+for+"+course.number+"+"+get_course_about_section(course, 'title')+"+through+"+MicrositeConfiguration.get_microsite_configuration_value('course_about_twitter_account', '@edxonline')+":+http://"+site_domain+reverse('about_course', args=[course.id])
+              <%
+                site_domain = microsite.get_value('site_domain', 'www.edx.org')
+                platform_name = microsite.get_value('platform_name', 'edX')
 
-                facebook_link = MicrositeConfiguration.get_microsite_configuration_value('course_about_facebook_link', 'http://www.facebook.com/EdxOnline')
+                # Translators: This text will be automatically posted to the student's
+                # Twitter account. {url} should appear at the end of the text.
+                tweet_text = _("I just registered for {number} {title} through {account}: {url}").format(
+                    number=course.number,
+                    title=get_course_about_section(course, 'title'),
+                    account=microsite.get_value('course_about_twitter_account', '@edxonline'),
+                    url=u"http://{domain}{path}".format(
+                        domain=site_domain,
+                        path=reverse('about_course', args=[course.id])
+                    )
+                ).replace(u" ", u"+")
+                tweet_action = u"http://twitter.com/intent/tweet?text={tweet_text}".format(tweet_text=tweet_text)
 
-                email_subject = "mailto:?subject=Take%20a%20course%20with%20"+platform_name+"%20online&body=I%20just%20registered%20for%20"+course.number+"%20"+get_course_about_section(course, 'title')+"%20through%20"+platform_name+"%20http://"+site_domain+reverse('about_course', args=[course.id])
+                facebook_link = microsite.get_value('course_about_facebook_link', 'http://www.facebook.com/EdxOnline')
+
+                email_subject = u"mailto:?subject={subject}&body={body}".format(
+                    subject=_("Take a course with {platform} online").format(platform=platform_name),
+                    body=_("I just registered for {number} {title} through {platform} {url}").format(
+                        number=course.number,
+                        title=get_course_about_section(course, 'title'),
+                        platform=platform_name,
+                        url=u"http://{domain}{path}".format(
+                            domain=site_domain,
+                            path=reverse('about_course', args=[course.id]),
+                        )
+                    )
+                ).replace(u" ", u"%20")
               %>
               <a href="${tweet_action}" class="share">
                 <img src="${static.url('images/social/twitter-sharing.png')}" alt="Tweet that you've registered for this course">
@@ -305,6 +583,15 @@
 
   </section>
 </section>
+</%doc>
+
+## BLACK tab/sp STUDY MENU are to be hidden
+<script>
+$(document).ready(function(){  
+  $("li.toggle-topbar").remove();
+  $("li.has-dropdown").remove();
+});
+</script>
 
 %if not registered:
   <div style="display: none;">

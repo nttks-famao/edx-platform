@@ -1,0 +1,4891 @@
+# edX translation file.
+# Copyright (C) 2014 EdX
+# This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
+# 
+# Translators:
+# watcafe, 2013-2014
+# Yuta_Michiyabu <bii01143190417@yahoo.co.jp>, 2014
+# kawa <h.kawasaki@nttks.co.jp>, 2014
+# h_yoshida <h_yoshida@matsumo-sys.com>, 2014
+# Shige Usui <ushige@live.com>, 2014
+# Takashi Nagai <ngi644@gmail.com>, 2014
+# Shige Usui <ushige@live.com>, 2014
+# わたカフェの店長, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: edx-platform\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2014-06-09 14:22-0400\n"
+"PO-Revision-Date: 2014-06-12 11:32+0000\n"
+"Last-Translator: watcafe\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/edx-platform/language/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Translators: "Open Ended Panel" appears on a tab that, when clicked, opens
+#. up a panel that
+#. displays information about open-ended problems that a user has submitted or
+#. needs to grade
+#: cms/djangoapps/contentstore/utils.py:23
+#: common/lib/xmodule/xmodule/tabs.py:633
+msgid "Open Ended Panel"
+msgstr "レポート管理"
+
+#. Translators: "Discussion" is the title of the course forum page
+#. Translators: 'Discussion' refers to the tab in the courseware that leads to
+#. the discussion forums
+#: cms/djangoapps/contentstore/views/component.py:295
+#: common/lib/xmodule/xmodule/tabs.py:360
+#: common/lib/xmodule/xmodule/tabs.py:424
+msgid "Discussion"
+msgstr "ディスカッション"
+
+#: cms/djangoapps/contentstore/views/component.py:297
+#: lms/djangoapps/class_dashboard/dashboard_data.py:561
+msgid "Problem"
+msgstr "問題"
+
+#: cms/djangoapps/contentstore/views/component.py:341
+#: common/lib/xmodule/xmodule/video_module/video_module.py:182
+msgid "Advanced"
+msgstr "詳細設定"
+
+#: common/djangoapps/course_modes/models.py:45
+msgid "Honor Code Certificate"
+msgstr "規約の証明"
+
+#: common/djangoapps/course_modes/views.py:85
+#: common/djangoapps/student/views.py:613
+msgid "Enrollment is closed"
+msgstr "登録は終了しました"
+
+#: common/djangoapps/course_modes/views.py:94
+msgid "Enrollment mode not supported"
+msgstr "受講登録モードはサポートされていません"
+
+#: common/djangoapps/course_modes/views.py:110
+msgid "Invalid amount selected."
+msgstr "不正な数量が選択されました。"
+
+#: common/djangoapps/course_modes/views.py:115
+msgid "No selected price or selected price is too low."
+msgstr "価格が選択されていない、もしくは、選択した価格が低すぎます。"
+
+#: common/djangoapps/django_comment_common/models.py:15
+msgid "Administrator"
+msgstr "管理者"
+
+#: common/djangoapps/django_comment_common/models.py:16
+msgid "Moderator"
+msgstr "モデレータ"
+
+#: common/djangoapps/django_comment_common/models.py:17
+msgid "Community TA"
+msgstr "コミュニティTA"
+
+#: common/djangoapps/django_comment_common/models.py:18
+msgid "Student"
+msgstr "受講者"
+
+#: common/djangoapps/student/middleware.py:26
+#, python-brace-format
+msgid ""
+"Your account has been disabled. If you believe this was done in error, "
+"please contact us at {link_start}{support_email}{link_end}"
+msgstr "アカウントが失効しています。これがエラーだと思われる場合には、{link_start}{support_email}{link_end}へご連絡ください。"
+
+#: common/djangoapps/student/middleware.py:33
+msgid "Disabled Account"
+msgstr "失効したアカウント"
+
+#: common/djangoapps/student/models.py:209
+msgid "Male"
+msgstr "男性"
+
+#: common/djangoapps/student/models.py:210
+msgid "Female"
+msgstr "女性"
+
+#. Translators: 'Other' refers to the student's gender
+#. Translators: 'Other' refers to the student's level of education
+#: common/djangoapps/student/models.py:212
+#: common/djangoapps/student/models.py:233
+msgid "Other"
+msgstr "その他"
+
+#: common/djangoapps/student/models.py:223
+msgid "Doctorate"
+msgstr "大学院卒（博士課程修了）"
+
+#: common/djangoapps/student/models.py:224
+msgid "Master's or professional degree"
+msgstr "大学院卒（修士課程修了）"
+
+#: common/djangoapps/student/models.py:225
+msgid "Bachelor's degree"
+msgstr "4年制および6年制大学卒"
+
+#: common/djangoapps/student/models.py:226
+msgid "Associate's degree"
+msgstr "短大・専門学校卒"
+
+#: common/djangoapps/student/models.py:227
+msgid "Secondary/high school"
+msgstr "高校卒"
+
+#: common/djangoapps/student/models.py:228
+msgid "Junior secondary/junior high/middle school"
+msgstr "中学校卒"
+
+#: common/djangoapps/student/models.py:229
+msgid "Elementary/primary school"
+msgstr "小学校卒"
+
+#. Translators: 'None' refers to the student's level of education
+#: common/djangoapps/student/models.py:231
+msgid "None"
+msgstr "なし"
+
+#: common/djangoapps/student/views.py:595
+msgid "Course id not specified"
+msgstr "講座番号が指定されていません"
+
+#: common/djangoapps/student/views.py:610
+msgid "Course id is invalid"
+msgstr "講座番号が無効です"
+
+#: common/djangoapps/student/views.py:619
+msgid "Course is full"
+msgstr "コースは一杯です。"
+
+#: common/djangoapps/student/views.py:649
+msgid "You are not enrolled in this course"
+msgstr "この講座に受講登録されていません。"
+
+#: common/djangoapps/student/views.py:653
+msgid "Enrollment action is invalid"
+msgstr "登録は無効です"
+
+#. Translators: provider_name is the name of an external, third-party user
+#. authentication service (like
+#. Google or LinkedIn).
+#: common/djangoapps/student/views.py:746
+#, python-brace-format
+msgid ""
+"There is no {platform_name} account associated with your {provider_name} "
+"account. Please use your {platform_name} credentials or pick another "
+"provider."
+msgstr "{provider_name} アカウントに紐づいた{platform_name} アカウントがありません。 {platform_name}のアカウント情報を使用するか他の認証サービスを選択してください。"
+
+#: common/djangoapps/student/views.py:755
+msgid "There was an error receiving your login information. Please email us."
+msgstr "ログイン情報の受信にエラーが発生しました。 管理者へメールをお願いします。"
+
+#: common/djangoapps/student/views.py:789
+msgid ""
+"This account has been temporarily locked due to excessive login failures. "
+"Try again later."
+msgstr "このアカウントは過度のログイン失敗により、一時的にロックされました。しばらく時間をおいて実行してください。"
+
+#: common/djangoapps/student/views.py:796
+msgid ""
+"Your password has expired due to password policy on this account. You must "
+"reset your password before you can log in again. Please click the \"Forgot "
+"Password\" link on this page to reset your password before logging in again."
+msgstr "あなたのパスワードは期限切れです（アカウントのパスワードポリシーによる）。あなたはログインする前にパスワードを変更する必要があります。パスワードを忘れた方はこちらのリンクをクリックしてログインする前にパスワードを変更してください。"
+
+#: common/djangoapps/student/views.py:813
+msgid "Too many failed login attempts. Try again later."
+msgstr "ログイン試行に失敗し過ぎました、しばらく経った後にお試しください。"
+
+#: common/djangoapps/student/views.py:831
+msgid "Email or password is incorrect."
+msgstr "メールアドレス、もしくはパスワードが間違っています。"
+
+#: common/djangoapps/student/views.py:890
+msgid ""
+"This account has not been activated. We have sent another activation "
+"message. Please check your e-mail for the activation instructions."
+msgstr "このアカウントはアクティベーションが完了していません。 アクティベーション用のメッセージを送信していますので、メールでアクティベーション方法を確認してください。"
+
+#: common/djangoapps/student/views.py:959
+msgid "Please enter a username"
+msgstr "ユーザー名を入力してください。"
+
+#: common/djangoapps/student/views.py:964
+msgid "Please choose an option"
+msgstr "オプションを選択してください。"
+
+#: common/djangoapps/student/views.py:971
+msgid "User with username {} does not exist"
+msgstr "ユーザー名「{}」は存在しません。"
+
+#: common/djangoapps/student/views.py:979
+msgid "Successfully disabled {}'s account"
+msgstr "「{}」のアカウント失効を実施しました。"
+
+#: common/djangoapps/student/views.py:983
+msgid "Successfully reenabled {}'s account"
+msgstr "「{}」のアカウント復活を実施しました。"
+
+#: common/djangoapps/student/views.py:986
+msgid "Unexpected account status"
+msgstr "不慮のアカウント状態です。"
+
+#: common/djangoapps/student/views.py:1039
+#, python-brace-format
+msgid "An account with the Public Username '{username}' already exists."
+msgstr "'{username}' は既に利用されています"
+
+#: common/djangoapps/student/views.py:1044
+#, python-brace-format
+msgid "An account with the Email '{email}' already exists."
+msgstr " '{email}' は既に登録済みです。"
+
+#: common/djangoapps/student/views.py:1121
+#, python-brace-format
+msgid "Error (401 {field}). E-mail us."
+msgstr "エラー(401 {field})が発生しました。 管理者へメールをお願いします。"
+
+#: common/djangoapps/student/views.py:1127
+msgid "To enroll, you must follow the honor code."
+msgstr "プライバシーポリシーに同意いただく必要があります。"
+
+#: common/djangoapps/student/views.py:1143
+msgid "You must accept the terms of service."
+msgstr "サービス規約に同意する必要があります。"
+
+#: common/djangoapps/student/views.py:1167
+msgid "Username must be minimum of two characters long"
+msgstr "ユーザー名は2文字以上である必要があります。"
+
+#: common/djangoapps/student/views.py:1168
+msgid "A properly formatted e-mail is required"
+msgstr "正しく記述されたメールアドレスが必要です。"
+
+#: common/djangoapps/student/views.py:1169
+msgid "Your legal name must be a minimum of two characters long"
+msgstr "名前は2文字以上である必要があります。"
+
+#: common/djangoapps/student/views.py:1170
+msgid "A valid password is required"
+msgstr "有効なパスワードが必要です。"
+
+#: common/djangoapps/student/views.py:1171
+msgid "Accepting Terms of Service is required"
+msgstr "利用規約に同意が必要です。"
+
+#: common/djangoapps/student/views.py:1172
+msgid "Agreeing to the Honor Code is required"
+msgstr "プライバシーポリシーに同意が必要です。"
+
+#: common/djangoapps/student/views.py:1173
+msgid "A level of education is required"
+msgstr "最終学歴の選択が必要です。"
+
+#: common/djangoapps/student/views.py:1174
+msgid "Your gender is required"
+msgstr "性別の選択が必要です。"
+
+#: common/djangoapps/student/views.py:1175
+msgid "Your year of birth is required"
+msgstr "誕生年の選択が必要です。"
+
+#: common/djangoapps/student/views.py:1176
+msgid "Your mailing address is required"
+msgstr "住所の入力が必要です。"
+
+#: common/djangoapps/student/views.py:1177
+msgid "A description of your goals is required"
+msgstr "あなたのゴールに対する説明が必要です。"
+
+#: common/djangoapps/student/views.py:1178
+msgid "A city is required"
+msgstr "市の入力が必要です。"
+
+#: common/djangoapps/student/views.py:1179
+msgid "A country is required"
+msgstr "国の入力が必要です。"
+
+#: common/djangoapps/student/views.py:1191
+#, python-brace-format
+msgid "Username cannot be more than {0} characters long"
+msgstr "ユーザー名は{0}文字以下で入力してください。"
+
+#: common/djangoapps/student/views.py:1192
+#, python-brace-format
+msgid "Email cannot be more than {0} characters long"
+msgstr "メールアドレスは{0}文字以下で入力してください。"
+
+#: common/djangoapps/student/views.py:1201
+msgid "Valid e-mail is required."
+msgstr "正規のメールアドレスが必要です。"
+
+#: common/djangoapps/student/views.py:1208
+msgid "Username should only consist of A-Z and 0-9, with no spaces."
+msgstr "ユーザ名は半角英数の文字のみが利用可能です。なお、全角文字、記号およびスペースは利用できません。"
+
+#: common/djangoapps/student/views.py:1221
+#: common/djangoapps/student/views.py:1512
+msgid "Password: "
+msgstr "パスワード："
+
+#: common/djangoapps/student/views.py:1264
+msgid "Could not send activation e-mail."
+msgstr "アクティベーション用のメールが送信できませんでした。"
+
+#: common/djangoapps/student/views.py:1451
+msgid "Unknown error. Please e-mail us to let us know how it happened."
+msgstr "不明なエラーが発生しました。 管理者へメールをお願いします。できれば、どのようなことが起きたのか詳細を教えていただけますと幸いです。"
+
+#: common/djangoapps/student/views.py:1520
+#, python-brace-format
+msgid ""
+"You are re-using a password that you have used recently. You must have {0} "
+"distinct password(s) before reusing a previous password."
+msgstr "最近使用したパスワードを使用しようとしています。過去{0}回と違うパスワードを使用する必要があります。"
+
+#: common/djangoapps/student/views.py:1526
+#, python-brace-format
+msgid ""
+"You are resetting passwords too frequently. Due to security policies, {0} "
+"day(s) must elapse between password resets"
+msgstr "頻繁にパスワードを変更しすぎています。セキュリティポリシーでは{0}日間パスワード変更の間隔をあけてください。"
+
+#: common/djangoapps/student/views.py:1535
+msgid "Password reset unsuccessful"
+msgstr "パスワードの変更に失敗"
+
+#: common/djangoapps/student/views.py:1572
+msgid "No inactive user with this e-mail exists"
+msgstr "このメールのユーザはアクティベーションされていません。"
+
+#: common/djangoapps/student/views.py:1590
+msgid "Unable to send reactivation email"
+msgstr "再アクティベーション用のメールの送信ができません。"
+
+#: common/djangoapps/student/views.py:1609
+msgid "Invalid password"
+msgstr "不正なパスワード"
+
+#: common/djangoapps/student/views.py:1618
+msgid "Valid e-mail address required."
+msgstr "正しいメールアドレスが必要です。"
+
+#: common/djangoapps/student/views.py:1625
+msgid "An account with this e-mail already exists."
+msgstr "このメールアドレスのアカウントは既に存在しています。"
+
+#: common/djangoapps/student/views.py:1643
+msgid "Old email is the same as the new email."
+msgstr "旧メールアドレスが新しいメールアドレスと同じです。"
+
+#: common/djangoapps/student/views.py:1667
+msgid "Unable to send email activation link. Please try again later."
+msgstr "有効なリンクにメールを送信できませんでした。後で再度試してください。"
+
+#: common/djangoapps/student/views.py:1755
+msgid "Name required"
+msgstr "名前は必須"
+
+#: common/djangoapps/student/views.py:1798
+#: common/djangoapps/student/views.py:1811
+msgid "Invalid ID"
+msgstr "不正なID"
+
+#. Translators: the translation for "LONG_DATE_FORMAT" must be a format
+#. string for formatting dates in a long form.  For example, the
+#. American English form is "%A, %B %d %Y".
+#. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:118
+msgid "LONG_DATE_FORMAT"
+msgstr "%Y年%B%d日 %A"
+
+#. Translators: the translation for "DATE_TIME_FORMAT" must be a format
+#. string for formatting dates with times.  For example, the American
+#. English form is "%b %d, %Y at %H:%M".
+#. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:126
+msgid "DATE_TIME_FORMAT"
+msgstr "%Y年%B%d日 %A %H:%M"
+
+#. Translators: the translation for "SHORT_DATE_FORMAT" must be a
+#. format string for formatting dates in a brief form.  For example,
+#. the American English form is "%b %d %Y".
+#. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:160
+msgid "SHORT_DATE_FORMAT"
+msgstr "%Y年%b%d日"
+
+#. Translators: the translation for "TIME_FORMAT" must be a format
+#. string for formatting times.  For example, the American English
+#. form is "%H:%M:%S". See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:172
+msgid "TIME_FORMAT"
+msgstr "%H:%M:%S"
+
+#. Translators: This is an AM/PM indicator for displaying times.  It is
+#. used for the %p directive in date-time formats. See http://strftime.org
+#. for details.
+#: common/djangoapps/util/date_utils.py:200
+msgctxt "am/pm indicator"
+msgid "AM"
+msgstr "AM"
+
+#. Translators: This is an AM/PM indicator for displaying times.  It is
+#. used for the %p directive in date-time formats. See http://strftime.org
+#. for details.
+#: common/djangoapps/util/date_utils.py:204
+msgctxt "am/pm indicator"
+msgid "PM"
+msgstr "PM"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Monday Februrary 10, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:211
+msgctxt "weekday name"
+msgid "Monday"
+msgstr "月曜日"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Tuesday Februrary 11, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:215
+msgctxt "weekday name"
+msgid "Tuesday"
+msgstr "火曜日"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Wednesday Februrary 12, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:219
+msgctxt "weekday name"
+msgid "Wednesday"
+msgstr "水曜日"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Thursday Februrary 13, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:223
+msgctxt "weekday name"
+msgid "Thursday"
+msgstr "木曜日"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Friday Februrary 14, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:227
+msgctxt "weekday name"
+msgid "Friday"
+msgstr "金曜日"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Saturday Februrary 15, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:231
+msgctxt "weekday name"
+msgid "Saturday"
+msgstr "土曜日"
+
+#. Translators: this is a weekday name that will be used when displaying
+#. dates, as in "Sunday Februrary 16, 2014". It is used for the %A
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:235
+msgctxt "weekday name"
+msgid "Sunday"
+msgstr "日曜日"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Mon Feb 10, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:242
+msgctxt "abbreviated weekday name"
+msgid "Mon"
+msgstr "月"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Tue Feb 11, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:246
+msgctxt "abbreviated weekday name"
+msgid "Tue"
+msgstr "火"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Wed Feb 12, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:250
+msgctxt "abbreviated weekday name"
+msgid "Wed"
+msgstr "水"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Thu Feb 13, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:254
+msgctxt "abbreviated weekday name"
+msgid "Thu"
+msgstr "木"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Fri Feb 14, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:258
+msgctxt "abbreviated weekday name"
+msgid "Fri"
+msgstr "金"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Sat Feb 15, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:262
+msgctxt "abbreviated weekday name"
+msgid "Sat"
+msgstr "土"
+
+#. Translators: this is an abbreviated weekday name that will be used when
+#. displaying dates, as in "Sun Feb 16, 2014". It is used for the %a
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:266
+msgctxt "abbreviated weekday name"
+msgid "Sun"
+msgstr "日"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Jan 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:273
+msgctxt "abbreviated month name"
+msgid "Jan"
+msgstr "１月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Feb 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:277
+msgctxt "abbreviated month name"
+msgid "Feb"
+msgstr "２月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Mar 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:281
+msgctxt "abbreviated month name"
+msgid "Mar"
+msgstr "３月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Apr 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:285
+msgctxt "abbreviated month name"
+msgid "Apr"
+msgstr "４月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "May 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:289
+msgctxt "abbreviated month name"
+msgid "May"
+msgstr "５月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Jun 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:293
+msgctxt "abbreviated month name"
+msgid "Jun"
+msgstr "６月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Jul 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:297
+msgctxt "abbreviated month name"
+msgid "Jul"
+msgstr "７月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Aug 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:301
+msgctxt "abbreviated month name"
+msgid "Aug"
+msgstr "８月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Sep 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:305
+msgctxt "abbreviated month name"
+msgid "Sep"
+msgstr "９月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Oct 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:309
+msgctxt "abbreviated month name"
+msgid "Oct"
+msgstr "１０月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Nov 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:313
+msgctxt "abbreviated month name"
+msgid "Nov"
+msgstr "１１月"
+
+#. Translators: this is an abbreviated month name that will be used when
+#. displaying dates, as in "Dec 10, 2014". It is used for the %b
+#. directive in date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:317
+msgctxt "abbreviated month name"
+msgid "Dec"
+msgstr "１２月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "January 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:324
+msgctxt "month name"
+msgid "January"
+msgstr "１月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "February 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:328
+msgctxt "month name"
+msgid "February"
+msgstr "２月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "March 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:332
+msgctxt "month name"
+msgid "March"
+msgstr "３月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "April 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:336
+msgctxt "month name"
+msgid "April"
+msgstr "４月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "May 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:340
+msgctxt "month name"
+msgid "May"
+msgstr "５月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "June 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:344
+msgctxt "month name"
+msgid "June"
+msgstr "６月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "July 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:348
+msgctxt "month name"
+msgid "July"
+msgstr "７月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "August 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:352
+msgctxt "month name"
+msgid "August"
+msgstr "８月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "September 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:356
+msgctxt "month name"
+msgid "September"
+msgstr "９月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "October 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:360
+msgctxt "month name"
+msgid "October"
+msgstr "１０月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "November 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:364
+msgctxt "month name"
+msgid "November"
+msgstr "１１月"
+
+#. Translators: this is a month name that will be used when displaying
+#. dates, as in "December 10, 2014". It is used for the %B directive in
+#. date-time formats. See http://strftime.org for details.
+#: common/djangoapps/util/date_utils.py:368
+msgctxt "month name"
+msgid "December"
+msgstr "１２月"
+
+#: common/djangoapps/util/password_policy_validators.py:23
+#, python-brace-format
+msgid "Invalid Length ({0})"
+msgstr "無効な長さ ({0})"
+
+#: common/djangoapps/util/password_policy_validators.py:30
+#, python-brace-format
+msgid "must be {0} characters or more"
+msgstr " {0} 文字以上である必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:32
+#, python-brace-format
+msgid "must be {0} characters or less"
+msgstr "{0} 文字以下である必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:39
+#, python-brace-format
+msgid "Must be more complex ({0})"
+msgstr "さらに複雑である必要があります。 ({0})"
+
+#: common/djangoapps/util/password_policy_validators.py:65
+#, python-brace-format
+msgid "must contain {0} or more uppercase characters"
+msgstr "{0} 文字以上の大文字を含む必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:67
+#, python-brace-format
+msgid "must contain {0} or more lowercase characters"
+msgstr "{0} 文字以上の小文字を含む必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:69
+#, python-brace-format
+msgid "must contain {0} or more digits"
+msgstr "{0} 桁以上必要です。"
+
+#: common/djangoapps/util/password_policy_validators.py:71
+#, python-brace-format
+msgid "must contain {0} or more punctuation characters"
+msgstr "{0} 文字以上のpunctuation charactersを含む必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:73
+#, python-brace-format
+msgid "must contain {0} or more non ascii characters"
+msgstr "{0} 文字以上のnon ascii charactersを含む必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:75
+#, python-brace-format
+msgid "must contain {0} or more unique words"
+msgstr "{0} つ以上のユニークな言葉を含む必要があります。"
+
+#: common/djangoapps/util/password_policy_validators.py:92
+msgid "Too similar to a restricted dictionary word."
+msgstr "辞書にある単語に類似すぎています。"
+
+#: common/lib/capa/capa/capa_problem.py:385
+msgid "Cannot rescore problems with possible file submissions"
+msgstr "ファイル送信による問題の再採点はできません。"
+
+#: common/lib/capa/capa/inputtypes.py:86
+msgid "correct"
+msgstr "正解"
+
+#: common/lib/capa/capa/inputtypes.py:87
+msgid "incorrect"
+msgstr "不正解"
+
+#: common/lib/capa/capa/inputtypes.py:88
+msgid "incomplete"
+msgstr "未完了"
+
+#: common/lib/capa/capa/inputtypes.py:89 common/lib/capa/capa/inputtypes.py:90
+msgid "unanswered"
+msgstr "未回答"
+
+#: common/lib/capa/capa/inputtypes.py:91
+msgid "processing"
+msgstr "処理中"
+
+#. Translators: 'ChoiceGroup' is an input type and should not be translated.
+#: common/lib/capa/capa/inputtypes.py:452
+#, python-brace-format
+msgid "ChoiceGroup: unexpected tag {tag_name}"
+msgstr "ChoiceGroup：予期せぬタグ{tag_name}"
+
+#: common/lib/capa/capa/inputtypes.py:463
+msgid "Answer received."
+msgstr "回答の受け取り。"
+
+#. Translators: '<choice>' is a tag name and should not be translated.
+#: common/lib/capa/capa/inputtypes.py:489
+#, python-brace-format
+msgid "Expected a <choice> tag; got {given_tag} instead"
+msgstr "<choice>タグを予期；代わりに{given_tag}を入手"
+
+#: common/lib/capa/capa/inputtypes.py:706
+msgid ""
+"Your file(s) have been submitted. As soon as your submission is graded, this"
+" message will be replaced with the grader's feedback."
+msgstr "ファイル(s)が投稿されました。投稿が評価され次第、このメッセージは評価者のフィードバックに変更されます。"
+
+#: common/lib/capa/capa/inputtypes.py:778
+msgid ""
+"Your answer has been submitted. As soon as your submission is graded, this "
+"message will be replaced with the grader's feedback."
+msgstr "回答が投稿されました。投稿が評価され次第、このメッセージは評価者のフィードバックに変更されます。"
+
+#: common/lib/capa/capa/inputtypes.py:810
+msgid ""
+"Submitted. As soon as a response is returned, this message will be replaced "
+"by that feedback."
+msgstr "投稿されました。応答があり次第、このメッセージはフィードバックに変更されます。"
+
+#: common/lib/capa/capa/inputtypes.py:837
+#, python-brace-format
+msgid "No response from Xqueue within {xqueue_timeout} seconds. Aborted."
+msgstr "{xqueue_timeout}秒間Xqueueからの応答がありません。中断しました。"
+
+#: common/lib/capa/capa/responsetypes.py:314
+#, python-brace-format
+msgid "Error {err} in evaluating hint function {hintfn}."
+msgstr "ヒント処理「 {hintfn}」にエラー「 {err} 」があります。 "
+
+#: common/lib/capa/capa/responsetypes.py:315
+msgid "(Source code line unavailable)"
+msgstr "(ソースコード行が利用できません)"
+
+#: common/lib/capa/capa/responsetypes.py:316
+#, python-brace-format
+msgid "See XML source line {sourcenum}."
+msgstr "XMLソースを確認してください　行番号： {sourcenum}"
+
+#: common/lib/capa/capa/responsetypes.py:548
+msgid "Execution of unsafe Javascript code is not allowed."
+msgstr "安全ではないJavascriptコードの実行は許可されていません。"
+
+#. Translators: 'unmask_name' is a method name and should not be translated.
+#: common/lib/capa/capa/responsetypes.py:839
+msgid "unmask_name called on response that is not masked"
+msgstr "unmask_nameがマスクされていない応答に呼ばれました。"
+
+#. Translators: 'shuffle' and 'answer-pool' are attribute names and should not
+#. be translated.
+#: common/lib/capa/capa/responsetypes.py:869
+msgid "Do not use shuffle and answer-pool at the same time"
+msgstr "shuffleとanswer-poolを同時に使用しないでください。"
+
+#. Translators: 'answer-pool' is an attribute name and should not be
+#. translated.
+#: common/lib/capa/capa/responsetypes.py:952
+msgid "answer-pool value should be an integer"
+msgstr "answer-poolは正の整数である必要があります。"
+
+#. Translators: 'Choicegroup' is an input type and should not be translated.
+#: common/lib/capa/capa/responsetypes.py:1019
+msgid "Choicegroup must include at least 1 correct and 1 incorrect choice"
+msgstr "choicegroupは1つ以上の正解と1つ以上の不正解の選択肢が必要です。"
+
+#: common/lib/capa/capa/responsetypes.py:1139
+#: common/lib/capa/capa/responsetypes.py:1171
+msgid "There was a problem with the staff answer to this problem."
+msgstr "この問題に対するスタッフの回答に問題があります。"
+
+#: common/lib/capa/capa/responsetypes.py:1184
+#, python-brace-format
+msgid "Could not interpret '{student_answer}' as a number."
+msgstr " '{student_answer}' を数字として受け取ることができません。"
+
+#: common/lib/capa/capa/responsetypes.py:1193
+#, python-brace-format
+msgid "You may not use variables ({bad_variables}) in numerical problems."
+msgstr "入力値 ({bad_variables}) は数的な問題では使用することが出来ません。"
+
+#: common/lib/capa/capa/responsetypes.py:1202
+#, python-brace-format
+msgid "factorial function evaluated outside its domain:'{student_answer}'"
+msgstr "階乗関数が領域外で評価されました：'{student_answer}'"
+
+#: common/lib/capa/capa/responsetypes.py:1209
+#, python-brace-format
+msgid "Invalid math syntax: '{student_answer}'"
+msgstr "数式構文に誤りがあります：'{student_answer}'"
+
+#: common/lib/capa/capa/responsetypes.py:1216
+msgid "You may not use complex numbers in range tolerance problems"
+msgstr "範囲指定の問題では、複素数は使用することが出来ません。"
+
+#: common/lib/capa/capa/responsetypes.py:1221
+msgid ""
+"There was a problem with the staff answer to this problem: complex boundary."
+msgstr "この問題に対してスタッフの回答に問題がありました：複雑な境界"
+
+#: common/lib/capa/capa/responsetypes.py:1223
+msgid ""
+"There was a problem with the staff answer to this problem: empty boundary."
+msgstr "この問題に対してスタッフの回答に問題がありました：空の境界"
+
+#: common/lib/capa/capa/responsetypes.py:1382
+msgid "error"
+msgstr "エラー"
+
+#. Translators: Separator used in StringResponse to display multiple answers.
+#. Example: "Answer: Answer_1 or Answer_2 or Answer_3".
+#: common/lib/capa/capa/responsetypes.py:1410
+msgid "or"
+msgstr "もしくは"
+
+#: common/lib/capa/capa/responsetypes.py:1517
+#, python-brace-format
+msgid "error getting student answer from {student_answers}"
+msgstr "{student_answers}から受講者の答えを取ってくる際のエラー"
+
+#: common/lib/capa/capa/responsetypes.py:1539
+msgid "No answer entered!"
+msgstr "解答が入力されていません！"
+
+#: common/lib/capa/capa/responsetypes.py:1682
+msgid "CustomResponse: check function returned an invalid dictionary!"
+msgstr "カスタム応答: チェック処理が無効な辞書を応答しました！"
+
+#. Translators: 'SymbolicResponse' is a problem type and should not be
+#. translated.
+#: common/lib/capa/capa/responsetypes.py:1792
+#, python-brace-format
+msgid "An error occurred with SymbolicResponse. The error was: {error_msg}"
+msgstr "SymbolicResponseでエラーが発生しました。エラー内容：{error_msg}"
+
+#: common/lib/capa/capa/responsetypes.py:1887
+msgid "No answer provided."
+msgstr "解答がありません。"
+
+#: common/lib/capa/capa/responsetypes.py:1906
+msgid "Error: No grader has been set up for this problem."
+msgstr "エラー：この問題に対する採点者が設定されていません。"
+
+#: common/lib/capa/capa/responsetypes.py:1966
+#, python-brace-format
+msgid ""
+"Unable to deliver your submission to grader (Reason: {error_msg}). Please "
+"try again later."
+msgstr "評価処理にあなたの投稿を送信することが出来ませんでした。(理由： {error_msg})　後で再試行してください。"
+
+#. Translators: 'grader' refers to the edX automatic code grader.
+#. Translators: the `grader` refers to the grading service open response
+#. problems
+#. are sent to, either to be machine-graded, peer-graded, or instructor-
+#. graded.
+#: common/lib/capa/capa/responsetypes.py:1996
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:321
+msgid "Invalid grader reply. Please contact the course staff."
+msgstr "無効な評価処理の応答です。コーススタッフに連絡してください。"
+
+#: common/lib/capa/capa/responsetypes.py:2329
+#, python-brace-format
+msgid "Invalid input: {bad_input} not permitted in answer."
+msgstr "無効な入力： {bad_input} は回答として許可されていません。"
+
+#: common/lib/capa/capa/responsetypes.py:2344
+#, python-brace-format
+msgid ""
+"factorial function not permitted in answer for this problem. Provided answer"
+" was: {bad_input}"
+msgstr "階乗関数はこの問題の回答では許可されていません。入力された回答：{bad_input}"
+
+#: common/lib/capa/capa/responsetypes.py:2351
+#, python-brace-format
+msgid "Invalid input: Could not parse '{bad_input}' as a formula."
+msgstr "無効な入力：'{bad_input}' は式として処理することが出来ません。"
+
+#: common/lib/capa/capa/responsetypes.py:2359
+#, python-brace-format
+msgid "Invalid input: Could not parse '{bad_input}' as a formula"
+msgstr "無効な入力：'{bad_input}' は式として処理することが出来ません。"
+
+#. Translators: 'SchematicResponse' is a problem type and should not be
+#. translated.
+#: common/lib/capa/capa/responsetypes.py:2502
+#, python-brace-format
+msgid "Error in evaluating SchematicResponse. The error was: {error_msg}"
+msgstr "回路図の評価に問題があります。 エラー内容：{error_msg}"
+
+#: common/lib/capa/capa/responsetypes.py:2567
+#, python-brace-format
+msgid "error grading {image_input_id} (input={user_input})"
+msgstr "採点エラー　{image_input_id} (input={user_input})"
+
+#. Translators: {sr_coords} are the coordinates of a rectangle
+#: common/lib/capa/capa/responsetypes.py:2588
+#, python-brace-format
+msgid "Error in problem specification! Cannot parse rectangle in {sr_coords}"
+msgstr "問題の指定に関するエラー！{sr_coords}の四角形を解析できません。"
+
+#: common/lib/capa/capa/responsetypes.py:2836
+#, python-brace-format
+msgid "Answer not provided for {input_type}"
+msgstr "{input_type}で提供されていない回答"
+
+#: common/lib/capa/capa/responsetypes.py:3083
+msgid "The Staff answer could not be interpreted as a number."
+msgstr "スタッフの回答は数字で受け取ることは出来ません。"
+
+#: common/lib/capa/capa/responsetypes.py:3097
+#, python-brace-format
+msgid "Could not interpret '{given_answer}' as a number."
+msgstr "'{given_answer}' を数字として受け取ることができません。"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py:18
+#: common/lib/xmodule/xmodule/textannotation_module.py:20
+#: common/lib/xmodule/xmodule/videoannotation_module.py:22
+msgid "XML data for the annotation"
+msgstr "注釈（アノテーション）のためのXMLデータ"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py:38
+#: common/lib/xmodule/xmodule/capa_base.py:92
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:196
+#: common/lib/xmodule/xmodule/course_module.py:210
+#: common/lib/xmodule/xmodule/discussion_module.py:16
+#: common/lib/xmodule/xmodule/html_module.py:28
+#: common/lib/xmodule/xmodule/html_module.py:274
+#: common/lib/xmodule/xmodule/imageannotation_module.py:43
+#: common/lib/xmodule/xmodule/lti_module.py:109
+#: common/lib/xmodule/xmodule/peer_grading_module.py:78
+#: common/lib/xmodule/xmodule/split_test_module.py:76
+#: common/lib/xmodule/xmodule/textannotation_module.py:33
+#: common/lib/xmodule/xmodule/videoannotation_module.py:32
+#: common/lib/xmodule/xmodule/word_cloud_module.py:38
+msgid "Display Name"
+msgstr "表示名"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py:39
+#: common/lib/xmodule/xmodule/discussion_module.py:17
+#: common/lib/xmodule/xmodule/html_module.py:240
+#: common/lib/xmodule/xmodule/imageannotation_module.py:44
+#: common/lib/xmodule/xmodule/peer_grading_module.py:79
+#: common/lib/xmodule/xmodule/textannotation_module.py:34
+#: common/lib/xmodule/xmodule/videoannotation_module.py:33
+#: common/lib/xmodule/xmodule/word_cloud_module.py:39
+msgid "Display name for this module"
+msgstr "このモジュール名を表示"
+
+#: common/lib/xmodule/xmodule/annotatable_module.py:41
+msgid "Annotation"
+msgstr "注釈"
+
+#: common/lib/xmodule/xmodule/capa_base.py:93
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:197
+#: common/lib/xmodule/xmodule/html_module.py:29
+#: common/lib/xmodule/xmodule/html_module.py:275
+msgid "This name appears in the horizontal navigation at the top of the page."
+msgstr "名前はページ上部のナビゲーションに表示されます。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:100
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:229
+msgid "Number of attempts taken by the student on this problem"
+msgstr "受講者によるこの問題の試行回数"
+
+#: common/lib/xmodule/xmodule/capa_base.py:104
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:239
+msgid "Maximum Attempts"
+msgstr "試行回数の上限"
+
+#: common/lib/xmodule/xmodule/capa_base.py:105
+msgid ""
+"Defines the number of times a student can try to answer this problem. If the"
+" value is not set, infinite attempts are allowed."
+msgstr "受講者がこの問題に解答できる回数を定義してください。値がない場合は何回でも回答できることになります。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:109
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:258
+msgid "Date that this problem is due by"
+msgstr "この問題の締切期日"
+
+#: common/lib/xmodule/xmodule/capa_base.py:111
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:262
+#: common/lib/xmodule/xmodule/peer_grading_module.py:56
+msgid ""
+"Date that this problem is due by for a particular student. This can be set "
+"by an instructor, and will override the global due date if it is set to a "
+"date that is later than the global due date."
+msgstr "この問題に関する特定の受講者用の締切日時。この日時は講師が設定します。また、この日時が、全体の締切日時より後の場合は、全体の締切日時は上書きされます。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:119
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:270
+msgid "Amount of time after the due date that submissions will be accepted"
+msgstr "締切後に、課題提出を受け入れる時間"
+
+#: common/lib/xmodule/xmodule/capa_base.py:123
+msgid "Show Answer"
+msgstr "解答を見る"
+
+#: common/lib/xmodule/xmodule/capa_base.py:124
+msgid ""
+"Defines when to show the answer to the problem. A default value can be set "
+"in Advanced Settings."
+msgstr "問題の回答をいつ表示するか定義。デフォルト値はAdvanced Settingで設定できます。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:129
+#: common/lib/xmodule/xmodule/capa_base.py:150
+msgid "Always"
+msgstr "常時"
+
+#: common/lib/xmodule/xmodule/capa_base.py:130
+msgid "Answered"
+msgstr "回答済み"
+
+#: common/lib/xmodule/xmodule/capa_base.py:131
+msgid "Attempted"
+msgstr "以前取り組んだものです"
+
+#: common/lib/xmodule/xmodule/capa_base.py:132
+msgid "Closed"
+msgstr "締切"
+
+#: common/lib/xmodule/xmodule/capa_base.py:133
+msgid "Finished"
+msgstr "終了"
+
+#: common/lib/xmodule/xmodule/capa_base.py:134
+msgid "Past Due"
+msgstr "昔の締切"
+
+#: common/lib/xmodule/xmodule/capa_base.py:135
+#: common/lib/xmodule/xmodule/capa_base.py:152
+msgid "Never"
+msgstr "無期限"
+
+#: common/lib/xmodule/xmodule/capa_base.py:138
+msgid "Whether to force the save button to appear on the page"
+msgstr "saveボタンをページに表示するよう強制するか否か"
+
+#: common/lib/xmodule/xmodule/capa_base.py:143
+msgid "Randomization"
+msgstr "ランダム化"
+
+#: common/lib/xmodule/xmodule/capa_base.py:144
+msgid ""
+"Defines how often inputs are randomized when a student loads the problem. "
+"This setting only applies to problems that can have randomly generated "
+"numeric values. A default value can be set in Advanced Settings."
+msgstr "受講者が問題をロードしたときに、どのくらいの頻度でランダム化するか定義してください。この設定は、ランダムに数値が設定される問題のみに適用されます。デフォルト値は詳細設定から設定できます。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:151
+msgid "On Reset"
+msgstr "リセット中"
+
+#: common/lib/xmodule/xmodule/capa_base.py:153
+msgid "Per Student"
+msgstr "受講者ごと"
+
+#: common/lib/xmodule/xmodule/capa_base.py:156
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:278
+#: common/lib/xmodule/xmodule/discussion_module.py:22
+msgid "XML data for the problem"
+msgstr "問題のXMLデータ"
+
+#: common/lib/xmodule/xmodule/capa_base.py:157
+msgid "Dictionary with the correctness of current student answers"
+msgstr "受講者の今の回答が正しいか確認する機能付きの辞書"
+
+#: common/lib/xmodule/xmodule/capa_base.py:159
+msgid "Dictionary for maintaining the state of inputtypes"
+msgstr "入力タイプの状態を管理するための辞書"
+
+#: common/lib/xmodule/xmodule/capa_base.py:160
+msgid "Dictionary with the current student responses"
+msgstr "受講者の今の回答付きの辞書"
+
+#: common/lib/xmodule/xmodule/capa_base.py:161
+msgid "Whether the student has answered the problem"
+msgstr "受講者がその問題に解答したか否か"
+
+#: common/lib/xmodule/xmodule/capa_base.py:162
+msgid "Random seed for this student"
+msgstr "この受講者用のランダムシード"
+
+#: common/lib/xmodule/xmodule/capa_base.py:163
+msgid "Last submission time"
+msgstr "最後に提出した日時"
+
+#: common/lib/xmodule/xmodule/capa_base.py:165
+msgid "Timer Between Attempts"
+msgstr "回答中のタイマー"
+
+#: common/lib/xmodule/xmodule/capa_base.py:166
+msgid ""
+"Seconds a student must wait between submissions for a problem with multiple "
+"attempts."
+msgstr "複数回、試行したことによる提出の問題が起きている間に受講者が待機しなければならない秒数"
+
+#: common/lib/xmodule/xmodule/capa_base.py:170
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:282
+#: common/lib/xmodule/xmodule/peer_grading_module.py:72
+msgid "Problem Weight"
+msgstr "問題の重み付け"
+
+#: common/lib/xmodule/xmodule/capa_base.py:171
+msgid ""
+"Defines the number of points each problem is worth. If the value is not set,"
+" each response field in the problem is worth one point."
+msgstr "各問題が何点なのか定義してください。値が設定されていない場合、問題中の回答枠は１点になります。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:176
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:325
+msgid "Markdown source of this module"
+msgstr "このモジュールのマークダウン・ソース"
+
+#: common/lib/xmodule/xmodule/capa_base.py:178
+msgid ""
+"Source code for LaTeX and Word problems. This feature is not well-supported."
+msgstr "LaTeXやWordの問題に対するソースコード。この機能の信頼性は低いです。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:182
+msgid "String customization substitutions for particular locations"
+msgstr "特定の場所で、文字列をカスタマイズするための代入"
+
+#: common/lib/xmodule/xmodule/capa_base.py:188
+#: common/lib/xmodule/xmodule/html_module.py:38
+msgid "Enable LaTeX templates?"
+msgstr "LaTeXのテンプレートを使用可能にしますか？"
+
+#: common/lib/xmodule/xmodule/capa_base.py:405
+msgid "Check"
+msgstr "提出"
+
+#: common/lib/xmodule/xmodule/capa_base.py:406
+msgid "Final Check"
+msgstr "最終確認"
+
+#: common/lib/xmodule/xmodule/capa_base.py:437
+msgid "Checking..."
+msgstr "確認中..."
+
+#: common/lib/xmodule/xmodule/capa_base.py:558
+msgid "Warning: The problem has been reset to its initial state!"
+msgstr "警告: 問題は初期状態に戻りました！"
+
+#. Translators: Following this message, there will be a bulleted list of
+#. items.
+#: common/lib/xmodule/xmodule/capa_base.py:562
+msgid ""
+"The problem's state was corrupted by an invalid submission. The submission "
+"consisted of:"
+msgstr "問題のステータスは無効な投稿によって破損しました。投稿内容："
+
+#: common/lib/xmodule/xmodule/capa_base.py:569
+msgid "If this error persists, please contact the course staff."
+msgstr "このエラーが解決しない場合は、コーススタッフに問い合わせください。"
+
+#. Translators: 'closed' means the problem's due date has passed. You may no
+#. longer attempt to solve the problem.
+#: common/lib/xmodule/xmodule/capa_base.py:944
+#: common/lib/xmodule/xmodule/capa_base.py:1324
+#: common/lib/xmodule/xmodule/capa_base.py:1373
+msgid "Problem is closed."
+msgstr "問題はの期間は終了しました。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:952
+msgid "Problem must be reset before it can be checked again."
+msgstr "問題は再度提出される前にリセットしなければいけません。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:961
+#, python-brace-format
+msgid "You must wait at least {wait} seconds between submissions."
+msgstr " {wait} 秒以上あけて投稿してください。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:971
+#, python-brace-format
+msgid ""
+"You must wait at least {wait_secs} between submissions. {remaining_secs} "
+"remaining."
+msgstr "最低 {wait_secs}秒投稿の間をあけてください。残り {remaining_secs} 秒"
+
+#. Translators: {msg} will be replaced with a problem's error message.
+#: common/lib/xmodule/xmodule/capa_base.py:1003
+#, python-brace-format
+msgid "Error: {msg}"
+msgstr "エラー：{msg}"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1122
+#, python-brace-format
+msgid "{num_hour} hour"
+msgstr "{num_hour} 時間"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1127
+#, python-brace-format
+msgid "{num_minute} minute"
+msgstr "{num_minute} 分"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1133
+#, python-brace-format
+msgid "{num_second} second"
+msgstr "{num_second} 秒"
+
+#. Translators: 'rescoring' refers to the act of re-submitting a student's
+#. solution so it can get a new score.
+#: common/lib/xmodule/xmodule/capa_base.py:1244
+msgid "Problem's definition does not support rescoring."
+msgstr "問題は再採点するように定義されていません。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1249
+msgid "Problem must be answered before it can be graded again."
+msgstr "問題は再評価される前に回答する必要があります。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1334
+msgid "Problem needs to be reset prior to save."
+msgstr "問題を保存するためにはリセットする必要があります。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1342
+msgid "Your answers have been saved."
+msgstr "回答は保存されました。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1344
+msgid ""
+"Your answers have been saved but not graded. Click 'Check' to grade them."
+msgstr "回答は保存されましたが、評価されていません。'提出'をクリックして評価してください。"
+
+#: common/lib/xmodule/xmodule/capa_base.py:1381
+msgid "Refresh the page and make an attempt before resetting."
+msgstr "リセットをする前にページをリフレッシュしてください。"
+
+#: common/lib/xmodule/xmodule/capa_module.py:72
+msgid ""
+"We're sorry, there was an error with processing your request. Please try "
+"reloading your page and trying again."
+msgstr "申し訳ありません。要求を処理する際にエラーが発生しました。ページをリロードし再試行してくだい。"
+
+#: common/lib/xmodule/xmodule/capa_module.py:77
+msgid ""
+"The state of this problem has changed since you loaded this page. Please "
+"refresh your page."
+msgstr "問題の状態がページをした時点より変更されています。ページをリフレッシュしてください。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:198
+msgid "Open Response Assessment"
+msgstr "ORA"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:202
+msgid "Current task that the student is on."
+msgstr "受講者が現在とりくんでいるタスク"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:207
+msgid ""
+"A list of lists of state dictionaries for student states that are saved.This"
+" field is only populated if the instructor changes tasks afterthe module is "
+"created and students have attempted it (for example changes a self assessed "
+"problem to self and peer assessed."
+msgstr "受講者の状態を記録するための公式辞書のリストのリスト。モジュール作成後に講師がタスクを変更し、受講者が同様の試行をしたときのみこの枠が追加されます(例えば、自己採点の問題を変更した際など。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:214
+msgid "List of state dictionaries of each task within this module."
+msgstr "このモジュール中にある各タスクの公式辞書のリスト"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:218
+msgid "Which step within the current task that the student is on."
+msgstr "受講者が現在取り組んでいるタスクの中で、どのステップにいるか。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:223
+#: common/lib/xmodule/xmodule/peer_grading_module.py:47
+msgid "Graded"
+msgstr "採点済み"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:224
+msgid ""
+"Defines whether the student gets credit for this problem. Credit is based on"
+" peer grades of this problem."
+msgstr "この問題のクレジットを受講者が入手するか定義。クレジットはこの問題の相互採点に基づく。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:234
+msgid "If the problem is ready to be reset or not."
+msgstr "問題をリセットする準備ができているか否か。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:240
+msgid "The number of times the student can try to answer this problem."
+msgstr "受講者がこの問題に回答できる回数"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:246
+msgid "Allow File Uploads"
+msgstr "ファイルのアップロードを許可"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:247
+msgid "Whether or not the student can submit files as a response."
+msgstr "受講者が回答としてファイルを提出できるか否か。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:252
+msgid "Disable Quality Filter"
+msgstr "品質フィルターを無効化"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:253
+msgid ""
+"If False, the Quality Filter is enabled and submissions with poor spelling, "
+"short length, or poor grammar will not be peer reviewed."
+msgstr "Falseの場合、品質フィルタが使用可能になり、スペルミスや、長さ不足、文法ミスがある課題提出が相互採点されなくなります。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:274
+msgid "Current version number"
+msgstr "現在のバージョン番号"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:283
+#: common/lib/xmodule/xmodule/peer_grading_module.py:73
+msgid ""
+"Defines the number of points each problem is worth. If the value is not set,"
+" each problem is worth one point."
+msgstr "各問題が何点なのか定義してください。値が設定されていない場合、問題中の回答枠は１点になります。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:289
+msgid "Minimum Peer Grading Calibrations"
+msgstr "相互採点の目線合わせの数の下限"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:290
+msgid ""
+"The minimum number of calibration essays each student will need to complete "
+"for peer grading."
+msgstr "受講者が相互採点を完了するのに必要なレポート採点の目線合わせの数の下限。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:296
+msgid "Maximum Peer Grading Calibrations"
+msgstr "相互採点の目線合わせの数の上限"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:297
+msgid ""
+"The maximum number of calibration essays each student will need to complete "
+"for peer grading."
+msgstr "受講者が相互採点を完了するのに必要なレポート採点の目線合わせの数の上限。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:303
+msgid "Peer Graders per Response"
+msgstr "回答ごとの相互採点者"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:304
+msgid "The number of peers who will grade each submission."
+msgstr "各課題提出の採点をする相互採点者の数。"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:310
+msgid "Required Peer Grading"
+msgstr "必須の相互採点"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:311
+msgid ""
+"The number of other students each student making a submission will have to "
+"grade."
+msgstr "課題提出する受講者が採点する必要のある他の受講者の数"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:317
+msgid "Allow \"overgrading\" of peer submissions"
+msgstr "相互課題提出の\"overgrading\"を許可"
+
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py:318
+msgid ""
+"EXPERIMENTAL FEATURE.  Allow students to peer grade submissions that already"
+" have the requisite number of graders, but ONLY WHEN all submissions they "
+"are eligible to grade already have enough graders.  This is intended for use"
+" when settings for `Required Peer Grading` > `Peer Graders per Response`"
+msgstr "実験的な機能。採点者の必要数を既に満たした提出課題を相互採点することを受講者に許可する。しかし、受講者に採点資格のある全ての提出課題に対して、既に十分な採点者がいる場合に限る。この機能は、「必須な相互採点」＞「回答ごとの相互採点者」を設定する際の使用を想定しています。"
+
+#: common/lib/xmodule/xmodule/course_module.py:232
+msgid "Getting Started With Studio"
+msgstr "Studioで作業開始"
+
+#: common/lib/xmodule/xmodule/course_module.py:233
+msgid "Add Course Team Members"
+msgstr "コースチームのメンバーの追加"
+
+#: common/lib/xmodule/xmodule/course_module.py:234
+msgid ""
+"Grant your collaborators permission to edit your course so you can work "
+"together."
+msgstr "協同で講座編集の作業をするために協同権限を許可してください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:237
+msgid "Edit Course Team"
+msgstr "コースチームの編集"
+
+#: common/lib/xmodule/xmodule/course_module.py:239
+msgid "Set Important Dates for Your Course"
+msgstr "講座に関する重要な日時を設定"
+
+#: common/lib/xmodule/xmodule/course_module.py:240
+msgid ""
+"Establish your course's student enrollment and launch dates on the Schedule "
+"and Details page."
+msgstr "受講者の登録を開設し、スケジュールの日時と詳細ページを設定してください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:243
+msgid "Edit Course Details &amp; Schedule"
+msgstr "講座詳細とスケジュールを編集"
+
+#: common/lib/xmodule/xmodule/course_module.py:245
+msgid "Draft Your Course's Grading Policy"
+msgstr "講座の採点ポリシーを下書きする"
+
+#: common/lib/xmodule/xmodule/course_module.py:246
+msgid ""
+"Set up your assignment types and grading policy even if you haven't created "
+"all your assignments."
+msgstr "全課題を作成していない場合でも、課題タイプと採点ポリシーを設定。"
+
+#: common/lib/xmodule/xmodule/course_module.py:249
+msgid "Edit Grading Settings"
+msgstr "採点設定の編集"
+
+#: common/lib/xmodule/xmodule/course_module.py:251
+msgid "Explore the Other Studio Checklists"
+msgstr "他のStudioのチェックリストを検索"
+
+#: common/lib/xmodule/xmodule/course_module.py:252
+msgid ""
+"Discover other available course authoring tools, and find help when you need"
+" it."
+msgstr "他の使用可能なオーサリングツールを探し、必要があればヘルプを参照してください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:257
+msgid "Draft a Rough Course Outline"
+msgstr "大まかな講座アウトラインを下書き"
+
+#: common/lib/xmodule/xmodule/course_module.py:258
+msgid "Create Your First Section and Subsection"
+msgstr "最初のセクションとサブセクションの作成"
+
+#: common/lib/xmodule/xmodule/course_module.py:259
+msgid "Use your course outline to build your first Section and Subsection."
+msgstr "最初のセクションとサブセクションを作成するために、講座アウトラインを利用してください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:262
+#: common/lib/xmodule/xmodule/course_module.py:268
+#: common/lib/xmodule/xmodule/course_module.py:274
+#: common/lib/xmodule/xmodule/course_module.py:280
+#: common/lib/xmodule/xmodule/course_module.py:286
+#: common/lib/xmodule/xmodule/course_module.py:292
+#: common/lib/xmodule/xmodule/course_module.py:298
+msgid "Edit Course Outline"
+msgstr "講座のアウトラインの編集"
+
+#: common/lib/xmodule/xmodule/course_module.py:264
+msgid "Set Section Release Dates"
+msgstr "セクションの公開日時を設定"
+
+#: common/lib/xmodule/xmodule/course_module.py:265
+msgid ""
+"Specify the release dates for each Section in your course. Sections become "
+"visible to students on their release dates."
+msgstr "講座中の各セクションの公開日を指定してください。公開日に、セクションが受講生から見えるようになります。"
+
+#: common/lib/xmodule/xmodule/course_module.py:270
+msgid "Designate a Subsection as Graded"
+msgstr "採点されたサブセクションを指定"
+
+#: common/lib/xmodule/xmodule/course_module.py:271
+msgid ""
+"Set a Subsection to be graded as a specific assignment type. Assignments "
+"within graded Subsections count toward a student's final grade."
+msgstr "特定の課題タイプとして採点されたサブセクションを設定。受講者の最終成績向けにカウントされる。"
+
+#: common/lib/xmodule/xmodule/course_module.py:276
+msgid "Reordering Course Content"
+msgstr "講座コンテンツの並び替え"
+
+#: common/lib/xmodule/xmodule/course_module.py:277
+msgid "Use drag and drop to reorder the content in your course."
+msgstr "講座中のコンテンツを並び替えるにはドラッグ＆ドロップしてください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:282
+msgid "Renaming Sections"
+msgstr "セクションの名前変更"
+
+#: common/lib/xmodule/xmodule/course_module.py:283
+msgid "Rename Sections by clicking the Section name from the Course Outline."
+msgstr "講座アウトラインからセクション名をクリックすることによってセクションの名前を変更。"
+
+#: common/lib/xmodule/xmodule/course_module.py:288
+msgid "Deleting Course Content"
+msgstr "講座コンテンツを削除中"
+
+#: common/lib/xmodule/xmodule/course_module.py:289
+msgid ""
+"Delete Sections, Subsections, or Units you don't need anymore. Be careful, "
+"as there is no Undo function."
+msgstr "不要なセクションや、サブセクション、ユニットを削除します。このアクションは取り消しできないので注意してください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:294
+msgid "Add an Instructor-Only Section to Your Outline"
+msgstr "講師専用のセクションをアウトラインに追加"
+
+#: common/lib/xmodule/xmodule/course_module.py:295
+msgid ""
+"Some course authors find using a section for unsorted, in-progress work "
+"useful. To do this, create a section and set the release date to the distant"
+" future."
+msgstr "講座作成者はソートされていないセクションを使用します（作業中に便利）。そのためには、セクションを作成し、公開日を遅めに設定してください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:300
+msgid "Explore edX's Support Tools"
+msgstr "edXサポートツールの検索"
+
+#: common/lib/xmodule/xmodule/course_module.py:301
+msgid "Explore the Studio Help Forum"
+msgstr "Studioヘルプフォーラムの検索"
+
+#: common/lib/xmodule/xmodule/course_module.py:302
+msgid ""
+"Access the Studio Help forum from the menu that appears when you click your "
+"user name in the top right corner of Studio."
+msgstr "Studioの右上にあるあなたのユーザネームをクリックしたときに表示されるメニューから、Studioのヘルプにアクセスしてください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:305
+msgid "Visit Studio Help"
+msgstr "Studioヘルプを見る"
+
+#: common/lib/xmodule/xmodule/course_module.py:307
+msgid "Enroll in edX 101"
+msgstr "edX101に登録"
+
+#: common/lib/xmodule/xmodule/course_module.py:308
+msgid "Register for edX 101, edX's primer for course creation."
+msgstr "edX101（講座作成の入門書）に登録"
+
+#: common/lib/xmodule/xmodule/course_module.py:311
+msgid "Register for edX 101"
+msgstr "edX101に登録"
+
+#: common/lib/xmodule/xmodule/course_module.py:313
+msgid "Download the Studio Documentation"
+msgstr "Studioドキュメントのダウンロード"
+
+#: common/lib/xmodule/xmodule/course_module.py:314
+msgid "Download the searchable Studio reference documentation in PDF form."
+msgstr "検索可能なStudio参照文書をPDF形式でダウンロード。"
+
+#: common/lib/xmodule/xmodule/course_module.py:317
+msgid "Download Documentation"
+msgstr "ドキュメントのダウンロード"
+
+#: common/lib/xmodule/xmodule/course_module.py:319
+msgid "Draft Your Course About Page"
+msgstr "講座のAboutページを下書き"
+
+#: common/lib/xmodule/xmodule/course_module.py:320
+msgid "Draft a Course Description"
+msgstr "講座の記述を下書き"
+
+#: common/lib/xmodule/xmodule/course_module.py:321
+msgid ""
+"Courses on edX have an About page that includes a course video, description,"
+" and more. Draft the text students will read before deciding to enroll in "
+"your course."
+msgstr "edXの講座には、講座に関する記述やビデオを載せたAboutページがあります。講座の登録を決定する前に、テキストを下書きしてください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:324
+#: common/lib/xmodule/xmodule/course_module.py:330
+#: common/lib/xmodule/xmodule/course_module.py:336
+#: common/lib/xmodule/xmodule/course_module.py:342
+msgid "Edit Course Schedule &amp; Details"
+msgstr "講座スケジュールと詳細を編集"
+
+#: common/lib/xmodule/xmodule/course_module.py:326
+msgid "Add Staff Bios"
+msgstr "スタッフのプロフィールを追加"
+
+#: common/lib/xmodule/xmodule/course_module.py:327
+msgid ""
+"Showing prospective students who their instructor will be is helpful. "
+"Include staff bios on the course About page."
+msgstr "受講者になりそうな講師を表示するのは有用です。講座のAboutページにあるスタッフのプロフィールに含めてください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:332
+msgid "Add Course FAQs"
+msgstr "講座についてのよくある質問を追加"
+
+#: common/lib/xmodule/xmodule/course_module.py:333
+msgid "Include a short list of frequently asked questions about your course."
+msgstr "講座に関するFAQリストを含める。"
+
+#: common/lib/xmodule/xmodule/course_module.py:338
+msgid "Add Course Prerequisites"
+msgstr "講座の必須条件を追加"
+
+#: common/lib/xmodule/xmodule/course_module.py:339
+msgid ""
+"Let students know what knowledge and/or skills they should have before they "
+"enroll in your course."
+msgstr "講座に登録する前に、どんな知識やスキルが必要か受講者に知らせてください。"
+
+#: common/lib/xmodule/xmodule/course_module.py:452
+msgid "General"
+msgstr "一般"
+
+#. Translators: TBD stands for 'To Be Determined' and is used when a course
+#. does not yet have an announced start date.
+#: common/lib/xmodule/xmodule/course_module.py:838
+msgid "TBD"
+msgstr "未定"
+
+#: common/lib/xmodule/xmodule/discussion_module.py:27
+msgid "Category"
+msgstr "カテゴリ"
+
+#: common/lib/xmodule/xmodule/discussion_module.py:29
+msgid ""
+"A category name for the discussion. This name appears in the left pane of "
+"the discussion forum for the course."
+msgstr "ディスカッション用のカテゴリー名。カテゴリー名はディスカッションの左枠に表示されます。"
+
+#: common/lib/xmodule/xmodule/discussion_module.py:33
+msgid "Subcategory"
+msgstr "サブカテゴリ"
+
+#: common/lib/xmodule/xmodule/discussion_module.py:35
+msgid ""
+"A subcategory name for the discussion. This name appears in the left pane of"
+" the discussion forum for the course."
+msgstr "ディスカッション用のサブカテゴリー名。サブカテゴリー名はディスカッションの左枠に表示されます。"
+
+#: common/lib/xmodule/xmodule/html_module.py:33
+msgid "Text"
+msgstr "テキスト"
+
+#: common/lib/xmodule/xmodule/html_module.py:35
+#: common/lib/xmodule/xmodule/html_module.py:245
+#: common/lib/xmodule/xmodule/html_module.py:316
+#: common/lib/xmodule/xmodule/peer_grading_module.py:84
+msgid "Html contents to display for this module"
+msgstr "このモジュールを表示するHTMLコンテンツ"
+
+#: common/lib/xmodule/xmodule/html_module.py:36
+msgid "Source code for LaTeX documents. This feature is not well-supported."
+msgstr "LaTeX文書のソースコード。この機能の信頼性は低いです。"
+
+#: common/lib/xmodule/xmodule/html_module.py:43
+msgid ""
+"Select Visual to enter content and have the editor automatically create the "
+"HTML. Select Raw to edit HTML directly. If you change this setting, you must"
+" save the component and then re-open it for editing."
+msgstr "コンテンツに入力し、エディターが自動的にHTMLを作成するために、ビジュアルを選択してください。生データを選択し、HTMLディレクトリを編集してください。この設定を変えたら、コンポーネントを保存し、エディターで再度開く必要があります。"
+
+#: common/lib/xmodule/xmodule/html_module.py:44
+msgid "Editor"
+msgstr "エディタ"
+
+#: common/lib/xmodule/xmodule/html_module.py:47
+msgid "Visual"
+msgstr "ビジュアル"
+
+#: common/lib/xmodule/xmodule/html_module.py:48
+msgid "Raw"
+msgstr "生"
+
+#: common/lib/xmodule/xmodule/html_module.py:284
+msgid "HTML for the additional pages"
+msgstr "追加ページのHTML"
+
+#: common/lib/xmodule/xmodule/html_module.py:311
+msgid "List of course update items"
+msgstr "講座更新アイテムのリスト"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:46
+msgid "Image Annotation"
+msgstr "画像の注釈"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:49
+#: common/lib/xmodule/xmodule/textannotation_module.py:39
+msgid "Tags for Assignments"
+msgstr "課題に対するタグ"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:50
+#: common/lib/xmodule/xmodule/textannotation_module.py:40
+msgid ""
+"Add tags that automatically highlight in a certain color using the comma-"
+"separated form, i.e. imagery:red,parallelism:blue"
+msgstr "コンマで分けられたフォームを使用して、特定の色（例えば、imagery:red,parallelism:blue）で自動的にハイライトするタグを追加します。"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:55
+#: common/lib/xmodule/xmodule/textannotation_module.py:57
+#: common/lib/xmodule/xmodule/videoannotation_module.py:49
+msgid "Location of Annotation backend"
+msgstr "注釈のバックエンドの場所"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:58
+#: common/lib/xmodule/xmodule/textannotation_module.py:60
+#: common/lib/xmodule/xmodule/videoannotation_module.py:52
+msgid "Url for Annotation Storage"
+msgstr "注釈のストレージのURL"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:61
+#: common/lib/xmodule/xmodule/textannotation_module.py:63
+#: common/lib/xmodule/xmodule/videoannotation_module.py:55
+msgid "Secret string for annotation storage"
+msgstr "注釈のストレージに対する秘密の文字列"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:64
+#: common/lib/xmodule/xmodule/textannotation_module.py:66
+#: common/lib/xmodule/xmodule/videoannotation_module.py:58
+msgid "Secret Token String for Annotation"
+msgstr "注釈に対する秘密のトークン文字列"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:67
+#: common/lib/xmodule/xmodule/textannotation_module.py:69
+#: common/lib/xmodule/xmodule/videoannotation_module.py:61
+msgid "Default Annotations Tab"
+msgstr "デフォルトの注釈タブ"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:68
+#: common/lib/xmodule/xmodule/textannotation_module.py:70
+#: common/lib/xmodule/xmodule/videoannotation_module.py:62
+msgid ""
+"Select which tab will be the default in the annotations table: myNotes, "
+"Instructor, or Public."
+msgstr "注釈テーブルの中でどのタブ（マイノート、講師、公開）をデフォルトにするか選択してください。"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:74
+#: common/lib/xmodule/xmodule/textannotation_module.py:76
+#: common/lib/xmodule/xmodule/videoannotation_module.py:68
+msgid "Email for 'Instructor' Annotations"
+msgstr "'講師'注釈のためのメール"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:75
+#: common/lib/xmodule/xmodule/textannotation_module.py:77
+#: common/lib/xmodule/xmodule/videoannotation_module.py:69
+msgid ""
+"Email of the user that will be attached to all annotations that will be "
+"found in 'Instructor' tab."
+msgstr "'講師'タブ中の全ての注釈に添付されるユーザのメール"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:80
+#: common/lib/xmodule/xmodule/textannotation_module.py:82
+#: common/lib/xmodule/xmodule/videoannotation_module.py:74
+msgid "Mode for Annotation Tool"
+msgstr "注釈ツールのモード"
+
+#: common/lib/xmodule/xmodule/imageannotation_module.py:81
+#: common/lib/xmodule/xmodule/textannotation_module.py:83
+#: common/lib/xmodule/xmodule/videoannotation_module.py:75
+msgid ""
+"Type in number corresponding to following modes:  'instructor' or 'everyone'"
+msgstr "'講師'、'全員'のモードに対応する数字を入力"
+
+#: common/lib/xmodule/xmodule/lti_module.py:111
+msgid ""
+"Enter the name that students see for this component.  Analytics reports may "
+"also use the display name to identify this component."
+msgstr "このコンポーネント用の受講者から見える名前を入力してください。この名前は、分析レポート作成時にコンポーネントを識別するために使われます。"
+
+#: common/lib/xmodule/xmodule/lti_module.py:118
+msgid "LTI ID"
+msgstr "LTI ID"
+
+#: common/lib/xmodule/xmodule/lti_module.py:120
+msgid ""
+"Enter the LTI ID for the external LTI provider.  This value must be the same"
+" LTI ID that you entered in the LTI Passports setting on the Advanced "
+"Settings page.<br />See "
+msgstr "外部のLTIプロバイダー用のLTI IDを入力してください。この値は詳細設定ページのLTIパスポートに入力されたものと同じである必要があります。<br />See"
+
+#: common/lib/xmodule/xmodule/lti_module.py:129
+msgid "LTI URL"
+msgstr "LTI URL"
+
+#: common/lib/xmodule/xmodule/lti_module.py:131
+msgid ""
+"Enter the URL of the external tool that this component launches. This "
+"setting is only used when Hide External Tool is set to False.<br />See "
+msgstr "このコンポーネントが起動する外部ツールのURLを入力してください。この設定は外部ツールを隠す設定をFalseにする時にのみ使われます。<br />See"
+
+#: common/lib/xmodule/xmodule/lti_module.py:138
+msgid "Custom Parameters"
+msgstr "カスタムパラメータ"
+
+#: common/lib/xmodule/xmodule/lti_module.py:140
+msgid ""
+"Add the key/value pair for any custom parameters, such as the page your "
+"e-book should open to or the background color for this component.<br />See "
+msgstr "カスタムパラメータ用のキー／値のペアを追加してください。パラメータの例としては、e-bookで開くページや、このコンポーネントの背景色などがあります。<br />See"
+
+#: common/lib/xmodule/xmodule/lti_module.py:146
+msgid "Open in New Page"
+msgstr "新しいページで開く"
+
+#: common/lib/xmodule/xmodule/lti_module.py:148
+msgid ""
+"Select True if you want students to click a link that opens the LTI tool in "
+"a new window. Select False if you want the LTI content to open in an IFrame "
+"in the current page. This setting is only used when Hide External Tool is "
+"set to False.  "
+msgstr "受講者にLTIツールを新しいウィンドウで開くためのリンクをクリックさせたい場合は、Trueを選択してください。LTIコンテンツを現在のページのIFrameで開かせたい場合はFalseを選択してください。この設定は外部ツールを隠す設定をFalseにする時にのみ使われます。"
+
+#: common/lib/xmodule/xmodule/lti_module.py:156
+msgid "Scored"
+msgstr "採点された（採点済み）"
+
+#: common/lib/xmodule/xmodule/lti_module.py:158
+msgid ""
+"Select True if this component will receive a numerical score from the "
+"external LTI system."
+msgstr "このコンポーネントが外部のLTIシステムから数値を受け取る場合はTrueを選択してください。"
+
+#: common/lib/xmodule/xmodule/lti_module.py:164
+msgid "Weight"
+msgstr "重み付け"
+
+#: common/lib/xmodule/xmodule/lti_module.py:166
+msgid ""
+"Enter the number of points possible for this component.  The default value "
+"is 1.0.  This setting is only used when Scored is set to True."
+msgstr "このコンポーネントが実行できるポイントの数を入力してください。デフォルト値は1.0です。この設定は、採点済がTrueの時にのみ使われます。"
+
+#: common/lib/xmodule/xmodule/lti_module.py:175
+msgid ""
+"The score kept in the xblock KVS -- duplicate of the published score in "
+"django DB"
+msgstr "xblock KVSの得点 -- django DB中の公開得点の複製"
+
+#: common/lib/xmodule/xmodule/lti_module.py:180
+msgid "Comment as returned from grader, LTI2.0 spec"
+msgstr "LTI2.0 specの採点者からのコメント"
+
+#: common/lib/xmodule/xmodule/lti_module.py:185
+msgid "Hide External Tool"
+msgstr "外部ツールを隠す"
+
+#: common/lib/xmodule/xmodule/lti_module.py:187
+msgid ""
+"Select True if you want to use this component as a placeholder for syncing "
+"with an external grading  system rather than launch an external tool.  This "
+"setting hides the Launch button and any IFrames for this component."
+msgstr "外部ツールを起動するのではなく、外部の採点システムと同期するための代用としてこのコンポーネントを使用したい場合、Trueを選択してください。この設定により、起動ボタンと、このコンポーネント用のIFrameは非表示になります。"
+
+#: common/lib/xmodule/xmodule/lti_module.py:325
+#, python-brace-format
+msgid ""
+"Could not parse custom parameter: {custom_parameter}. Should be \"x=y\" "
+"string."
+msgstr "カスタムパラメータを解析することができませんでした。\"x=y\" の文字列である必要があります。：{custom_parameter} "
+
+#: common/lib/xmodule/xmodule/lti_module.py:759
+#, python-brace-format
+msgid ""
+"Could not parse LTI passport: {lti_passport}. Should be \"id:key:secret\" "
+"string."
+msgstr "LTIパスポートを解析することができませんでした。\"id:key:secret\"の文字列である必要があります：{lti_passport}"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:34
+msgid "Show Single Problem"
+msgstr "１つの問題を見る"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:35
+msgid ""
+"When True, only the single problem specified by \"Link to Problem Location\""
+" is shown. When False, a panel is displayed with all problems available for "
+"peer grading."
+msgstr "Trueにした場合、「問題へのリンク」によって指定される問題のみが表示されます。Falseの場合、相互採点の全問題とともにパネルが表示されます。"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:41
+msgid "Link to Problem Location"
+msgstr "問題へのリンク"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:42
+msgid ""
+"The location of the problem being graded. Only used when \"Show Single "
+"Problem\" is True."
+msgstr "採点された問題の場所。「１つの問題を見る」がTrueのときのみ使用可能。"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:48
+msgid ""
+"Defines whether the student gets credit for grading this problem. Only used "
+"when \"Show Single Problem\" is True."
+msgstr "この問題を採点するためのクレジットを受講者が入手するか定義。「１つの問題を見る」がTrueのときのみ使用可能。"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:53
+msgid "Due date that should be displayed."
+msgstr "表示すべき締切日時"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:64
+msgid "Amount of grace to give on the due date."
+msgstr "締切日時に与える猶予期間"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:68
+msgid "Student data for a given peer grading problem."
+msgstr "指定された相互採点問題のための受講者データ"
+
+#: common/lib/xmodule/xmodule/peer_grading_module.py:81
+msgid "Peer Grading Interface"
+msgstr "相互採点のインターフェース"
+
+#. Translators: This message will be added to the front of messages of type
+#. warning,
+#. e.g. "Warning: this component has not been configured yet".
+#: common/lib/xmodule/xmodule/split_test_module.py:45
+msgid "Warning"
+msgstr "警告"
+
+#. Translators: This message will be added to the front of messages of type
+#. error,
+#. e.g. "Error: required field is missing".
+#: common/lib/xmodule/xmodule/split_test_module.py:49
+msgid "Error"
+msgstr "エラー"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:62
+msgid "Not Selected"
+msgstr "未選択"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:77
+msgid ""
+"This name is used for organizing your course content, but is not shown to "
+"students."
+msgstr "この名前は講座コンテンツを編集する際に使用されますが、受講者からは見えません。"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:79
+msgid "Content Experiment"
+msgstr "実験コンテンツ"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:84
+msgid ""
+"The list of group configurations for partitioning students in content "
+"experiments."
+msgstr "実験コンテンツ中で受講者を区分するためのグループ設定のリスト"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:90
+msgid ""
+"The configuration for how users are grouped for this content experiment. "
+"After you select the group configuration and save the content experiment, "
+"you cannot change this setting."
+msgstr "この実験コンテンツ用にどのようにユーザをグループ分けするかの設定。グループ設定を選択し、コンテンツ・エクスペリメントを保存した後は、この設定を変更できません。"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:92
+msgid "Group Configuration"
+msgstr "グループ設定"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:107
+msgid "Which child module students in a particular group_id should see"
+msgstr "特定のグループIDの受講者がどの子モジュールを見るべきか"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:454
+msgid "You must select a group configuration for this content experiment."
+msgstr "この実験コンテンツ用のグループ設定を選択する必要があります。"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:458
+msgid ""
+"This content experiment will not be shown to students because it refers to a"
+" group configuration that has been deleted. You can delete this experiment "
+"or reinstate the group configuration to repair it."
+msgstr "この実験コンテンツは、削除されたグループ設定を参照しているため、受講者に表示されません。修復するには、このエクスペリメントを削除するか、グループ設定を復元してください。"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:462
+msgid ""
+"This content experiment is in an invalid state and cannot be repaired. "
+"Please delete and recreate."
+msgstr "この実験コンテンツは無効であり、修復できません。削除するかもう一度作成してください。"
+
+#: common/lib/xmodule/xmodule/split_test_module.py:464
+#, python-brace-format
+msgid "This content experiment uses group configuration '{experiment_name}'."
+msgstr "この実験コンテンツはグループ設定'{experiment_name}'を使用しています。"
+
+#. Translators: 'Courseware' refers to the tab in the courseware that leads to
+#. the content of a course
+#: common/lib/xmodule/xmodule/tabs.py:276
+msgid "Courseware"
+msgstr "学習する"
+
+#. Translators: "Course Info" is the name of the course's information and
+#. updates page
+#: common/lib/xmodule/xmodule/tabs.py:293
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:113
+msgid "Course Info"
+msgstr "お知らせ"
+
+#. Translators: "Progress" is the name of the student's course progress page
+#: common/lib/xmodule/xmodule/tabs.py:313
+msgid "Progress"
+msgstr "成績"
+
+#. Translators: "Wiki" is the name of the course's wiki page
+#: common/lib/xmodule/xmodule/tabs.py:336
+#: lms/djangoapps/course_wiki/views.py:133 lms/templates/wiki/base.html:4
+msgid "Wiki"
+msgstr "Wiki"
+
+#: common/lib/xmodule/xmodule/tabs.py:507
+msgid "Textbooks"
+msgstr "テキスト"
+
+#. Translators: "Staff grading" appears on a tab that allows
+#. staff to view open-ended problems that require staff grading
+#: common/lib/xmodule/xmodule/tabs.py:601
+msgid "Staff grading"
+msgstr "スタッフによる採点"
+
+#. Translators: "Peer grading" appears on a tab that allows
+#. students to view open-ended problems that require grading
+#: common/lib/xmodule/xmodule/tabs.py:617
+msgid "Peer grading"
+msgstr "相互採点"
+
+#. Translators: "Syllabus" appears on a tab that, when clicked, opens the
+#. syllabus of the course.
+#: common/lib/xmodule/xmodule/tabs.py:651
+msgid "Syllabus"
+msgstr "シラバス"
+
+#. Translators: 'Instructor' appears on the tab that leads to the instructor
+#. dashboard, which is
+#. a portal where an instructor can get data and perform various actions on
+#. their course
+#: common/lib/xmodule/xmodule/tabs.py:688
+msgid "Instructor"
+msgstr "講師"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py:36
+msgid "Text Annotation"
+msgstr "テキストの注釈"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py:45
+msgid "Source/Citation"
+msgstr "ソース／引用"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py:46
+msgid ""
+"Optional for citing source of any material used. Automatic citation can be "
+"done using <a href=\"http://easybib.com\">EasyBib</a>"
+msgstr "使用されている素材のソースの引用に関するオプション。自動引用は<a href=\"http://easybib.com\">EasyBib</a>を使って行われます。"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py:51
+msgid "Diacritic Marks"
+msgstr "付加記号"
+
+#: common/lib/xmodule/xmodule/textannotation_module.py:52
+msgid ""
+"Add diacritic marks to be added to a text using the comma-separated form, "
+"i.e. markname;urltomark;baseline,markname2;urltomark2;baseline2"
+msgstr "コンマで分けられたフォームを使用したテキストの追加のために、付加記号を追加してください。\n例えば、markname;urltomark;baseline,markname2;urltomark2;baseline2"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py:35
+msgid "Video Annotation"
+msgstr "ビデオの注釈"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py:38
+msgid "The external source URL for the video."
+msgstr "ビデオに対する外部のソースURL"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py:39
+msgid "Source URL"
+msgstr "ソースURL"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py:43
+msgid "Poster Image URL"
+msgstr "ポスター画像URL"
+
+#: common/lib/xmodule/xmodule/videoannotation_module.py:44
+msgid "Poster URL"
+msgstr "ポスターURL"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:44
+msgid "Inputs"
+msgstr "入力"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:45
+msgid "Number of text boxes available for students to input words/sentences."
+msgstr "受講者が入力に利用可能なテキストボックスの数"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:51
+msgid "Maximum Words"
+msgstr "文字数の上限"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:52
+msgid "Maximum number of words to be displayed in generated word cloud."
+msgstr "作成されたワードクラウドに表示される文字数の上限。"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:58
+msgid "Show Percents"
+msgstr "パーセントの表示"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:59
+msgid "Statistics are shown for entered words near that word."
+msgstr "近くに入力された文字に関する統計データを表示。"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:66
+msgid "Whether this student has posted words to the cloud."
+msgstr "この受講者が文字をワードクラウドに投稿したか否か。"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:71
+msgid "Student answer."
+msgstr "受講者の回答。"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:76
+msgid "All possible words from all students."
+msgstr "全ての受講者が入力した可能性のある全ての文字"
+
+#: common/lib/xmodule/xmodule/word_cloud_module.py:80
+msgid "Top num_top_words words for word cloud."
+msgstr "ワードクラウド用のトップワード"
+
+#. Translators: "Self" is used to denote an openended response that is self-
+#. graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:42
+msgid "Self"
+msgstr "自己"
+
+#. Translators: "AI" is used to denote an openended response that is machine-
+#. graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:45
+msgid "AI"
+msgstr "機械"
+
+#. Translators: "Peer" is used to denote an openended response that is peer-
+#. graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:47
+msgid "Peer"
+msgstr "採点者"
+
+#. Translators: "Not started" is used to communicate to a student that their
+#. response
+#. has not yet been graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:53
+msgid "Not started."
+msgstr "開始前です。"
+
+#. Translators: "Being scored." is used to communicate to a student that their
+#. response
+#. are in the process of being scored
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:56
+msgid "Being scored."
+msgstr "採点中です。"
+
+#. Translators: "Scoring finished" is used to communicate to a student that
+#. their response
+#. have been scored, but the full scoring process is not yet complete
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:59
+msgid "Scoring finished."
+msgstr "採点が完了しました。"
+
+#. Translators: "Complete" is used to communicate to a student that their
+#. openended response has been fully scored
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:62
+msgid "Complete."
+msgstr "完了。"
+
+#. Translators: "Scored rubric" appears to a user as part of a longer
+#. string that looks something like: "Scored rubric from grader 1".
+#. "Scored" is an adjective that modifies the noun "rubric".
+#. That longer string appears when a user is viewing a graded rubric
+#. returned from one of the graders of their openended response problem.
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:881
+msgid "Scored rubric"
+msgstr "採点済の規則"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:974
+#, python-brace-format
+msgid ""
+"You have attempted this question {number_of_student_attempts} times. You are"
+" only allowed to attempt it {max_number_of_attempts} times."
+msgstr "あなたはこの問題に{number_of_student_attempts}回、回答をしました。しかしながら、この問題は{max_number_of_attempts}回までしか回答ができません。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_modulev1.py:1165
+msgid "The problem state got out-of-sync. Please try reloading the page."
+msgstr "この問題はシステム上必要な同期ができていません。お手数をおかけしますが、このページの再読み込み（更新）をお願いいたします。"
+
+#. Translators: "Self-Assessment" refers to the self-assessed mode of
+#. openended evaluation
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_rubric.py:18
+msgid "Self-Assessment"
+msgstr "自己採点"
+
+#. Translators: "Peer-Assessment" refers to the peer-assessed mode of
+#. openended evaluation
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_rubric.py:20
+msgid "Peer-Assessment"
+msgstr "相互採点"
+
+#. Translators: "Instructor-Assessment" refers to the instructor-assessed mode
+#. of openended evaluation
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_rubric.py:22
+msgid "Instructor-Assessment"
+msgstr "講師による採点"
+
+#. Translators: "AI-Assessment" refers to the machine-graded mode of openended
+#. evaluation
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_rubric.py:24
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/combined_open_ended_rubric.py:26
+msgid "AI-Assessment"
+msgstr "機械採点"
+
+#. Translators: 'tag' is one of 'feedback', 'submission_id',
+#. 'grader_id', or 'score'. They are categories that a student
+#. responds to when filling out a post-assessment survey
+#. of his or her grade from an openended problem.
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:164
+#, python-brace-format
+msgid ""
+"Could not find needed tag {tag_name} in the survey responses. Please try "
+"submitting again."
+msgstr "試験の返信に必要となるタグ「{tag_name}」が見つかりません。お手数をおかけしますが、もう一度お試しください。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:185
+msgid "There was an error saving your feedback. Please contact course staff."
+msgstr "保存においてエラーが発生しました。コーススタッフに連絡をしてください。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:192
+msgid "Couldn't submit feedback."
+msgstr "フィードバックが送信できませんでした。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:225
+msgid "Successfully saved your feedback."
+msgstr "フィードバックの保存に成功しました。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:228
+msgid "Unable to save your feedback. Please try again later."
+msgstr "フィードバックを保存できません。少したってからお試しください。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:296
+msgid "Successfully saved your submission."
+msgstr "提出課題の保存に成功しました。"
+
+#. Translators: the `grader` refers to the grading service open response
+#. problems
+#. are sent to, either to be machine-graded, peer-graded, or instructor-
+#. graded.
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:301
+msgid ""
+"Unable to submit your submission to the grader. Please try again later."
+msgstr "課題が採点エンジンに提出できません。少したってからお試しください。"
+
+#. Translators: the `grader` refers to the grading service open response
+#. problems
+#. are sent to, either to be machine-graded, peer-graded, or instructor-
+#. graded.
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:434
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:447
+msgid "Error getting feedback from grader."
+msgstr "採点エンジンからエラーが返ってきました。"
+
+#. Translators: the `grader` refers to the grading service open response
+#. problems
+#. are sent to, either to be machine-graded, peer-graded, or instructor-
+#. graded.
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:456
+msgid "No feedback available from grader."
+msgstr "採点エンジンからのフィードバックはありません。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:689
+msgid "Error handling action. Please try again."
+msgstr "エラー処理状態です。再度、お試し下さい。"
+
+#. Translators: this string appears once an openended response
+#. is submitted but before it has been graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/open_ended_module.py:780
+msgid ""
+"Your response has been submitted. Please check back later for your grade."
+msgstr "あなたの回答は提出されています。後ほど、あなたの回答に対する評価をご確認ください。"
+
+#. Translators: "Not started" communicates to a student that their response
+#. has not yet been graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py:95
+msgid "Not started"
+msgstr "開始前"
+
+#. Translators: "In progress" communicates to a student that their response
+#. is currently in the grading process
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py:98
+msgid "In progress"
+msgstr "処理中"
+
+#. Translators: "Done" communicates to a student that their response
+#. has been fully graded
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py:101
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py:102
+msgid "Done"
+msgstr "完了"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py:495
+msgid ""
+"We could not find a file in your submission. Please try choosing a file or "
+"pasting a URL to your file into the answer box."
+msgstr "提出いただいた中からファイルを見つけることができませんでした。お手数をおかけしますが、ファイルを選択いただくか、回答ボックスの中にファイルを配置いただき、そのURLをペーストしていただけますでしょうか。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/openendedchild.py:508
+msgid ""
+"We are having trouble saving your file. Please try another file or paste a "
+"URL to your file into the answer box."
+msgstr "ファイルの保存中にエラーが発生しました。別のファイルをお試しいただくか、回答ボックスにファイルを配置いただき、そのURLをペーストしてください。"
+
+#: common/lib/xmodule/xmodule/open_ended_grading_classes/self_assessment_module.py:240
+msgid "Error saving your score.  Please notify course staff."
+msgstr "採点結果の保存においてエラーが発生しました。コーススタッフに連絡をしてください。"
+
+#: common/lib/xmodule/xmodule/video_module/transcripts_utils.py:111
+#, python-brace-format
+msgid ""
+"Can't receive transcripts from Youtube for {youtube_id}. Status code: "
+"{status_code}."
+msgstr "{youtube_id}の字幕を受け取ることができません。ステータスコード：{status_code}"
+
+#: common/lib/xmodule/xmodule/video_module/transcripts_utils.py:175
+msgid "Can't find any transcripts on the Youtube service."
+msgstr "Youtubeサービスで字幕を見つけることができません。"
+
+#: common/lib/xmodule/xmodule/video_module/transcripts_utils.py:220
+msgid "We support only SubRip (*.srt) transcripts format."
+msgstr "字幕のフォーマットはSubRip (*.srt) のみ対応します。"
+
+#: common/lib/xmodule/xmodule/video_module/transcripts_utils.py:224
+#, python-brace-format
+msgid ""
+"Something wrong with SubRip transcripts file during parsing. Inner message "
+"is {error_message}"
+msgstr "SubRip字幕ファイルの解析に問題があります。 内部メッセージ： {error_message}"
+
+#: common/lib/xmodule/xmodule/video_module/transcripts_utils.py:229
+msgid "Something wrong with SubRip transcripts file during parsing."
+msgstr "SubRip字幕ファイルの解析に問題があります。"
+
+#: common/lib/xmodule/xmodule/video_module/transcripts_utils.py:429
+#, python-brace-format
+msgid "{exception_message}: Can't find uploaded transcripts: {user_filename}"
+msgstr "{exception_message}：アップロードされた字幕が見つかりません： {user_filename}"
+
+#: common/lib/xmodule/xmodule/video_module/video_module.py:177
+msgid "Basic"
+msgstr "基本"
+
+#: common/lib/xmodule/xmodule/video_module/video_module.py:368
+msgid ""
+"The URL for your video. This can be a YouTube URL or a link to an .mp4, "
+".ogg, or .webm video file hosted elsewhere on the Internet."
+msgstr "ビデオのURL。YouTubeのURL またはインターネットのどこかにホストされた.mp4, .ogg, .webm ビデオファイルへのリンクを指定します。"
+
+#: common/lib/xmodule/xmodule/video_module/video_module.py:369
+msgid "Default Video URL"
+msgstr "デフォルトのビデオURL"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:17
+msgid ""
+"The name students see. This name appears in the course ribbon and as a "
+"header for the video."
+msgstr "受講者から見える名前。この名前は、コースリボンやビデオのヘッダーに表示される。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:18
+msgid "Component Display Name"
+msgstr "コンポーネントの表示名"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:24
+msgid "Current position in the video."
+msgstr "ビデオ再生の現在位置"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:31
+msgid ""
+"Optional, for older browsers: the YouTube ID for the normal speed video."
+msgstr "古いブラウザ用のオプション：ノーマルスピードのYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:32
+msgid "YouTube ID"
+msgstr "YouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:37
+msgid "Optional, for older browsers: the YouTube ID for the .75x speed video."
+msgstr "古いブラウザ用のオプション：0.75倍速のYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:38
+msgid "YouTube ID for .75x speed"
+msgstr "0.75倍速のYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:43
+msgid ""
+"Optional, for older browsers: the YouTube ID for the 1.25x speed video."
+msgstr "古いブラウザ用のオプション：1.25倍速のYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:44
+msgid "YouTube ID for 1.25x speed"
+msgstr "1.25倍速のYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:49
+msgid "Optional, for older browsers: the YouTube ID for the 1.5x speed video."
+msgstr "古いブラウザ用のオプション：1.5倍速のYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:50
+msgid "YouTube ID for 1.5x speed"
+msgstr "1.5倍速のYouTube ID"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:55
+msgid ""
+"Time you want the video to start if you don't want the entire video to play."
+" Formatted as HH:MM:SS. The maximum value is 23:59:59."
+msgstr "ビデオの全体を再生したくない場合の開始時間。HH:MM:SSの形式で指定する。上限値は23:59:59。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:56
+msgid "Video Start Time"
+msgstr "ビデオの開始時間"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:61
+msgid ""
+"Time you want the video to stop if you don't want the entire video to play. "
+"Formatted as HH:MM:SS. The maximum value is 23:59:59."
+msgstr "ビデオの全体を再生したくない場合の終了時間。HH:MM:SSの形式で指定する。上限値は23:59:59。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:62
+msgid "Video Stop Time"
+msgstr "ビデオの終了時間"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:71
+msgid "The external URL to download the video."
+msgstr "ビデオをダウンロードするための外部URL。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:72
+msgid "Download Video"
+msgstr "ビデオをダウンロード"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:77
+msgid ""
+"Allow students to download versions of this video in different formats if "
+"they cannot use the edX video player or do not have access to YouTube. You "
+"must add at least one non-YouTube URL in the Video File URLs field."
+msgstr "受講者がedXのビデオプレイヤーを使えない、またはYouTubeにアクセスできない場合、違うフォーマットのビデオのダウンロードを許可します。ビデオファイルURLの枠に、少なくとも１つ以上のYouTubeではないURLを追加する必要があります。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:78
+msgid "Video Download Allowed"
+msgstr "ビデオのダウンロードを許可"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:83
+msgid ""
+"The URL or URLs where you've posted non-YouTube versions of the video. Each "
+"URL must end in .mpeg, .mp4, .ogg, or .webm and cannot be a YouTube URL. "
+"(For browser compatibility, we strongly recommend .mp4 and .webm format.) "
+"Students will be able to view the first listed video that's compatible with "
+"the student's computer. To allow students to download these videos, set "
+"Video Download Allowed to True."
+msgstr "YouTubeではないビデオを投稿したURL。URLの末尾は.mpeg, .mp4, .ogg, .webmにしなければならない(ブラウザの互換性の理由から、.mp4, .webmフォーマットを強く推奨します)。受講者はコンピュータで、リストの最初のビデオを閲覧できます。ビデオのダウンロードを許可するか否か設定してください。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:84
+msgid "Video File URLs"
+msgstr "ビデオファイルのURL"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:88
+msgid ""
+"By default, students can download an .srt or .txt transcript when you set "
+"Download Transcript Allowed to True. If you want to provide a downloadable "
+"transcript in a different format, we recommend that you upload a handout by "
+"using the Upload a Handout field. If this isn't possible, you can post a "
+"transcript file on the Files & Uploads page or on the Internet, and then add"
+" the URL for the transcript here. Students see a link to download that "
+"transcript below the video."
+msgstr "字幕ダウンロードの許可をTrueに設定すると、.srtまたは.txtの字幕を受講者はダウンロードできます。字幕をその他の形式でダウンロード可能にしたい場合は、資料をアップロードすることを推奨します。それが無理な場合は、ファイル＆アップロードページまたはネット上に字幕ファイルを置き、そのURLを追加することもできます。受講者は、ビデオの下の字幕ダウンロードのリンクから字幕を見ることができます。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:89
+msgid "Downloadable Transcript URL"
+msgstr "ダウンロード可能な字幕のURL"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:94
+msgid ""
+"Allow students to download the timed transcript. A link to download the file"
+" appears below the video. By default, the transcript is an .srt or .txt "
+"file. If you want to provide the transcript for download in a different "
+"format, upload a file by using the Upload Handout field."
+msgstr "受講者に時刻付きの字幕ダウンロードを許可します。字幕ファイルをダウンロードするリンクはビデオの下に表示されます。デフォルトで字幕ファイルの拡張子は.srtか.txtになります。違う形式の字幕ダウンロードを提供したい場合は、資料をアップロードする枠を使用してアップロードしてください。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:95
+msgid "Download Transcript Allowed"
+msgstr "字幕のダウンロードを許可"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:100
+msgid ""
+"The default transcript for the video, from the Default Timed Transcript "
+"field on the Basic tab. This transcript should be in English. You don't have"
+" to change this setting."
+msgstr "基本タブの時刻付き字幕で設定された、デフォルトの字幕です。この字幕の言語は英語である必要があります。この設定を変える必要はありません。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:101
+msgid "Default Timed Transcript"
+msgstr "デフォルト時刻の字幕"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:106
+msgid "Specify whether the transcripts appear with the video by default."
+msgstr "デフォルトで、ビデオと共に字幕を表示するか指定。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:107
+msgid "Show Transcript"
+msgstr "字幕を表示"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:113
+msgid ""
+"Add transcripts in different languages. Click below to specify a language "
+"and upload an .srt transcript file for that language."
+msgstr "字幕に違う言語を追加。以下をクリックして、言語を指定し、その言語の.strファイル（字幕ファイル）をアップロードしてください。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:114
+msgid "Transcript Languages"
+msgstr "字幕の言語"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:119
+msgid "Preferred language for transcript."
+msgstr "字幕の推奨言語。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:120
+msgid "Preferred language for transcript"
+msgstr "字幕の推奨言語"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:125
+msgid "Transcript file format to download by user."
+msgstr "ユーザによってダウンロードされる字幕ファイルフォーマット。"
+
+#. Translators: This is a type of file used for captioning in the video
+#. player.
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:129
+msgid "SubRip (.srt) file"
+msgstr "SubRip (.srt) ファイル"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:130
+msgid "Text (.txt) file"
+msgstr "Text (.txt)ファイル"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:135
+msgid "The last speed that the user specified for the video."
+msgstr "ユーザが前回に設定したビデオの速度。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:139
+msgid "The default speed for the video."
+msgstr "ビデオのデフォルト速度。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:144
+msgid "Specify whether YouTube is available for the user."
+msgstr "ユーザがYouTubeを利用可能か指定してください。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:150
+msgid ""
+"Upload a handout to accompany this video. Students can download the handout "
+"by clicking Download Handout under the video."
+msgstr "ビデオに添付する資料をアップロードしてください。受講者は、ビデオの下の「資料をダウンロード」をクリックして、資料をダウンロードできます。"
+
+#: common/lib/xmodule/xmodule/video_module/video_xfields.py:151
+msgid "Upload Handout"
+msgstr "配布資料をアップロード"
+
+#: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html:23
+msgid "Navigation"
+msgstr "ナビゲーション"
+
+#: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html:123
+msgid "About these documents"
+msgstr "これらのドキュメントについて"
+
+#: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html:126
+msgid "Index"
+msgstr "見出し"
+
+#: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html:129
+#: lms/templates/wiki/plugins/attachments/index.html:40
+msgid "Search"
+msgstr "検索"
+
+#: common/static/js/vendor/mathjax-MathJax-c9db6ac/docs/source/mjtheme/layout.html:132
+msgid "Copyright"
+msgstr "著作権"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:472
+#: lms/djangoapps/class_dashboard/dashboard_data.py:530
+#: lms/djangoapps/class_dashboard/dashboard_data.py:561
+#: lms/djangoapps/instructor/views/api.py:581
+msgid "Name"
+msgstr "名前"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:472
+#: lms/djangoapps/class_dashboard/dashboard_data.py:530
+#: lms/djangoapps/instructor/views/api.py:580
+#: lms/djangoapps/instructor/views/legacy.py:1110
+#: lms/djangoapps/instructor/views/legacy.py:1188
+#: lms/djangoapps/instructor/views/legacy.py:1381
+#: lms/djangoapps/instructor/views/tools.py:196
+msgid "Username"
+msgstr "ユーザー名"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:530
+msgid "Grade"
+msgstr "成績"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:530
+msgid "Percent"
+msgstr "パーセント"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:558
+#: lms/djangoapps/class_dashboard/dashboard_data.py:561
+msgid "Section"
+msgstr "章"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:558
+msgid "Subsection"
+msgstr "節"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:558
+msgid "Opened by this number of students"
+msgstr "次の受講者によって開かれました"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:559
+msgid "subsections"
+msgstr "節"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:561
+msgid "Count of Students"
+msgstr "受講者の数"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:561
+msgid "Percent of Students"
+msgstr "受講者の割合"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:561
+msgid "Score"
+msgstr "得点"
+
+#: lms/djangoapps/class_dashboard/dashboard_data.py:562
+msgid "problems"
+msgstr "問題"
+
+#. Translators: this string includes wiki markup.  Leave the ** and the _
+#. alone.
+#: lms/djangoapps/course_wiki/views.py:90
+#, python-brace-format
+msgid "This is the wiki for **{organization}**'s _{course_name}_."
+msgstr "これは **{organization}**の _{course_name}_Wikiです"
+
+#: lms/djangoapps/course_wiki/views.py:100
+msgid "Course page automatically created."
+msgstr "講座ページは自動的に生成されました。"
+
+#: lms/djangoapps/course_wiki/views.py:128
+msgid "Welcome to the edX Wiki"
+msgstr "edX Wikiへようこそ"
+
+#: lms/djangoapps/course_wiki/views.py:130
+msgid "Visit a course wiki to add an article."
+msgstr "記事を追加するには講座 Wikiへ進んでください。"
+
+#: lms/djangoapps/courseware/views.py:766
+msgid "Invalid course id."
+msgstr "無効な講座番号"
+
+#: lms/djangoapps/courseware/views.py:771
+msgid "Invalid location."
+msgstr "無効な場所"
+
+#: lms/djangoapps/courseware/views.py:789
+#, python-brace-format
+msgid "User {username} does not exist."
+msgstr "ユーザー {username} は存在しません。"
+
+#: lms/djangoapps/courseware/views.py:791
+#, python-brace-format
+msgid "User {username} has never accessed problem {location}"
+msgstr "ユーザー {username} は問題 {location} をアクセスしたことがありません。 "
+
+#: lms/djangoapps/courseware/features/video.py:434
+msgid "ERROR: No playable video sources found!"
+msgstr "エラー：動画が見つかりません"
+
+#: lms/djangoapps/dashboard/git_import.py:35
+#, python-brace-format
+msgid ""
+"Path {0} doesn't exist, please create it, or configure a different path with"
+" GIT_REPO_DIR"
+msgstr "パス「{0}」は存在しませんので生成するか、もしくは「GIT_REPO_DIR」を異なるパスに設定変更してください。"
+
+#: lms/djangoapps/dashboard/git_import.py:38
+msgid ""
+"Non usable git url provided. Expecting something like: "
+"git@github.com:mitocw/edx4edx_lite.git"
+msgstr "使用可能ではないgit urlです。「git@github.com:mitocw/edx4edx_lite.git」のような形式が期待値です。"
+
+#: lms/djangoapps/dashboard/git_import.py:40
+msgid "Unable to get git log"
+msgstr "git logの取得に失敗。"
+
+#: lms/djangoapps/dashboard/git_import.py:41
+msgid "git clone or pull failed!"
+msgstr "git cloneもしくはgit pullは失敗しました。"
+
+#: lms/djangoapps/dashboard/git_import.py:42
+msgid "Unable to run import command."
+msgstr "importコマンドの実行に失敗。"
+
+#: lms/djangoapps/dashboard/git_import.py:43
+msgid "The underlying module store does not support import."
+msgstr "下層モジュールストアがインポートをサポートしていません。"
+
+#. Translators: This is an error message when they ask for a
+#. particular version of a git repository and that version isn't
+#. available from the remote source they specified
+#: lms/djangoapps/dashboard/git_import.py:47
+msgid "The specified remote branch is not available."
+msgstr "指定されたリモートブランチは利用できません。"
+
+#. Translators: Error message shown when they have asked for a git
+#. repository branch, a specific version within a repository, that
+#. doesn't exist, or there is a problem changing to it.
+#: lms/djangoapps/dashboard/git_import.py:51
+msgid "Unable to switch to specified branch. Please check your branch name."
+msgstr "指定のブランチにスイッチできません。ブランチ名を確認してください。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:138
+#, python-brace-format
+msgid "Failed in authenticating {0}, error {1}\n"
+msgstr "{0}の認証中に失敗しました（エラー{1}）\n"
+
+#: lms/djangoapps/dashboard/sysadmin.py:142
+#, python-brace-format
+msgid "Failed in authenticating {0}\n"
+msgstr "{0}の認証中に失敗しました。\n"
+
+#: lms/djangoapps/dashboard/sysadmin.py:143
+msgid "fixed password"
+msgstr "修正されたパスワード"
+
+#: lms/djangoapps/dashboard/sysadmin.py:148
+msgid "All ok!"
+msgstr "整備完了。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:155
+#: lms/djangoapps/dashboard/sysadmin.py:227
+msgid "Must provide username"
+msgstr "ユーザー名は必須です。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:157
+msgid "Must provide full name"
+msgstr "氏名は必須です。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:168
+msgid "email must end in"
+msgstr "メールは必須です。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:173
+#, python-brace-format
+msgid "Failed - email {0} already exists as external_id"
+msgstr "失敗：「{0}」は既に外部IDに存在します。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:179
+msgid "Password must be supplied if not using certificates"
+msgstr "パスワードは認証有無に関わらず必須です。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:184
+msgid "email address required (not username)"
+msgstr "メールアドレスは必須です(ユーザー名ではない)"
+
+#: lms/djangoapps/dashboard/sysadmin.py:193
+#, python-brace-format
+msgid "Oops, failed to create user {0}, IntegrityError"
+msgstr "内部エラー：ユーザー「{0}」の生成に失敗しました。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:220
+#, python-brace-format
+msgid "User {0} created successfully!"
+msgstr "ユーザー「{0}」の生成に成功しました。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:232
+#, python-brace-format
+msgid "Cannot find user with email address {0}"
+msgstr "メールアドレス「{0}」ではユーザーを見つけられません。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:238
+#, python-brace-format
+msgid "Cannot find user with username {0} - {1}"
+msgstr "ユーザー名「{0} - {1}」ではユーザーを見つけられません。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:242
+#, python-brace-format
+msgid "Deleted user {0}"
+msgstr "ユーザー「{0}」を削除しました。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:249
+msgid "Statistic"
+msgstr "統計"
+
+#: lms/djangoapps/dashboard/sysadmin.py:249
+msgid "Value"
+msgstr "値"
+
+#: lms/djangoapps/dashboard/sysadmin.py:250
+msgid "Site statistics"
+msgstr "サイト統計"
+
+#: lms/djangoapps/dashboard/sysadmin.py:251
+msgid "Total number of users"
+msgstr "ユーザー総数"
+
+#: lms/djangoapps/dashboard/sysadmin.py:255
+msgid "Courses loaded in the modulestore"
+msgstr "モジュールストアで講座が読み込まれました。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:289
+#: lms/djangoapps/dashboard/sysadmin.py:642
+msgid "username"
+msgstr "ユーザー名"
+
+#: lms/djangoapps/dashboard/sysadmin.py:289
+#: lms/djangoapps/dashboard/sysadmin.py:643
+msgid "email"
+msgstr "メールアドレス"
+
+#: lms/djangoapps/dashboard/sysadmin.py:296
+msgid "Repair Results"
+msgstr "結果を修正する"
+
+#: lms/djangoapps/dashboard/sysadmin.py:305
+msgid "Create User Results"
+msgstr "ユーザーの学習成果を生成。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:310
+msgid "Delete User Results"
+msgstr "ユーザーの学習結果を削除。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:358
+#: lms/djangoapps/dashboard/tests/test_sysadmin.py:296
+msgid "The git repo location should end with '.git', and be a valid url"
+msgstr "gitのレポジトリロケーションには'.git'で終わっている、また、適正なURLである必要があります。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:409
+msgid "Added Course"
+msgstr "追加された講座"
+
+#: lms/djangoapps/dashboard/sysadmin.py:421
+msgid ""
+"Refusing to import. GIT_IMPORT_WITH_XMLMODULESTORE is not turned on, and it "
+"is generally not safe to import into an XMLModuleStore with multithreaded. "
+"We recommend you enable the MongoDB based module store instead, unless this "
+"is a development environment."
+msgstr "インポートを拒否するには「GIT_IMPORT_WITH_XMLMODULESTORE」がONではいけません。そして、マルチスレッドでXMLModuleStoreへインポートを行うことは一般的に安全とは言えません。開発環境でないのであれば、おすすめはXMLModuleStoreの代わりにMongoDBベースのインポートを可能とすることです。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:429
+#: lms/djangoapps/dashboard/tests/test_sysadmin.py:359
+#, python-brace-format
+msgid ""
+"The course {0} already exists in the data directory! (reloading anyway)"
+msgstr "講座「{0} 」はデータディレクトリに既に存在します。(再読み込みをお試しを)"
+
+#. Translators: unable to download the course content from
+#. the source git repository. Clone occurs if this is brand
+#. new, and pull is when it is being updated from the
+#. source.
+#: lms/djangoapps/dashboard/sysadmin.py:447
+msgid ""
+"Unable to clone or pull repository. Please check your url. Output was: {0!r}"
+msgstr "レポジトリのcloneもしくはpullができません。URLを確認してください。出力結果は：{0!r}"
+
+#: lms/djangoapps/dashboard/sysadmin.py:452
+#, python-brace-format
+msgid "Failed to clone repository to {0}"
+msgstr "「{0}」へレポジトリをcloneすることに失敗しました。"
+
+#: lms/djangoapps/dashboard/sysadmin.py:463
+#, python-brace-format
+msgid "Successfully switched to branch: {branch_name}"
+msgstr "次のブランチへのスイッチに成功：{branch_name}"
+
+#: lms/djangoapps/dashboard/sysadmin.py:472
+#, python-brace-format
+msgid "Loaded course {0} {1}<br/>Errors:"
+msgstr "講座「{0} {1}」を読み込みました。<br/>エラー："
+
+#: lms/djangoapps/dashboard/sysadmin.py:496
+#: lms/djangoapps/dashboard/sysadmin.py:610
+msgid "Course Name"
+msgstr "講座名"
+
+#: lms/djangoapps/dashboard/sysadmin.py:496
+msgid "Directory/ID"
+msgstr "ディレクトリ/ID"
+
+#: lms/djangoapps/dashboard/sysadmin.py:497
+msgid "Git Commit"
+msgstr "Git Commit"
+
+#: lms/djangoapps/dashboard/sysadmin.py:497
+msgid "Last Change"
+msgstr "最終変更"
+
+#: lms/djangoapps/dashboard/sysadmin.py:498
+msgid "Last Editor"
+msgstr "最終の編集者"
+
+#: lms/djangoapps/dashboard/sysadmin.py:499
+msgid "Information about all courses"
+msgstr "全講座についての情報"
+
+#: lms/djangoapps/dashboard/sysadmin.py:546
+#, python-brace-format
+msgid "Error - cannot get course with ID {0}<br/><pre>{1}</pre>"
+msgstr "エラー：講座ID「{0}」を取得できません。<br/><pre>{1}</pre>"
+
+#: lms/djangoapps/dashboard/sysadmin.py:576
+msgid "Deleted"
+msgstr "削除済み"
+
+#: lms/djangoapps/dashboard/sysadmin.py:610
+#: lms/djangoapps/dashboard/sysadmin.py:641
+msgid "course_id"
+msgstr "講座ID"
+
+#: lms/djangoapps/dashboard/sysadmin.py:611
+msgid "# enrolled"
+msgstr "# 受講登録済"
+
+#: lms/djangoapps/dashboard/sysadmin.py:611
+msgid "# staff"
+msgstr "# スタッフ"
+
+#: lms/djangoapps/dashboard/sysadmin.py:612
+msgid "instructors"
+msgstr "講師"
+
+#: lms/djangoapps/dashboard/sysadmin.py:613
+msgid "Enrollment information for all courses"
+msgstr "全講座の受講登録情報"
+
+#: lms/djangoapps/dashboard/sysadmin.py:642
+msgid "role"
+msgstr "権限"
+
+#: lms/djangoapps/dashboard/sysadmin.py:643
+msgid "full_name"
+msgstr "フルネーム"
+
+#: lms/djangoapps/dashboard/management/commands/git_add_course.py:28
+msgid ""
+"Import the specified git repository and optional branch into the modulestore"
+" and optionally specified directory."
+msgstr "指定のgitレポジトリとオプション指定のブランチをモジュールストア、および指定のディレクトリにインポートする。"
+
+#: lms/djangoapps/django_comment_client/mustache_helpers.py:25
+msgid "Re-open thread"
+msgstr "再度開かれたスレッド"
+
+#: lms/djangoapps/django_comment_client/mustache_helpers.py:27
+msgid "Close thread"
+msgstr "閉じられたスレッド"
+
+#: lms/djangoapps/django_comment_client/base/views.py:85
+#: lms/djangoapps/django_comment_client/base/views.py:147
+msgid "Title can't be empty"
+msgstr "件名は空白ではいけません。"
+
+#: lms/djangoapps/django_comment_client/base/views.py:87
+#: lms/djangoapps/django_comment_client/base/views.py:149
+#: lms/djangoapps/django_comment_client/base/views.py:169
+#: lms/djangoapps/django_comment_client/base/views.py:238
+msgid "Body can't be empty"
+msgstr "本文は空白ではいけません。"
+
+#: lms/djangoapps/django_comment_client/base/views.py:211
+#: lms/djangoapps/django_comment_client/base/views.py:289
+msgid "Comment level too deep"
+msgstr "コメントレベルが深過ぎます"
+
+#: lms/djangoapps/django_comment_client/base/views.py:552
+#, python-format
+msgid "allowed file types are '%(file_types)s'"
+msgstr "'%(file_types)s' 形式のファイルが利用できます"
+
+#: lms/djangoapps/django_comment_client/base/views.py:567
+#, python-format
+msgid "maximum upload file size is %(file_size)sK"
+msgstr "%(file_size)sKまでのファイルがアップロードできます"
+
+#: lms/djangoapps/django_comment_client/base/views.py:576
+msgid ""
+"Error uploading file. Please contact the site administrator. Thank you."
+msgstr "ファイルアップロードに失敗しました。システム管理者にご連絡ください。申し訳ございません。"
+
+#: lms/djangoapps/django_comment_client/base/views.py:579
+msgid "Good"
+msgstr "良い"
+
+#: lms/djangoapps/django_comment_client/forum/views.py:140
+msgid "All Groups"
+msgstr "全てのグループ"
+
+#: lms/djangoapps/instructor/views/api.py:89
+msgid "User does not exist."
+msgstr "ユーザが存在しません"
+
+#: lms/djangoapps/instructor/views/api.py:95
+msgid "Task is already running."
+msgstr "タスクは既に実行中です。"
+
+#: lms/djangoapps/instructor/views/api.py:579
+msgid "User ID"
+msgstr "ユーザID"
+
+#: lms/djangoapps/instructor/views/api.py:582
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:225
+msgid "Email"
+msgstr "メールアドレス"
+
+#: lms/djangoapps/instructor/views/api.py:583
+msgid "Language"
+msgstr "言語"
+
+#: lms/djangoapps/instructor/views/api.py:584
+msgid "Location"
+msgstr "場所"
+
+#: lms/djangoapps/instructor/views/api.py:585
+msgid "Birth Year"
+msgstr "誕生年"
+
+#: lms/djangoapps/instructor/views/api.py:586
+msgid "Gender"
+msgstr "性別"
+
+#: lms/djangoapps/instructor/views/api.py:587
+msgid "Level of Education"
+msgstr "教育レベル"
+
+#: lms/djangoapps/instructor/views/api.py:588
+msgid "Mailing Address"
+msgstr "住所"
+
+#: lms/djangoapps/instructor/views/api.py:589
+msgid "Goals"
+msgstr "目標"
+
+#: lms/djangoapps/instructor/views/api.py:784
+msgid "Module does not exist."
+msgstr "モジュールが存在しません。"
+
+#: lms/djangoapps/instructor/views/api.py:787
+#: lms/djangoapps/instructor/views/legacy.py:403
+msgid "An error occurred while deleting the score."
+msgstr "得点を削除する際にエラーが発生しました。"
+
+#: lms/djangoapps/instructor/views/api.py:887
+msgid "Complete"
+msgstr "完了"
+
+#: lms/djangoapps/instructor/views/api.py:887
+msgid "Incomplete"
+msgstr "完了できず"
+
+#: lms/djangoapps/instructor/views/api.py:986
+msgid ""
+"Your grade report is being generated! You can view the status of the "
+"generation task in the 'Pending Instructor Tasks' section."
+msgstr "成績レポートが生成されました。「保留中の講師タスク」にて、生成タスクの状況を確認することができます。"
+
+#: lms/djangoapps/instructor/views/api.py:989
+msgid ""
+"A grade report generation task is already in progress. Check the 'Pending "
+"Instructor Tasks' table for the status of the task. When completed, the "
+"report will be available for download in the table below."
+msgstr "成績レポートの生成タスクは現在進行中です。「保留中の講師タスク」にて、生成タスクの状況を確認することができます。完了時には、成績レポートはこのテーブル下部からダウンロードできるようになるでしょう。"
+
+#: lms/djangoapps/instructor/views/api.py:1241
+#, python-brace-format
+msgid "Successfully changed due date for student {0} for {1} to {2}"
+msgstr "受講者：{0}の期日を{1} から {2} に変更しました。"
+
+#: lms/djangoapps/instructor/views/api.py:1261
+#, python-brace-format
+msgid "Successfully reset due date for student {0} for {1} to {2}"
+msgstr "受講者：{0}の期日を{1} から {2} にリセットしました。"
+
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:142
+msgid "Membership"
+msgstr "メンバシップ"
+
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:165
+msgid "Student Admin"
+msgstr "受講者管理"
+
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:182
+msgid "Extensions"
+msgstr "拡張"
+
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:197
+msgid "Data Download"
+msgstr "データダウンロード"
+
+#: lms/djangoapps/instructor/views/instructor_dashboard.py:243
+msgid "Analytics"
+msgstr "分析"
+
+#: lms/djangoapps/instructor/views/legacy.py:137
+msgid "Course Statistics At A Glance"
+msgstr "講座統計概要"
+
+#: lms/djangoapps/instructor/views/legacy.py:186
+msgid "Found a single student.  "
+msgstr "一人の受講者を発見する"
+
+#: lms/djangoapps/instructor/views/legacy.py:190
+msgid "Couldn't find student with that email or username."
+msgstr "emalまたはusernameで学生を見つけることができませんでした．"
+
+#: lms/djangoapps/instructor/views/legacy.py:229
+#, python-brace-format
+msgid "List of students enrolled in {course_key}"
+msgstr "{course_key}に登録された受講者のリスト"
+
+#: lms/djangoapps/instructor/views/legacy.py:235
+#, python-brace-format
+msgid "Summary Grades of students enrolled in {course_key}"
+msgstr "{course_key}に登録されている受講者の採点サマリー"
+
+#: lms/djangoapps/instructor/views/legacy.py:242
+#, python-brace-format
+msgid "Raw Grades of students enrolled in {course_key}"
+msgstr "{course_key}に登録した受講者の生の採点"
+
+#: lms/djangoapps/instructor/views/legacy.py:271
+#, python-brace-format
+msgid "Failed to create a background task for rescoring \"{problem_url}\"."
+msgstr "\"{problem_url}\"の再採点バックグラウンドタスクの作成に失敗しました。"
+
+#: lms/djangoapps/instructor/views/legacy.py:288
+#, python-brace-format
+msgid ""
+"Failed to create a background task for rescoring \"{problem_url}\": problem "
+"not found."
+msgstr "\"{problem_url}\"の再採点バックグラウンドタスクの作成に失敗しました。問題がありません。"
+
+#: lms/djangoapps/instructor/views/legacy.py:295
+#, python-brace-format
+msgid "Failed to create a background task for rescoring \"{url}\": {message}."
+msgstr "\"{url}\"の再採点バックグラウンドタスクの作成に失敗しました:{message}"
+
+#: lms/djangoapps/instructor/views/legacy.py:307
+#, python-brace-format
+msgid "Failed to create a background task for resetting \"{problem_url}\"."
+msgstr "\"{problem_url}\"の初期化バックグラウンドタスクの作成に失敗しました。"
+
+#: lms/djangoapps/instructor/views/legacy.py:322
+#, python-brace-format
+msgid ""
+"Failed to create a background task for resetting \"{problem_url}\": problem "
+"not found."
+msgstr "\"{problem_url}\"の初期化バックグラウンドタスクの作成に失敗しました。問題がありません。"
+
+#: lms/djangoapps/instructor/views/legacy.py:329
+#, python-brace-format
+msgid "Failed to create a background task for resetting \"{url}\": {message}."
+msgstr "\"{url}\"の初期化バックグラウンドタスクの作成に失敗しました:{message}"
+
+#: lms/djangoapps/instructor/views/legacy.py:346
+#: lms/djangoapps/instructor/views/legacy.py:360
+#: lms/djangoapps/instructor/views/legacy.py:380
+#, python-brace-format
+msgid "Could not find problem location \"{url}\"."
+msgstr "問題の場所の\"{url}\"を見つけることができませんでした。"
+
+#: lms/djangoapps/instructor/views/legacy.py:413
+msgid "Found module.  "
+msgstr "モジュールがあります。"
+
+#: lms/djangoapps/instructor/views/legacy.py:416
+#, python-brace-format
+msgid "Couldn't find module with that urlname: {url}. "
+msgstr "次のURLのモジュールがありません：{url}"
+
+#: lms/djangoapps/instructor/views/legacy.py:427
+#, python-brace-format
+msgid "Deleted student module state for {state}!"
+msgstr "受講者のモジュール状態を削除しました:{state}"
+
+#: lms/djangoapps/instructor/views/legacy.py:441
+#, python-brace-format
+msgid "Failed to delete module state for {id}/{url}. "
+msgstr "モジュール状態の削除に失敗しました：{id}/{url}"
+
+#: lms/djangoapps/instructor/views/legacy.py:465
+msgid "Module state successfully reset!"
+msgstr "モジュール状態のリセットに成功しました！"
+
+#: lms/djangoapps/instructor/views/legacy.py:468
+#, python-brace-format
+msgid "Couldn't reset module state for {id}/{url}. "
+msgstr "モジュール状態の初期化ができません：{id}/{url}"
+
+#: lms/djangoapps/instructor/views/legacy.py:479
+#, python-brace-format
+msgid ""
+"Failed to create a background task for rescoring \"{key}\" for student {id}."
+msgstr "受講者{id}の\"{key}\"の再採点バックグラウンドタスクの作成に失敗しました。"
+
+#: lms/djangoapps/instructor/views/legacy.py:496
+#, python-brace-format
+msgid "Failed to create a background task for rescoring \"{key}\": {id}."
+msgstr "\"{key}\"の再採点バックグラウンドタスクの作成に失敗しました：{id}"
+
+#: lms/djangoapps/instructor/views/legacy.py:527
+#, python-brace-format
+msgid "Progress page for username: {username} with email address: {email}"
+msgstr "メールアドレス：{email}のユーザー名：{username}の成績ページ"
+
+#: lms/djangoapps/instructor/views/legacy.py:544
+msgid "Assignment Name"
+msgstr "課題の名前"
+
+#: lms/djangoapps/instructor/views/legacy.py:568
+msgid "Please enter an assignment name"
+msgstr "課題の名前を入力してください"
+
+#: lms/djangoapps/instructor/views/legacy.py:573
+#, python-brace-format
+msgid "Invalid assignment name '{name}'"
+msgstr "無効な課題の名前：'{name}'"
+
+#: lms/djangoapps/instructor/views/legacy.py:577
+#: lms/djangoapps/instructor/views/legacy.py:1381
+msgid "External email"
+msgstr "外部メールアドレス"
+
+#: lms/djangoapps/instructor/views/legacy.py:588
+#, python-brace-format
+msgid "Grades for assignment \"{name}\""
+msgstr "課題\"{name}\"の評価"
+
+#: lms/djangoapps/instructor/views/legacy.py:607
+msgid "List of Staff"
+msgstr "スタッフ一覧"
+
+#: lms/djangoapps/instructor/views/legacy.py:612
+msgid "List of Instructors"
+msgstr "インストラクター一覧"
+
+#: lms/djangoapps/instructor/views/legacy.py:655
+#, python-brace-format
+msgid "Student profile data for course {course_id}"
+msgstr "講座：{course_id}の受講者プロフィール"
+
+#: lms/djangoapps/instructor/views/legacy.py:675
+#, python-brace-format
+msgid "Found {num} records to dump."
+msgstr "ダンプする{num}レコードがあります。"
+
+#: lms/djangoapps/instructor/views/legacy.py:678
+msgid "Couldn't find module with that urlname."
+msgstr "そのURLのモジュールは見つかりません。"
+
+#: lms/djangoapps/instructor/views/legacy.py:686
+#, python-brace-format
+msgid "Student state for problem {problem}"
+msgstr "問題：{problem}の受講者の状態"
+
+#: lms/djangoapps/instructor/views/legacy.py:703
+msgid "List of Beta Testers"
+msgstr "ベータテスタ一覧"
+
+#: lms/djangoapps/instructor/views/legacy.py:877
+msgid ""
+"Your email was successfully queued for sending. Please note that for large "
+"classes, it may take up to an hour (or more, if other courses are "
+"simultaneously sending email) to send all emails."
+msgstr "メールは送信処理に送られました。大きな講座ではメールを送るのに１時間程度(ほかの講座も同時にメールを送っている場合はそれ以上)かかります。"
+
+#: lms/djangoapps/instructor/views/legacy.py:883
+msgid "Your email was successfully queued for sending."
+msgstr "メールは送信処理に送られました。"
+
+#: lms/djangoapps/instructor/views/legacy.py:962
+#, python-brace-format
+msgid "Grades from {course_id}"
+msgstr "{course_id}の評価"
+
+#: lms/djangoapps/instructor/views/legacy.py:1057
+msgid "No remote gradebook defined in course metadata"
+msgstr "講座メタデータで遠隔評価エンジンが定義されていません"
+
+#: lms/djangoapps/instructor/views/legacy.py:1062
+msgid "No remote gradebook url defined in settings.FEATURES"
+msgstr "遠隔の評価エンジンのURLがsetting.FEATURESで定義されていません"
+
+#: lms/djangoapps/instructor/views/legacy.py:1067
+msgid "No gradebook name defined in course remote_gradebook metadata"
+msgstr "remote_gradebookメタデータで評価エンジン名が定義されていません"
+
+#: lms/djangoapps/instructor/views/legacy.py:1079
+#, python-brace-format
+msgid "Failed to communicate with gradebook server at {url}"
+msgstr "{url}の評価エンジンサーバとの通信に失敗しました"
+
+#: lms/djangoapps/instructor/views/legacy.py:1080
+#, python-brace-format
+msgid "Error: {err}"
+msgstr "エラー: {err}"
+
+#: lms/djangoapps/instructor/views/legacy.py:1091
+#, python-brace-format
+msgid "Remote gradebook response for {action}"
+msgstr "遠隔の評価エンジンの応答：{action}"
+
+#: lms/djangoapps/instructor/views/legacy.py:1110
+#: lms/djangoapps/instructor/views/legacy.py:1188
+msgid "Full name"
+msgstr "フルネーム"
+
+#: lms/djangoapps/instructor/views/legacy.py:1110
+msgid "Roles"
+msgstr "権限"
+
+#: lms/djangoapps/instructor/views/legacy.py:1111
+#, python-brace-format
+msgid "List of Forum {name}s in course {id}"
+msgstr "講座：{id}のフォーラム：{name}の一覧"
+
+#: lms/djangoapps/instructor/views/legacy.py:1118
+#: lms/djangoapps/instructor/views/legacy.py:1148
+#, python-brace-format
+msgid "Error: unknown rolename \"{rolename}\""
+msgstr "エラー：不明な役割名\"{rolename}\""
+
+#: lms/djangoapps/instructor/views/legacy.py:1144
+#, python-brace-format
+msgid "Error: unknown username \"{username}\""
+msgstr "エラー：不明なユーザー名\"{username}\""
+
+#: lms/djangoapps/instructor/views/legacy.py:1156
+#, python-brace-format
+msgid ""
+"Error: user \"{username}\" does not have rolename \"{rolename}\", cannot "
+"remove"
+msgstr "エラー：ユーザー\"{username}\"は役割名\"{rolename}\"がありません。外すことはできません。"
+
+#: lms/djangoapps/instructor/views/legacy.py:1159
+#, python-brace-format
+msgid "Removed \"{username}\" from \"{course_id}\" forum role = \"{rolename}\""
+msgstr "\"{course_id}\"から\"{username}\"を削除　フォーラムの権限 = \"{rolename}\""
+
+#: lms/djangoapps/instructor/views/legacy.py:1162
+#, python-brace-format
+msgid "Error: user \"{username}\" already has rolename \"{rolename}\", cannot add"
+msgstr "エラー：ユーザー\"{username}\"は既に権限名\"{rolename}\"が付与されています。追加できません"
+
+#: lms/djangoapps/instructor/views/legacy.py:1165
+#, python-brace-format
+msgid ""
+"Error: user \"{username}\" should first be added as staff before adding as a"
+" forum administrator, cannot add"
+msgstr "エラー：ユーザー\"{username}\"はフォーラム管理者に追加される前にまずスタッフに追加される必要があります。"
+
+#: lms/djangoapps/instructor/views/legacy.py:1168
+#, python-brace-format
+msgid "Added \"{username}\" to \"{course_id}\" forum role = \"{rolename}\""
+msgstr "\"{course_id}\"に\"{username}\"を追加　フォーラム権限 = \"{rolename}\""
+
+#: lms/djangoapps/instructor/views/legacy.py:1190
+#, python-brace-format
+msgid "{title} in course {course_key}"
+msgstr "{course_key}講座中の{title}"
+
+#: lms/djangoapps/instructor/views/legacy.py:1381
+msgid "ID"
+msgstr "ID"
+
+#: lms/djangoapps/instructor/views/legacy.py:1381
+#: lms/djangoapps/instructor/views/tools.py:196
+msgid "Full Name"
+msgstr "氏名"
+
+#: lms/djangoapps/instructor/views/legacy.py:1381
+msgid "edX email"
+msgstr "edX email"
+
+#: lms/djangoapps/instructor/views/legacy.py:1565
+msgid "Enrollment of students"
+msgstr "受講者の履修"
+
+#: lms/djangoapps/instructor/views/legacy.py:1641
+msgid "Un-enrollment of students"
+msgstr "受講者の履修解除"
+
+#: lms/djangoapps/instructor/views/legacy.py:1849
+#, python-brace-format
+msgid ""
+"Failed to find any background tasks for course \"{course}\", module "
+"\"{problem}\" and student \"{student}\"."
+msgstr "講座\"{course}\"、モジュール\"{problem}\"、受講者\"{student}\"のバックグラウンドタスクを見つけることができません。"
+
+#: lms/djangoapps/instructor/views/legacy.py:1852
+#, python-brace-format
+msgid ""
+"Failed to find any background tasks for course \"{course}\" and module "
+"\"{problem}\"."
+msgstr "講座\"{course}\"、モジュール\"{problem}\"のバックグラウンドタスクを見つけることができません。"
+
+#: lms/djangoapps/instructor/views/tools.py:101
+msgid "Unable to parse date: "
+msgstr "日付を解析できません："
+
+#: lms/djangoapps/instructor/views/tools.py:124
+#, python-brace-format
+msgid "Couldn't find module for url: {0}"
+msgstr "モジュールを見つけることが出来ません url: {0}"
+
+#: lms/djangoapps/instructor/views/tools.py:196
+#: lms/djangoapps/instructor/views/tools.py:226
+msgid "Extended Due Date"
+msgstr "延長された期日"
+
+#: lms/djangoapps/instructor/views/tools.py:214
+#, python-brace-format
+msgid "Users with due date extensions for {0}"
+msgstr "期日延長可能なユーザー：{0}"
+
+#: lms/djangoapps/instructor/views/tools.py:226
+msgid "Unit"
+msgstr "単元"
+
+#: lms/djangoapps/instructor/views/tools.py:247
+#, python-brace-format
+msgid "Due date extensions for {0} {1} ({2})"
+msgstr "期日延長： {0} {1} ({2})"
+
+#. Translators: This is a past-tense verb that is inserted into task progress
+#. messages as {action}.
+#: lms/djangoapps/instructor_task/tasks.py:58
+msgid "rescored"
+msgstr "再採点済"
+
+#. Translators: This is a past-tense verb that is inserted into task progress
+#. messages as {action}.
+#: lms/djangoapps/instructor_task/tasks.py:85
+msgid "reset"
+msgstr "リセット"
+
+#. Translators: This is a past-tense verb that is inserted into task progress
+#. messages as {action}.
+#: lms/djangoapps/instructor_task/tasks.py:107
+#: lms/templates/wiki/plugins/attachments/index.html:74
+msgid "deleted"
+msgstr "削除済み"
+
+#. Translators: This is a past-tense verb that is inserted into task progress
+#. messages as {action}.
+#: lms/djangoapps/instructor_task/tasks.py:129
+msgid "emailed"
+msgstr "メール送信済"
+
+#: lms/djangoapps/instructor_task/tasks.py:139
+msgid "graded"
+msgstr "採点済み"
+
+#: lms/djangoapps/instructor_task/views.py:108
+#: lms/djangoapps/instructor_task/views.py:113
+msgid "No status information available"
+msgstr "表示可能なステータス情報がありません。"
+
+#: lms/djangoapps/instructor_task/views.py:112
+#, python-brace-format
+msgid "No task_output information found for instructor_task {0}"
+msgstr "講師タスク「{0}」のtask_outputが見つかりません。"
+
+#: lms/djangoapps/instructor_task/views.py:118
+#, python-brace-format
+msgid "No parsable task_output information found for instructor_task {0}: {1}"
+msgstr "講師タスク「{0}:{1}」のパース可能なtask_output情報はありません。"
+
+#: lms/djangoapps/instructor_task/views.py:120
+msgid "No parsable status information available"
+msgstr "パース可能なステータス情報がありません。"
+
+#: lms/djangoapps/instructor_task/views.py:123
+msgid "No message provided"
+msgstr "メッセージが提供されていません。"
+
+#: lms/djangoapps/instructor_task/views.py:126
+#, python-brace-format
+msgid "Invalid task_output information found for instructor_task {0}: {1}"
+msgstr "講師タスク「{0}:{1}」に無効なtask_output情報があります。"
+
+#: lms/djangoapps/instructor_task/views.py:128
+msgid "No progress status information available"
+msgstr "進捗ステータス情報がありません。"
+
+#: lms/djangoapps/instructor_task/views.py:147
+#, python-brace-format
+msgid "No parsable task_input information found for instructor_task {0}: {1}"
+msgstr "講師タスク「{0}:{1}」のパース可能なtask_input情報はありません。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {attempted} and {succeeded} are counts.
+#: lms/djangoapps/instructor_task/views.py:157
+#, python-brace-format
+msgid "Progress: {action} {succeeded} of {attempted} so far"
+msgstr "進捗： {action} {succeeded} / {attempted} 完了 "
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {student} is a student identifier.
+#: lms/djangoapps/instructor_task/views.py:162
+#, python-brace-format
+msgid "Unable to find submission to be {action} for student '{student}'"
+msgstr "受講者： '{student}'の{action} を探すことができませんでした。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {student} is a student identifier.
+#: lms/djangoapps/instructor_task/views.py:165
+#, python-brace-format
+msgid "Problem failed to be {action} for student '{student}'"
+msgstr "受講者： '{student}'の問題は{action} に失敗しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {student} is a student identifier.
+#: lms/djangoapps/instructor_task/views.py:169
+#, python-brace-format
+msgid "Problem successfully {action} for student '{student}'"
+msgstr "受講者： '{student}'の問題は{action} に成功しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#: lms/djangoapps/instructor_task/views.py:174
+#, python-brace-format
+msgid "Unable to find any students with submissions to be {action}"
+msgstr "{action}投稿をした受講者は見つかりません。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {attempted} is a count.
+#: lms/djangoapps/instructor_task/views.py:177
+#, python-brace-format
+msgid "Problem failed to be {action} for any of {attempted} students"
+msgstr "問題は{attempted}名の受講者の{action}に失敗しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {attempted} is a count.
+#: lms/djangoapps/instructor_task/views.py:181
+#, python-brace-format
+msgid "Problem successfully {action} for {attempted} students"
+msgstr "問題は{attempted}名の受講者の{action}に成功しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {succeeded} and {attempted} are counts.
+#: lms/djangoapps/instructor_task/views.py:184
+#, python-brace-format
+msgid "Problem {action} for {succeeded} of {attempted} students"
+msgstr "受講者の問題は{attempted}人中{succeeded}人{action}しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#: lms/djangoapps/instructor_task/views.py:189
+#, python-brace-format
+msgid "Unable to find any recipients to be {action}"
+msgstr "{action}送信者は見つかりません。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {attempted} is a count.
+#: lms/djangoapps/instructor_task/views.py:192
+#, python-brace-format
+msgid "Message failed to be {action} for any of {attempted} recipients "
+msgstr "{attempted}人の受信者のメッセージは{action}に失敗しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {attempted} is a count.
+#: lms/djangoapps/instructor_task/views.py:196
+#, python-brace-format
+msgid "Message successfully {action} for {attempted} recipients"
+msgstr "メッセージは{attempted}名の学習者の{action}に成功しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {succeeded} and {attempted} are counts.
+#: lms/djangoapps/instructor_task/views.py:199
+#, python-brace-format
+msgid "Message {action} for {succeeded} of {attempted} recipients"
+msgstr "受信者のメッセージは{attempted}人中{succeeded}人{action}しました。"
+
+#. Translators: {action} is a past-tense verb that is localized separately.
+#. {succeeded} and {attempted} are counts.
+#: lms/djangoapps/instructor_task/views.py:203
+#, python-brace-format
+msgid "Status: {action} {succeeded} of {attempted}"
+msgstr "ステータス：{succeeded} / {attempted} {action}"
+
+#. Translators: {skipped} is a count.  This message is appended to task
+#. progress status messages.
+#: lms/djangoapps/instructor_task/views.py:207
+#, python-brace-format
+msgid " (skipping {skipped})"
+msgstr " ({skipped} スキップ)"
+
+#. Translators: {total} is a count.  This message is appended to task progress
+#. status messages.
+#: lms/djangoapps/instructor_task/views.py:211
+#, python-brace-format
+msgid " (out of {total})"
+msgstr " (合計{total}のうち)"
+
+#: lms/djangoapps/linkedin/templates/linkedin_email.html:9
+#, python-format
+msgid ""
+"\n"
+"      Dear %(student_name)s,\n"
+"    "
+msgstr "\n      %(student_name)s　様\n    "
+
+#: lms/djangoapps/linkedin/templates/linkedin_email.html:13
+#, python-format
+msgid ""
+" \n"
+"    Congratulations on earning your certificate in %(course_name)s!\n"
+"    Since you have an account on LinkedIn, you can display your hard earned\n"
+"    credential for your colleagues to see.  Click the button below to add the\n"
+"    certificate to your profile.\n"
+"    "
+msgstr " \n     %(course_name)s における証明書の取得おめでとうございます！\n    LinkedIn のアカウントをお持ちでしたら、そちらに表示することが可能です。\n    プロフィールに証明書を表示するには以下のボタンをクリックしてください。"
+
+#: lms/djangoapps/linkedin/templates/linkedin_email.html:22
+msgid "Add to profile"
+msgstr "プロフィールに追加"
+
+#: lms/djangoapps/open_ended_grading/staff_grading_service.py:27
+#, python-brace-format
+msgid ""
+"Could not contact the external grading server. Please contact the "
+"development team at {email}."
+msgstr "外部評価サーバに接続できませんでした。 開発担当 {email} にお問い合わせください。"
+
+#: lms/djangoapps/open_ended_grading/staff_grading_service.py:318
+msgid ""
+"Cannot find any open response problems in this course. Have you submitted "
+"answers to any open response assessment questions? If not, please do so and "
+"return to this page."
+msgstr "この講座で公開討議の問題を見つけることができません。何れかの公開討議の問題に回答を投稿しましたか？まだであれば、それを行ってからもう一度このページに戻ってください。"
+
+#: lms/djangoapps/open_ended_grading/utils.py:19
+msgid "AI Assessment"
+msgstr "全ての採点"
+
+#: lms/djangoapps/open_ended_grading/utils.py:20
+msgid "Peer Assessment"
+msgstr "相互採点"
+
+#: lms/djangoapps/open_ended_grading/utils.py:21
+msgid "Not yet available"
+msgstr "まだ利用できません"
+
+#: lms/djangoapps/open_ended_grading/utils.py:22
+msgid "Automatic Checker"
+msgstr "自動チェッカー"
+
+#: lms/djangoapps/open_ended_grading/utils.py:23
+msgid "Instructor Assessment"
+msgstr "講師による採点"
+
+#: lms/djangoapps/open_ended_grading/utils.py:26
+msgid ""
+"Error occurred while contacting the grading service.  Please notify course "
+"staff."
+msgstr "採点エンジンとのやりとりにおいてエラーが発生しました。講座のスタッフにお知らせください。"
+
+#: lms/djangoapps/open_ended_grading/utils.py:27
+msgid ""
+"Error occurred while contacting the grading service.  Please notify your edX"
+" point of contact."
+msgstr "採点エンジンとのやりとりにおいてエラーが発生しました。担当のedXスタッフにお知らせください。"
+
+#: lms/djangoapps/open_ended_grading/utils.py:105
+#, python-brace-format
+msgid "for course {0} and student {1}."
+msgstr "講座「{0}」受講者「{1}」"
+
+#: lms/djangoapps/open_ended_grading/views.py:51
+msgid ""
+"View all problems that require peer assessment in this particular course."
+msgstr "本講座で相互採点が必要とされる設問全てを見る"
+
+#: lms/djangoapps/open_ended_grading/views.py:52
+msgid ""
+"View ungraded submissions submitted by students for the open ended problems "
+"in the course."
+msgstr "本講座のレポート課題における提出済の未評価レポートを見る。"
+
+#: lms/djangoapps/open_ended_grading/views.py:53
+msgid ""
+"View open ended problems that you have previously submitted for grading."
+msgstr "提出済のレポート課題を見る。"
+
+#: lms/djangoapps/open_ended_grading/views.py:54
+msgid "View submissions that have been flagged by students as inappropriate."
+msgstr "受講生に不適切とフラグ付けされた課題を見る"
+
+#: lms/djangoapps/open_ended_grading/views.py:58
+#: lms/djangoapps/open_ended_grading/views.py:59
+msgid "New submissions to grade"
+msgstr "評価に付される新たな課題"
+
+#: lms/djangoapps/open_ended_grading/views.py:60
+msgid "New grades have been returned"
+msgstr "新たな採点結果が返ってきました"
+
+#: lms/djangoapps/open_ended_grading/views.py:61
+msgid "Submissions have been flagged for review"
+msgstr "課題はレビューのためのフラグ付けをされました。"
+
+#: lms/djangoapps/open_ended_grading/views.py:126
+msgid ""
+"\n"
+"        Error with initializing peer grading.\n"
+"        There has not been a peer grading module created in the courseware that would allow you to grade others.\n"
+"        Please check back later for this.\n"
+"        "
+msgstr "\n相互採点の初期化に失敗しました。\nこの講座では他者を採点することが認められるはずなのですが、相互採点モジュールが構成されておりません。\nしばらくたってから、こちらをご確認ください。"
+
+#: lms/djangoapps/shoppingcart/models.py:169
+msgid "Order Payment Confirmation"
+msgstr "注文支払い確認"
+
+#: lms/djangoapps/shoppingcart/models.py:249
+msgid "Trying to add a different currency into the cart"
+msgstr "異なる通貨のものをカートに入れようとしています"
+
+#: lms/djangoapps/shoppingcart/models.py:370
+#, python-brace-format
+msgid "Registration for Course: {course_name}"
+msgstr "次のコースを登録：{course_name}"
+
+#: lms/djangoapps/shoppingcart/models.py:402
+#, python-brace-format
+msgid ""
+"Please visit your <a href=\"{dashboard_link}\">dashboard</a> to see your new"
+" enrollments."
+msgstr "新たな受講者を確認するには<a href=\"{dashboard_link}\">マイページ</a>へ移動してください。"
+
+#: lms/djangoapps/shoppingcart/models.py:470
+msgid "[Refund] User-Requested Refund"
+msgstr "[返済] ユーザ要求による返済"
+
+#: lms/djangoapps/shoppingcart/models.py:520
+#, python-brace-format
+msgid "Mode {mode} does not exist for {course_id}"
+msgstr "{mode} モードは {course_id} にはありません"
+
+#: lms/djangoapps/shoppingcart/models.py:532
+#, python-brace-format
+msgid "Certificate of Achievement, {mode_name} for course {course}"
+msgstr "「{course}」講座（{mode_name}）の修了証"
+
+#: lms/djangoapps/shoppingcart/models.py:580
+#, python-brace-format
+msgid ""
+"Note - you have up to 2 weeks into the course to unenroll from the Verified "
+"Certificate option and receive a full refund. To receive your refund, "
+"contact {billing_email}. Please include your order number in your e-mail. "
+"Please do NOT include your credit card information."
+msgstr "注意：2週間以内であれば、この修了書発行オプション付きの講座から受講取消しでき、全額返金されます。返金を受領するためには {billing_email} へコンタクトをしてください。なお、注文番号をメールに含めてください。間違ってもクレジットカード番号を書かないでください。"
+
+#: lms/djangoapps/shoppingcart/reports.py:93
+msgid "Order Number"
+msgstr "注文番号"
+
+#: lms/djangoapps/shoppingcart/reports.py:94
+msgid "Customer Name"
+msgstr "顧客名"
+
+#: lms/djangoapps/shoppingcart/reports.py:95
+msgid "Date of Original Transaction"
+msgstr "元の取引日"
+
+#: lms/djangoapps/shoppingcart/reports.py:96
+msgid "Date of Refund"
+msgstr "返済日"
+
+#: lms/djangoapps/shoppingcart/reports.py:97
+msgid "Amount of Refund"
+msgstr "返済額"
+
+#: lms/djangoapps/shoppingcart/reports.py:98
+#: lms/djangoapps/shoppingcart/reports.py:263
+msgid "Service Fees (if any)"
+msgstr "サービス手数料 (if any)"
+
+#: lms/djangoapps/shoppingcart/reports.py:133
+msgid "Purchase Time"
+msgstr "必要時間"
+
+#: lms/djangoapps/shoppingcart/reports.py:134
+msgid "Order ID"
+msgstr "注文ID"
+
+#: lms/djangoapps/shoppingcart/reports.py:135
+msgid "Status"
+msgstr "状態"
+
+#: lms/djangoapps/shoppingcart/reports.py:136
+msgid "Quantity"
+msgstr "量"
+
+#: lms/djangoapps/shoppingcart/reports.py:137
+msgid "Unit Cost"
+msgstr "単元費用"
+
+#: lms/djangoapps/shoppingcart/reports.py:138
+msgid "Total Cost"
+msgstr "総費用"
+
+#: lms/djangoapps/shoppingcart/reports.py:139
+msgid "Currency"
+msgstr "通貨"
+
+#: lms/djangoapps/shoppingcart/reports.py:140
+msgid "Description"
+msgstr "記述"
+
+#: lms/djangoapps/shoppingcart/reports.py:141
+msgid "Comments"
+msgstr "コメント"
+
+#: lms/djangoapps/shoppingcart/reports.py:209
+#: lms/djangoapps/shoppingcart/reports.py:259
+msgid "University"
+msgstr "大学"
+
+#: lms/djangoapps/shoppingcart/reports.py:210
+#: lms/djangoapps/shoppingcart/reports.py:260
+msgid "Course"
+msgstr "講座"
+
+#: lms/djangoapps/shoppingcart/reports.py:211
+msgid "Course Announce Date"
+msgstr "講座発表日"
+
+#: lms/djangoapps/shoppingcart/reports.py:212
+msgid "Course Start Date"
+msgstr "受講開始日"
+
+#: lms/djangoapps/shoppingcart/reports.py:213
+msgid "Course Registration Close Date"
+msgstr "講座履修登録締め切り日"
+
+#: lms/djangoapps/shoppingcart/reports.py:214
+msgid "Course Registration Period"
+msgstr "講座履修期間"
+
+#: lms/djangoapps/shoppingcart/reports.py:215
+msgid "Total Enrolled"
+msgstr "総履修"
+
+#: lms/djangoapps/shoppingcart/reports.py:216
+msgid "Audit Enrollment"
+msgstr "監査履修"
+
+#: lms/djangoapps/shoppingcart/reports.py:217
+msgid "Honor Code Enrollment"
+msgstr "授与コード履修"
+
+#: lms/djangoapps/shoppingcart/reports.py:218
+msgid "Verified Enrollment"
+msgstr "認証された履修"
+
+#: lms/djangoapps/shoppingcart/reports.py:219
+msgid "Gross Revenue"
+msgstr "全体の収入"
+
+#: lms/djangoapps/shoppingcart/reports.py:220
+msgid "Gross Revenue over the Minimum"
+msgstr "最小値を超える全体の収入"
+
+#: lms/djangoapps/shoppingcart/reports.py:221
+msgid "Number of Verified Students Contributing More than the Minimum"
+msgstr "最小値以上に寄付した認証された受講者"
+
+#: lms/djangoapps/shoppingcart/reports.py:222
+msgid "Number of Refunds"
+msgstr "返済の数"
+
+#: lms/djangoapps/shoppingcart/reports.py:223
+msgid "Dollars Refunded"
+msgstr "返済された金額"
+
+#: lms/djangoapps/shoppingcart/reports.py:261
+msgid "Number of Transactions"
+msgstr "手続きの数"
+
+#: lms/djangoapps/shoppingcart/reports.py:262
+msgid "Total Payments Collected"
+msgstr "回収された支払いの合計"
+
+#: lms/djangoapps/shoppingcart/reports.py:264
+msgid "Number of Successful Refunds"
+msgstr "返済の成功数"
+
+#: lms/djangoapps/shoppingcart/reports.py:265
+msgid "Total Amount of Refunds"
+msgstr "返済額の合計"
+
+#: lms/djangoapps/shoppingcart/views.py:52
+msgid "You must be logged-in to add to a shopping cart"
+msgstr "ショッピングカートに商品を入れるためにはログインする必要があります。"
+
+#: lms/djangoapps/shoppingcart/views.py:59
+#: lms/djangoapps/shoppingcart/tests/test_views.py:86
+msgid "The course you requested does not exist."
+msgstr "この講座は存在しません。"
+
+#: lms/djangoapps/shoppingcart/views.py:61
+#, python-brace-format
+msgid "The course {0} is already in your cart."
+msgstr "講座「{0}」はカートに入っています"
+
+#: lms/djangoapps/shoppingcart/views.py:63
+#, python-brace-format
+msgid "You are already registered in course {0}."
+msgstr "既に course {0} には登録済です。"
+
+#: lms/djangoapps/shoppingcart/views.py:64
+msgid "Course added to cart."
+msgstr "講座はカートに追加されました。"
+
+#: lms/djangoapps/shoppingcart/views.py:201
+msgid "You do not have permission to view this page."
+msgstr "このページを表示する権限がありません。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:147
+#, python-brace-format
+msgid "The payment processor did not return a required parameter: {0}"
+msgstr "課金システムは要求されたパラメータを返しませんでした： {0}"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:153
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:168
+#, python-brace-format
+msgid "The payment processor returned a badly-typed value {0} for param {1}."
+msgstr "課金システムはパラメータ {1} に対して間違った値 {0} を返しました。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:159
+msgid ""
+"The payment processor accepted an order whose number is not in our system."
+msgstr "課金システムはこのシステムにない番号の注文を受領しました。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:179
+#, python-brace-format
+msgid ""
+"The amount charged by the processor {0} {1} is different than the total cost"
+" of the order {2} {3}."
+msgstr "課金された総額 {0} {1} は注文総額 {2} {3} と異なります。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:221
+#, python-brace-format
+msgid ""
+"\n"
+"            <p class=\"error_msg\">\n"
+"            Sorry! Our payment processor did not accept your payment.\n"
+"            The decision they returned was <span class=\"decision\">{decision}</span>,\n"
+"            and the reason was <span class=\"reason\">{reason_code}:{reason_msg}</span>.\n"
+"            You were not charged. Please try a different form of payment.\n"
+"            Contact us with payment-related questions at {email}.\n"
+"            </p>\n"
+"            "
+msgstr "\n<p class=\"error_msg\">\n申し訳ありません。支払処理が支払いを受け付けませんでした。\n応答： <span class=\"decision\">{decision}</span>,\n理由： <span class=\"reason\">{reason_code}:{reason_msg}</span>.\n課金は発生しません。別の支払い方法をお選びください。\n支払いに関する質問へご連絡ください。 {email}\n</p>\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:244
+#, python-brace-format
+msgid ""
+"\n"
+"                <p class=\"error_msg\">\n"
+"                Sorry! Our payment processor sent us back a payment confirmation that had inconsistent data!\n"
+"                We apologize that we cannot verify whether the charge went through and take further action on your order.\n"
+"                The specific error message is: <span class=\"exception_msg\">{msg}</span>.\n"
+"                Your credit card may possibly have been charged.  Contact us with payment-specific questions at {email}.\n"
+"                </p>\n"
+"                "
+msgstr "\n<p class=\"error_msg\">\n申し訳ありありません。 支払処理が矛盾するデータを応答しました。\n支払い手続きの結果を確認することができません。\nエラーメッセージ： <span class=\"exception_msg\">{msg}</span>.\nあなたのクレジットカードは課金された可能性があります。  支払いに関する質問へご連絡ください。 {email}.\n</p>\n                "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:255
+#, python-brace-format
+msgid ""
+"\n"
+"                <p class=\"error_msg\">\n"
+"                Sorry! Due to an error your purchase was charged for a different amount than the order total!\n"
+"                The specific error message is: <span class=\"exception_msg\">{msg}</span>.\n"
+"                Your credit card has probably been charged. Contact us with payment-specific questions at {email}.\n"
+"                </p>\n"
+"                "
+msgstr "\n<p class=\"error_msg\">\n申し訳ありありません。申し込み合計金額に一致しない支払いが行われました。\nエラーメッセージ： <span class=\"exception_msg\">{msg}</span>.\nあなたのクレジットカードは課金された可能性があります。  支払いに関する質問へご連絡ください。 {email}\n</p>"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:265
+#, python-brace-format
+msgid ""
+"\n"
+"                <p class=\"error_msg\">\n"
+"                Sorry! Our payment processor sent us back a corrupted message regarding your charge, so we are\n"
+"                unable to validate that the message actually came from the payment processor.\n"
+"                The specific error message is: <span class=\"exception_msg\">{msg}</span>.\n"
+"                We apologize that we cannot verify whether the charge went through and take further action on your order.\n"
+"                Your credit card may possibly have been charged.  Contact us with payment-specific questions at {email}.\n"
+"                </p>\n"
+"                "
+msgstr "\n<p class=\"error_msg\">\n申し訳ありません。支払処理が判読できないメッセージをあなたの支払いに対して応答し、\n内容を判断することが出来ません。\nエラーメッセージ： <span class=\"exception_msg\">{msg}</span>.\n支払い手続きの結果を確認することができません。\nあなたのクレジットカードは課金された可能性があります。  支払いに関する質問へご連絡ください。{email}\n</p>\n                "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:307
+msgid "Successful transaction."
+msgstr "成功したトランザクション"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:308
+msgid "The request is missing one or more required fields."
+msgstr "ひとつないし複数の必須項目がないため要求は失敗しました"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:309
+msgid "One or more fields in the request contains invalid data."
+msgstr "入力枠に不正なデータが混入しています"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:311
+msgid ""
+"\n"
+"            The merchantReferenceCode sent with this authorization request matches the\n"
+"            merchantReferenceCode of another authorization request that you sent in the last 15 minutes.\n"
+"            Possible fix: retry the payment after 15 minutes.\n"
+"            "
+msgstr "\n            この認証に使用された取引コードは15分以内に送信された認証要求で使用されたされた取引コードと一致します。\n            解決方法：15分後に支払いをもう一度行ってください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:316
+msgid ""
+"Error: General system failure. Possible fix: retry the payment after a few "
+"minutes."
+msgstr "エラー：不明確なエラーです。数分後に改めてお支払い操作をお願いいたします。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:318
+msgid ""
+"\n"
+"            Error: The request was received but there was a server timeout.\n"
+"            This error does not include timeouts between the client and the server.\n"
+"            Possible fix: retry the payment after some time.\n"
+"            "
+msgstr "\n            エラー：要求は受信されましたが、サーバータイムアウトが発生しました。\n            このエラーはクライアントとサーバー間のタイムアウトは含みません。\n            解決方法：しばらく時間をおいてから支払いを再度行ってください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:324
+msgid ""
+"\n"
+"            Error: The request was received, but a service did not finish running in time\n"
+"            Possible fix: retry the payment after some time.\n"
+"            "
+msgstr "\n            エラー：要求は受信されましたが、時間内に処理することが出来ませんでした。\n            解決方法：しばらく時間をおいてから支払いを再度行ってください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:328
+msgid ""
+"The issuing bank has questions about the request. Possible fix: retry with "
+"another form of payment"
+msgstr "発行銀行は要求に対しての疑義を持ちました。別の支払い方法をお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:330
+msgid ""
+"\n"
+"            Expired card. You might also receive this if the expiration date you\n"
+"            provided does not match the date the issuing bank has on file.\n"
+"            Possible fix: retry with another form of payment\n"
+"            "
+msgstr "\n            有効期限を過ぎたカードです。カード会社が管理する有効期限と入力された有効期限が\n            一致しない場合にもこのメッセージが表示されます。\n            解決方法：別の支払方法をお試しください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:336
+msgid ""
+"\n"
+"            General decline of the card. No other information provided by the issuing bank.\n"
+"            Possible fix: retry with another form of payment\n"
+"            "
+msgstr "\n            カードの支払いが拒否されました。その他カード会社からの情報はありません。\n            解決方法：別の支払方法をお試しください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:340
+msgid ""
+"Insufficient funds in the account. Possible fix: retry with another form of "
+"payment"
+msgstr "アカウントの残金不足です。別の支払方法でお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:342
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:353
+msgid "Unknown reason"
+msgstr "不明な理由"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:343
+msgid ""
+"Issuing bank unavailable. Possible fix: retry again after a few minutes"
+msgstr "発行銀行が利用できません。数分後にお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:345
+msgid ""
+"\n"
+"            Inactive card or card not authorized for card-not-present transactions.\n"
+"            Possible fix: retry with another form of payment\n"
+"            "
+msgstr "\n            無効なカードまたは、カード提示が必要なカードです。\n            解決方法：別の支払方法をお試しください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:349
+msgid ""
+"The card has reached the credit limit. Possible fix: retry with another form"
+" of payment"
+msgstr "このカードは利用上限枠に達しました。別の支払方法をお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:350
+msgid ""
+"Invalid card verification number. Possible fix: retry with another form of "
+"payment"
+msgstr "カード確認番号が不正です。別の支払方法をお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:354
+msgid ""
+"Invalid account number. Possible fix: retry with another form of payment"
+msgstr "口座番号が不正です。別の支払方法をお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:356
+msgid ""
+"\n"
+"            The card type is not accepted by the payment processor.\n"
+"            Possible fix: retry with another form of payment\n"
+"            "
+msgstr "\n            この種類のカードは支払処理で受け付けることが出来ません。\n            解決方法：別の支払方法をお試しください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:360
+msgid ""
+"General decline by the processor.  Possible fix: retry with another form of "
+"payment"
+msgstr "システムにより拒否されました。別の支払方法をお試しください。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:362
+#, python-brace-format
+msgid ""
+"\n"
+"            There is a problem with our CyberSource merchant configuration.  Please let us know at {0}\n"
+"            "
+msgstr "\n            CyberSourceの取引設定に問題があります。 {0} へお知らせください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:366
+msgid "The requested amount exceeds the originally authorized amount."
+msgstr "要求された金額は、もともと認められていた金額を超過しました。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:367
+msgid "Processor Failure.  Possible fix: retry the payment"
+msgstr "システムエラー：改めてお支払いを実施願います"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:369
+msgid "The authorization has already been captured"
+msgstr "認証は既に取得されています。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:372
+msgid ""
+"The requested transaction amount must match the previous transaction amount."
+msgstr "要求された決済額はその前の決済額と一致する必要があります。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:374
+msgid ""
+"\n"
+"            The card type sent is invalid or does not correlate with the credit card number.\n"
+"            Possible fix: retry with the same card or another form of payment\n"
+"            "
+msgstr "\n            カードの種類が無効か、カード番号と一致しません。\n            解決方法：同じカードまたは別のカードでお試しください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:380
+msgid "The request ID is invalid."
+msgstr "要求されたIDは不正です。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:386
+msgid ""
+"\n"
+"            You requested a capture through the API, but there is no corresponding, unused authorization record.\n"
+"            "
+msgstr "\n            API経由でリクエストを行いましたが、該当する認証レコードがありません。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:390
+msgid "The transaction has already been settled or reversed."
+msgstr "この決済は既に確立したか、もしくは、予約されています。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:393
+msgid ""
+"\n"
+"            The capture or credit is not voidable because the capture or credit information has already been\n"
+"            submitted to your processor. Or, you requested a void for a type of transaction that cannot be voided.\n"
+"            "
+msgstr "\n            キャプチャまたはクレジットは無効化できません。\n            あなたのキャプチャまたはクレジットは既に処理されているか、無効化出来ない内容を無効か使用としています。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:398
+msgid "You requested a credit for a capture that was previously voided"
+msgstr "要求があったクレジットのキャプチャは先ほど初期化されました。"
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:400
+msgid ""
+"\n"
+"            Error: The request was received, but there was a timeout at the payment processor.\n"
+"            Possible fix: retry the payment.\n"
+"            "
+msgstr "\n            エラー： 要求は受信されましたが、支払処理でタイムアウトが発生しました。\n            解決方法：支払いを再度行ってください。\n            "
+
+#: lms/djangoapps/shoppingcart/processors/CyberSource.py:405
+msgid ""
+"\n"
+"            The authorization request was approved by the issuing bank but declined by CyberSource.'\n"
+"            Possible fix: retry with a different form of payment.\n"
+"            "
+msgstr "\n            認証リクエストはカード会社により認証されましたが、CyberSourceにより拒否されました.'\n            解決方法：別の支払方法をお試しください。\n            "
+
+#: lms/djangoapps/shoppingcart/tests/test_views.py:352
+msgid "Download CSV Reports"
+msgstr "CSVレポートをダウンロードする"
+
+#: lms/djangoapps/shoppingcart/tests/test_views.py:364
+msgid ""
+"There was an error in your date input.  It should be formatted as YYYY-MM-DD"
+msgstr "日付の入力形式にエラーがあります。日付はYYYY-MM-DDの形式で入力してください。"
+
+#: lms/djangoapps/verify_student/models.py:670
+msgid "No photo ID was provided."
+msgstr "写真IDが提供されていません。"
+
+#: lms/djangoapps/verify_student/models.py:671
+msgid "We couldn't read your name from your photo ID image."
+msgstr "写真ID画像からあなたの氏名を読み取ることが出来ません。"
+
+#: lms/djangoapps/verify_student/models.py:672
+msgid ""
+"The name associated with your account and the name on your ID do not match."
+msgstr "あなたのアカウントの情報と身分証明書の氏名が一致しません。"
+
+#: lms/djangoapps/verify_student/models.py:673
+msgid "The image of your face was not clear."
+msgstr "あなたの顔の画像が鮮明ではありません。"
+
+#: lms/djangoapps/verify_student/models.py:674
+msgid "Your face was not visible in your self-photo"
+msgstr "撮影された写真の画像であなたの顔が判別できません。"
+
+#: lms/djangoapps/verify_student/models.py:692
+msgid "There was an error verifying your ID photos."
+msgstr "身分証明書の写真を確認する際にエラーが発生しました。"
+
+#: lms/djangoapps/verify_student/views.py:176
+msgid "Selected price is not valid number."
+msgstr "選択された価格は正しい数字ではありません。"
+
+#: lms/djangoapps/verify_student/views.py:186
+msgid "This course doesn't support verified certificates"
+msgstr "本講座は修了証の発行に対応していません。"
+
+#: lms/djangoapps/verify_student/views.py:189
+msgid "No selected price or selected price is below minimum."
+msgstr "価格が選択されていない、もしくは最低価格を下回った価格が選択されています。"
+
+#: lms/templates/main_django.html:32
+msgid "Skip to this view's content"
+msgstr "このコンテンツをスキップする"
+
+#: lms/templates/registration/password_reset_complete.html:8
+#: lms/templates/registration/password_reset_complete.html:61
+msgid "Your Password Reset is Complete"
+msgstr "パスワード変更完了"
+
+#: lms/templates/registration/password_reset_complete.html:67
+#, python-format
+msgid ""
+"\n"
+"      Your password has been set.  You may go ahead and %(link_start)slog in%(link_end)s now.\n"
+"      "
+msgstr "\nパスワードが設定されました。 %(link_start)sログイン%(link_end)sをお願いします。"
+
+#: lms/templates/registration/password_reset_confirm.html:9
+#, python-format
+msgid ""
+"\n"
+"      Reset Your %(platform_name)s Password\n"
+"  "
+msgstr "\n%(platform_name)sのパスワード変更"
+
+#: lms/templates/registration/password_reset_confirm.html:66
+#, python-format
+msgid ""
+"\n"
+"          Reset Your %(platform_name)s Password\n"
+"          "
+msgstr "\n%(platform_name)sのパスワード変更"
+
+#: lms/templates/registration/password_reset_confirm.html:76
+msgid "Password Reset Form"
+msgstr "パスワード変更フォーム"
+
+#: lms/templates/registration/password_reset_confirm.html:83
+#, python-format
+msgid ""
+"\n"
+"                We're sorry, %(platform_name)s enrollment is not available in your region\n"
+"            "
+msgstr "\n申し訳ございません。%(platform_name)s がご利用中の地域からは現在利用できません。"
+
+#: lms/templates/registration/password_reset_confirm.html:94
+msgid "The following errors occurred while processing your registration: "
+msgstr "登録処理をする際にエラーが発生しました："
+
+#: lms/templates/registration/password_reset_confirm.html:99
+msgid "You must complete all fields."
+msgstr "全ての枠への入力が必要です。"
+
+#: lms/templates/registration/password_reset_confirm.html:100
+msgid "The two password fields didn't match."
+msgstr "2つのパスワード枠への入力内容が一致しません。"
+
+#: lms/templates/registration/password_reset_confirm.html:106
+msgid ""
+"We're sorry, our systems seem to be having trouble processing your password "
+"reset"
+msgstr "申し訳ございません。パスワード変更の途中で、システムに障害が発生したと考えられます。"
+
+#: lms/templates/registration/password_reset_confirm.html:108
+#, python-format
+msgid ""
+"\n"
+"                Someone has been made aware of this issue. Please try again shortly. Please %(start_link)scontact us%(end_link)s about any concerns you have.\n"
+"            "
+msgstr "\n既にこの問題は認識されています。少し経ってからお試しください。何かお知らせいただけることがあれば %(start_link)s連絡先%(end_link)s へお願いします。"
+
+#: lms/templates/registration/password_reset_confirm.html:115
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly. <br /> Required fields are noted by <strong "
+"class=\"indicator\">bold text and an asterisk (*)</strong>."
+msgstr "新しいパスワードを入力してください。確認のため、２つの入力枠に同様の文字列を入力する必要があります。<br /><strong class=\"indicator\">(*)付きの太字</strong>は必須項目となります。"
+
+#: lms/templates/registration/password_reset_confirm.html:119
+msgid "Required Information"
+msgstr "必須情報"
+
+#: lms/templates/registration/password_reset_confirm.html:123
+msgid "Your New Password"
+msgstr "新パスワード"
+
+#: lms/templates/registration/password_reset_confirm.html:127
+msgid "Your New Password Again"
+msgstr "新パスワード(再入力)"
+
+#: lms/templates/registration/password_reset_confirm.html:134
+msgid "Change My Password"
+msgstr "パスワードを変更"
+
+#: lms/templates/registration/password_reset_confirm.html:141
+msgid "Your Password Reset Was Unsuccessful"
+msgstr "パスワード変更は失敗しました。"
+
+#: lms/templates/registration/password_reset_confirm.html:144
+#, python-format
+msgid ""
+"\n"
+"            The password reset link was invalid, possibly because the link has already been used.  Please return to the %(start_link)slogin page%(end_link)s and start the password reset process again.\n"
+"        "
+msgstr "\nパスワード変更のリンクに異常が見られました。このリンクは既に利用された可能性があります。%(start_link)sログインページ%(end_link)sより、パスワード変更を改めて行っていただけますでしょうか。"
+
+#: lms/templates/registration/password_reset_confirm.html:154
+msgid "Password Reset Help"
+msgstr "パスワード変更に関するヘルプ"
+
+#: lms/templates/registration/password_reset_confirm.html:158
+msgid "Need Help?"
+msgstr "うまくいかない場合"
+
+#: lms/templates/registration/password_reset_confirm.html:160
+#, python-format
+msgid ""
+"\n"
+"              View our %(start_link)shelp section for contact information and answers to commonly asked questions%(end_link)s\n"
+"          "
+msgstr "\n%(start_link)s連絡先情報、および、よくある質問%(end_link)sのページを見る"
+
+#: lms/templates/registration/password_reset_email.html:2
+msgid ""
+"You're receiving this e-mail because you requested a password reset for your"
+" user account at edx.org."
+msgstr "このメールはパスワードの再設定するために送信されています。"
+
+#: lms/templates/registration/password_reset_email.html:4
+msgid "Please go to the following page and choose a new password:"
+msgstr "次のページで新しいパスワードを設定してください"
+
+#: lms/templates/registration/password_reset_email.html:9
+msgid ""
+"If you didn't request this change, you can disregard this email - we have "
+"not yet reset your password."
+msgstr "この変更を要求していない場合はこのメールは無視してください。パスワードはまだ変更されていません。"
+
+#: lms/templates/registration/password_reset_email.html:11
+msgid "Thanks for using our site!"
+msgstr "ご利用いただき、ありがとうございます。"
+
+#: lms/templates/registration/password_reset_email.html:13
+msgid "The edX Team"
+msgstr "edX開発チーム"
+
+#: lms/templates/wiki/article.html:32
+msgid "Last modified:"
+msgstr "最終更新："
+
+#: lms/templates/wiki/article.html:38
+msgid "See all children"
+msgstr "全ての子を見る"
+
+#: lms/templates/wiki/article.html:49
+msgid "This article was last modified:"
+msgstr "この記事が最後に変更されたのは："
+
+#: lms/templates/wiki/create.html:5 lms/templates/wiki/create.html.py:30
+msgid "Add new article"
+msgstr "新たな記事を追加する"
+
+#: lms/templates/wiki/create.html:37
+msgid "Create article"
+msgstr "記事を作成する"
+
+#: lms/templates/wiki/create.html:42 lms/templates/wiki/delete.html:13
+#: lms/templates/wiki/delete.html.py:54
+msgid "Go back"
+msgstr "戻る"
+
+#: lms/templates/wiki/delete.html:5 lms/templates/wiki/delete.html.py:50
+#: lms/templates/wiki/edit.html:42
+msgid "Delete article"
+msgstr "記事を削除する"
+
+#: lms/templates/wiki/delete.html:9
+#: lms/templates/wiki/plugins/attachments/index.html:92
+msgid "Delete"
+msgstr "削除"
+
+#: lms/templates/wiki/delete.html:12
+msgid "You cannot delete a root article."
+msgstr "上位の記事は削除できません"
+
+#: lms/templates/wiki/delete.html:18
+msgid ""
+"You cannot delete this article because you do not have permission to delete "
+"articles with children. Try to remove the children manually one-by-one."
+msgstr "この記事は削除できません。この記事の子となっている記事を削除する権限がないことが原因です。子の記事をひとつずつ削除してみてください。"
+
+#: lms/templates/wiki/delete.html:24
+msgid ""
+"You are deleting an article. This means that its children will be deleted as"
+" well. If you choose to purge, children will also be purged!"
+msgstr "注意してください。ひとつの記事を削除しようとしていますが、同時にこの記事の子になっている記事も削除対象となります。「消去」を選択すると、子の記事も同時に削除されます。"
+
+#: lms/templates/wiki/delete.html:26
+msgid "Articles that will be deleted"
+msgstr "記事は削除されます"
+
+#: lms/templates/wiki/delete.html:32
+msgid "...and more!"
+msgstr "…そして、その他にも！"
+
+#: lms/templates/wiki/delete.html:40
+msgid "You are deleting an article. Please confirm."
+msgstr "記事を削除しようとしています。よろしいでしょうか？"
+
+#: lms/templates/wiki/edit.html:5
+msgid "Edit"
+msgstr "編集"
+
+#: lms/templates/wiki/edit.html:29 lms/templates/wiki/edit.html.py:61
+msgid "Save changes"
+msgstr "変更を保存"
+
+#: lms/templates/wiki/edit.html:37
+msgid "Preview"
+msgstr "プレビュー"
+
+#: lms/templates/wiki/edit.html:48 lms/templates/wiki/history.html:204
+#: lms/templates/wiki/history.html:235
+#: lms/templates/wiki/includes/cheatsheet.html:4
+msgid "Close"
+msgstr "閉じる"
+
+#: lms/templates/wiki/edit.html:51
+msgid "Wiki Preview"
+msgstr "Wikiプレビュー"
+
+#: lms/templates/wiki/edit.html:51 lms/templates/wiki/history.html:207
+#: lms/templates/wiki/history.html:238
+#: lms/templates/wiki/includes/cheatsheet.html:7
+msgid "window open"
+msgstr "ウィンドウを開く"
+
+#: lms/templates/wiki/edit.html:66
+msgid "Back to editor"
+msgstr "エディタに戻る"
+
+#: lms/templates/wiki/history.html:5
+msgid "History"
+msgstr "履歴"
+
+#: lms/templates/wiki/history.html:95
+msgid ""
+"Click each revision to see a list of edited lines. Click the Preview button "
+"to see how the article looked at this stage. At the bottom of this page, you"
+" can change to a particular revision or merge an old revision with the "
+"current one."
+msgstr "改訂された行を見るためには、それぞれの改訂履歴をクリックしましょう。プレビューボタンを押すと、それぞれの段階でどのように記事が見えていたかを確認できます。このページの最下部で、特定のバージョンを変更するか、もしくは、現在のものと旧バージョンを合成することができます。"
+
+#: lms/templates/wiki/history.html:114
+msgid "(no log message)"
+msgstr "(ログメッセージがありません)"
+
+#: lms/templates/wiki/history.html:134
+msgid "Preview this revision"
+msgstr "この版をプレビュー"
+
+#: lms/templates/wiki/history.html:153
+msgid "Auto log:"
+msgstr "自動ログ："
+
+#: lms/templates/wiki/history.html:161
+msgid "Change"
+msgstr "変更"
+
+#: lms/templates/wiki/history.html:184 lms/templates/wiki/history.html:189
+msgid "Merge selected with current..."
+msgstr "選択したものと現在のものを合成する…"
+
+#: lms/templates/wiki/history.html:194
+msgid "Switch to selected version"
+msgstr "選択したバージョンに移動する"
+
+#: lms/templates/wiki/history.html:207
+msgid "Wiki Revision Preview"
+msgstr "Wiki改訂プレビュー"
+
+#: lms/templates/wiki/history.html:216 lms/templates/wiki/history.html:251
+msgid "Back to history view"
+msgstr "履歴表示に戻る"
+
+#: lms/templates/wiki/history.html:221 lms/templates/wiki/history.html:226
+msgid "Switch to this version"
+msgstr "このバージョンに移動する"
+
+#: lms/templates/wiki/history.html:238
+msgid "Merge Revision"
+msgstr "改訂をマージ"
+
+#: lms/templates/wiki/history.html:242
+msgid "Merge with current"
+msgstr "現状と合成する"
+
+#: lms/templates/wiki/history.html:243
+msgid ""
+"When you merge a revision with the current, all data will be retained from "
+"both versions and merged at its approximate location from each revision."
+msgstr "あるバージョンと現状を合成するとき、それぞれのバージョンからの全てのデータは残存します。そして、それぞれの版の近い位置に合成されます。"
+
+#: lms/templates/wiki/history.html:243
+msgid "After this, it's important to do a manual review."
+msgstr "この後、人手のレビューをすることが重要です。"
+
+#: lms/templates/wiki/history.html:256 lms/templates/wiki/history.html:261
+msgid "Create new merged version"
+msgstr "新しい合成バージョンを作成する"
+
+#: lms/templates/wiki/preview_inline.html:13
+msgid "Previewing revision:"
+msgstr "改訂をプレビュー中："
+
+#: lms/templates/wiki/preview_inline.html:20
+msgid "Previewing a merge between two revisions:"
+msgstr "２つの改訂の差分をプレビュー中："
+
+#: lms/templates/wiki/preview_inline.html:32
+msgid "This revision has been deleted."
+msgstr "この版は削除されました。"
+
+#: lms/templates/wiki/preview_inline.html:33
+msgid "Restoring to this revision will mark the article as deleted."
+msgstr "この版を復元すると、この記事は削除済と記録されます。"
+
+#: lms/templates/wiki/includes/anonymous_blocked.html:7
+#, python-format
+msgid ""
+"\n"
+"  You need to <a href=\"%(login_url)s\">log in</a> or <a href=\"%(signup_url)s\">sign up</a> to use this function.\n"
+"  "
+msgstr "\nこの機能を利用するには <a href=\"%(login_url)s\">ログイン</a> もしくは <a href=\"%(signup_url)s\">会員登録</a> が必要です。"
+
+#: lms/templates/wiki/includes/anonymous_blocked.html:11
+msgid "You need to log in or sign up to use this function."
+msgstr "この機能を利用するにはログイン、もしくは会員登録が必要です。"
+
+#: lms/templates/wiki/includes/cheatsheet.html:7
+msgid "Wiki Cheatsheet"
+msgstr "Wiki記述方法"
+
+#: lms/templates/wiki/includes/cheatsheet.html:13
+msgid "Wiki Syntax Help"
+msgstr "Wikiの書き方ヘルプ"
+
+#: lms/templates/wiki/includes/cheatsheet.html:14
+msgid ""
+"This wiki uses <strong>Markdown</strong> for styling. There are several "
+"useful guides online. See any of the links below for in-depth details:"
+msgstr "このWikiでは<strong>Markdown</strong>を記述のために使います。便利なオンラインガイドがあるので、詳細については以下のリンクを御覧ください。"
+
+#: lms/templates/wiki/includes/cheatsheet.html:16
+msgid "Markdown: Basics"
+msgstr "マークダウン：基礎"
+
+#: lms/templates/wiki/includes/cheatsheet.html:17
+msgid "Quick Markdown Syntax Guide"
+msgstr "マークダウンのクイックガイド"
+
+#: lms/templates/wiki/includes/cheatsheet.html:18
+msgid "Miniature Markdown Guide"
+msgstr "マークダウンの最小ガイド"
+
+#: lms/templates/wiki/includes/cheatsheet.html:20
+msgid ""
+"To create a new wiki article, create a link to it. Clicking the link gives "
+"you the creation page."
+msgstr "新しいwikiの記事を作るためには、そこへリンクを作成しましょう。そのリンクをクリックすると、新しいページを作成できます。"
+
+#: lms/templates/wiki/includes/cheatsheet.html:21
+msgid "[Article Name](wiki:ArticleName)"
+msgstr "[記事名](wiki:記事名)"
+
+#. Translators: Do not translate "edX"
+#: lms/templates/wiki/includes/cheatsheet.html:25
+msgid "edX Additions:"
+msgstr "edXによる追記："
+
+#: lms/templates/wiki/includes/cheatsheet.html:27
+msgid "Math Expression"
+msgstr "数式表現"
+
+#: lms/templates/wiki/includes/cheatsheet.html:33
+msgid "Useful examples:"
+msgstr "便利な例："
+
+#: lms/templates/wiki/includes/cheatsheet.html:36
+msgid "Wikipedia"
+msgstr "ウィキペディア"
+
+#: lms/templates/wiki/includes/cheatsheet.html:37
+msgid "edX Wiki"
+msgstr "edX Wiki"
+
+#: lms/templates/wiki/includes/cheatsheet.html:40
+msgid "Huge Header"
+msgstr "大きなHeader"
+
+#: lms/templates/wiki/includes/cheatsheet.html:43
+msgid "Smaller Header"
+msgstr "小さなHeader"
+
+#. Translators: Leave the punctuation, but translate "emphasis"
+#: lms/templates/wiki/includes/cheatsheet.html:47
+msgid "*emphasis* or _emphasis_"
+msgstr "*emphasis* もしくは _emphasis_"
+
+#. Translators: Leave the punctuation, but translate "strong"
+#: lms/templates/wiki/includes/cheatsheet.html:50
+msgid "**strong** or __strong__"
+msgstr "**strong** もしくは __strong__"
+
+#: lms/templates/wiki/includes/cheatsheet.html:52
+msgid "Unordered List"
+msgstr "序列づけのないリスト"
+
+#: lms/templates/wiki/includes/cheatsheet.html:53
+msgid "Sub Item 1"
+msgstr "第二階層アイテム1"
+
+#: lms/templates/wiki/includes/cheatsheet.html:54
+msgid "Sub Item 2"
+msgstr "第二階層アイテム2"
+
+#: lms/templates/wiki/includes/cheatsheet.html:56
+msgid "Ordered"
+msgstr "序列あり"
+
+#: lms/templates/wiki/includes/cheatsheet.html:57
+msgid "List"
+msgstr "一覧"
+
+#: lms/templates/wiki/includes/cheatsheet.html:59
+msgid "Quotes"
+msgstr "引用"
+
+#: lms/templates/wiki/includes/editor_widget.html:4
+#, python-format
+msgid ""
+"\n"
+"        Markdown syntax is allowed. See the %(start_link)scheatsheet%(end_link)s for help.\n"
+"    "
+msgstr "\n        マークダウン記述が使えます。ヘルプが必要であれば、%(start_link)sチートシート%(end_link)sを御覧ください。\n    "
+
+#: lms/templates/wiki/plugins/attachments/index.html:5
+msgid "Attachments"
+msgstr "添付"
+
+#: lms/templates/wiki/plugins/attachments/index.html:14
+msgid "Upload new file"
+msgstr "新規ファイルをアップロード"
+
+#: lms/templates/wiki/plugins/attachments/index.html:17
+msgid "Search and add file"
+msgstr "検索、そして、ファイル追加"
+
+#: lms/templates/wiki/plugins/attachments/index.html:23
+msgid "Upload File"
+msgstr "ファイルをアップロード"
+
+#: lms/templates/wiki/plugins/attachments/index.html:27
+msgid "Upload file"
+msgstr "ファイルをアップロード"
+
+#: lms/templates/wiki/plugins/attachments/index.html:35
+msgid "Search files and articles"
+msgstr "ファイルおよび記事の検索"
+
+#: lms/templates/wiki/plugins/attachments/index.html:36
+msgid ""
+"You can reuse files from other articles. These files are subject to updates "
+"on other articles which may or may not be a good thing."
+msgstr "これらのファイルは別の記事からも利用できます。これらのファイルが更新されて良いか、悪いかを一度、確認願います。"
+
+#: lms/templates/wiki/plugins/attachments/index.html:65
+msgid ""
+"The following files are available for this article. Copy the markdown tag to"
+" directly refer to a file from the article text."
+msgstr "これらのファイルはこの記事で利用できます。記事文中からファイルへの直リンク用のマークダウンタグをコピーしてください。"
+
+#: lms/templates/wiki/plugins/attachments/index.html:84
+msgid "Markdown tag"
+msgstr "マークダウンタグ"
+
+#: lms/templates/wiki/plugins/attachments/index.html:85
+msgid "Uploaded by"
+msgstr "アップロードしたのは："
+
+#: lms/templates/wiki/plugins/attachments/index.html:86
+msgid "Size"
+msgstr "サイズ"
+
+#: lms/templates/wiki/plugins/attachments/index.html:87
+msgid "File History"
+msgstr "ファイル履歴"
+
+#: lms/templates/wiki/plugins/attachments/index.html:94
+msgid "Detach"
+msgstr "分離"
+
+#: lms/templates/wiki/plugins/attachments/index.html:97
+msgid "Replace"
+msgstr "リプレイス"
+
+#: lms/templates/wiki/plugins/attachments/index.html:104
+msgid "Restore"
+msgstr "リストア"
+
+#: lms/templates/wiki/plugins/attachments/index.html:115
+msgid "anonymous (IP logged)"
+msgstr "アノニマス(IPアドレスはログ取得されます)"
+
+#: lms/templates/wiki/plugins/attachments/index.html:122
+msgid "File history"
+msgstr "ファイル履歴"
+
+#: lms/templates/wiki/plugins/attachments/index.html:122
+msgid "revisions"
+msgstr "改訂"
+
+#: lms/templates/wiki/plugins/attachments/index.html:130
+msgid "There are no attachments for this article."
+msgstr "この記事についての添付ファイルがありません。"

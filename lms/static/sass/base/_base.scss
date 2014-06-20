@@ -2,116 +2,117 @@
 //   overflow-y: scroll;
 // }
 
-html, body {
-  background: $body-bg;
-  font-family: $sans-serif;
-  font-size: 1em;
-  font-style: normal;
-  line-height: 1em;
-  //-webkit-font-smoothing: antialiased;
-}
 
-h1, h2, h3, h4, h5, h6 {
-  color: $base-font-color;
-  font: normal 1.2em/1.2em $serif;
-  margin: 0px;
-}
-
-h1 {
-  color: $base-font-color;
-  font: normal 2em/1.4em $sans-serif;
-  letter-spacing: 1px;
-  margin-bottom: 30px;
-  text-align: center;
-  //text-transform: uppercase;
-}
-
-h2 {
-  color: $lighter-base-font-color;
-  font: normal 1.2em/1.2em $serif;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-  -webkit-font-smoothing: antialiased;
-}
-
-p + h2, ul + h2, ol + h2 {
-  margin-top: 40px;
-}
-
-p {
-  color: $base-font-color;
-  font: normal 1em/1.6em $serif;
-  margin: 0px;
-}
-
-span {
-  font: normal 1em/1.6em $sans-serif;
-  color: $base-font-color;
-}
+//html, body {
+//  background: $body-bg;
+//  font-family: $sans-serif;
+//  font-size: 1em;
+//  font-style: normal;
+//  line-height: 1em;
+//  //-webkit-font-smoothing: antialiased;
+//}
+//
+//h1, h2, h3, h4, h5, h6 {
+//  color: $base-font-color;
+//  font: normal 1.2em/1.2em $serif;
+//  margin: 0px;
+//}
+//
+//h1 {
+//  color: $base-font-color;
+//  font: normal 2em/1.4em $sans-serif;
+//  letter-spacing: 1px;
+//  margin-bottom: 30px;
+//  text-align: center;
+//  //text-transform: uppercase;
+//}
+//
+//h2 {
+//  color: $lighter-base-font-color;
+//  font: normal 1.2em/1.2em $serif;
+//  letter-spacing: 1px;
+//  margin-bottom: 15px;
+//  text-transform: uppercase;
+//  -webkit-font-smoothing: antialiased;
+//}
+//
+//p + h2, ul + h2, ol + h2 {
+//  margin-top: 40px;
+//}
+//
+//p {
+//  color: $base-font-color;
+//  font: normal 1em/1.6em $serif;
+//  margin: 0px;
+//}
+//
+//span {
+//  font: normal 1em/1.6em $sans-serif;
+//  color: $base-font-color;
+//}
 
 /* Fix for CodeMirror: prevent top-level span from affecting deeply-embedded span in CodeMirror */
 .CodeMirror span {
   font: inherit;
 }
 
-p + p, ul + p, ol + p {
-  margin-top: 20px;
-}
-
-p {
-  a:link, a:visited {
-    color: $link-color;
-    font: normal 1em/1em $serif;
-    text-decoration: none;
-    @include transition(all 0.1s linear 0s);
-
-    &:hover, &:focus {
-      color: $link-color;
-      text-decoration: underline;
-    }
-  }
-}
-
-a:link, a:visited {
-  color: $link-color;
-  font: normal 1em/1em $sans-serif;
-  text-decoration: none;
-  @include transition(all 0.1s linear 0s);
-
-  &:hover, &:focus {
-    text-decoration: underline;
-  }
-
-  &:disabled, &.is-disabled, &.disabled {
-    pointer-events: none;
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-a:focus {
-  /**
-   *  Add general focus styling here
-   *  for example:
-   *      outline: 3px groove $black;
-   **/
-}
+//p + p, ul + p, ol + p {
+//  margin-top: 20px;
+//}
+//
+//p {
+//  a:link, a:visited {
+//    color: $link-color;
+//    font: normal 1em/1em $serif;
+//    text-decoration: none;
+//    @include transition(all 0.1s linear 0s);
+//
+//    &:hover, &:focus {
+//      color: $link-color;
+//      text-decoration: underline;
+//    }
+//  }
+//}
+//
+//a:link, a:visited {
+//  color: $link-color;
+//  font: normal 1em/1em $sans-serif;
+//  text-decoration: none;
+//  @include transition(all 0.1s linear 0s);
+//
+//  &:hover, &:focus {
+//    text-decoration: underline;
+//  }
+//
+//  &:disabled, &.is-disabled, &.disabled {
+//    pointer-events: none;
+//    opacity: 0.5;
+//    cursor: not-allowed;
+//  }
+//}
+//
+//a:focus {
+//  /**
+//   *  Add general focus styling here
+//   *  for example:
+//   *      outline: 3px groove $black;
+//   **/
+//}
 
 .content-wrapper {
-  width: flex-grid(12);
-  margin: 0 auto;
-  background: $content-wrapper-bg;
-  padding-bottom: ($baseline*2);
+//  width: flex-grid(12);
+//  margin: 0 auto;
+//  background: $content-wrapper-bg;
+//  padding-bottom: ($baseline*2);
 }
 
 .container {
   @include clearfix;
-  margin: 0 auto 0;
-  padding: 0px 30px;
-  max-width: grid-width(12);
-  min-width: 760px;
-  width: flex-grid(12);
+//  margin: 0 auto 0;
+//  padding: 0px 30px;
+//  max-width: grid-width(12);
+//  min-width: 760px;
+//  width: flex-grid(12);
 }
 
 span.edx {
@@ -121,41 +122,41 @@ span.edx {
 
 .static-container {
   @include clearfix;
-  margin: 0 auto 0;
-  max-width: 1200px;
-  padding: 60px 0px 120px;
-  width: flex-grid(12);
+//  margin: 0 auto 0;
+//  max-width: 1200px;
+//  padding: 60px 0px 120px;
+//  width: flex-grid(12);
 
   .inner-wrapper {
-    margin: 0 auto 0;
-    width: flex-grid(10);
+//    margin: 0 auto 0;
+//    width: flex-grid(10);
   }
 
-  ol, ul {
-    list-style: disc;
-
-    li {
-      color: $base-font-color;
-      font: normal 1em/1.4em $serif;
-      margin: 0px;
-    }
-  }
-
-  h1 {
-    margin-bottom: 30px;
-  }
-
-  h1 + hr {
-    margin-bottom: 60px;
-  }
-
-  p + h2, ul + h2, ol + h2 {
-    margin-top: 40px;
-  }
-
-  ul + p, ol + p {
-    margin-top: 20px;
-  }
+//  ol, ul {
+//    list-style: disc;
+//
+//    li {
+//      color: $base-font-color;
+//      font: normal 1em/1.4em $serif;
+//      margin: 0px;
+//    }
+//  }
+//
+//  h1 {
+//    margin-bottom: 30px;
+//  }
+//
+//  h1 + hr {
+//    margin-bottom: 60px;
+//  }
+//
+//  p + h2, ul + h2, ol + h2 {
+//    margin-top: 40px;
+//  }
+//
+//  ul + p, ol + p {
+//    margin-top: 20px;
+//  }
 }
 
 .loading-animation {
@@ -196,7 +197,7 @@ mark {
   .inner-wrapper {
     margin: auto;
     max-width: 1180px;
-    min-width: 760px;
+    //min-width: 760px;
   }
 
   p {
@@ -208,7 +209,7 @@ mark {
 .ie-banner {
   display: none;
   max-width: 1140px;
-  min-width: 720px;
+  //min-width: 720px;
   margin: auto;
   border-radius: 0 0 3px 3px;
   background: #f4f4e0;
@@ -220,10 +221,6 @@ mark {
   strong {
     font-weight: 700;
   }
-}
-
-.sr {
-  @extend %text-sr;
 }
 
 .help-tab {
@@ -248,7 +245,7 @@ mark {
 
     &:hover, &:focus {
       color: #fff;
-      background: #1D9DD9;
+      background: $link-color;
     }
   }
 }
@@ -277,16 +274,39 @@ mark {
 
     &:hover, &:focus {
       color: #fff;
-      background: #1D9DD9;
+      background: $link-color;
     }
   }
 }
 
-#feedback_form textarea[name="details"] {
-  height: 150px;
+#feedback_form {
+  input, textarea {
+    font: normal 1em/1.4em $sans-serif;
+  }
+  textarea[name="details"] {
+    height: 150px;
+  }
 }
 
-// ui - skipnav
+#feedback_success_wrapper {
+  p {
+    padding: 0 20px 20px 20px;
+  }
+}
+
+// ====================
+
+// UI - disabled state
+.is-disabled {
+  @extend %ui-disabled;
+}
+
+// UI - semantically hide text
+.sr {
+  @extend %text-sr;
+}
+
+// UI - skipnav
 .nav-skip {
   display: block;
   position: absolute;
@@ -305,3 +325,5 @@ mark {
     height: auto;
   }
 }
+
+

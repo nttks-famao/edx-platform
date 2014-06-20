@@ -5,35 +5,34 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 import logging
-import json
-import re
 import unittest
 from datetime import datetime, timedelta
 import pytz
 
-from django.core.cache import cache
 from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.test.client import RequestFactory
+from django.test.client import RequestFactory, Client
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.hashers import UNUSABLE_PASSWORD
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import int_to_base36
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.core.urlresolvers import reverse, NoReverseMatch
+from django.http import HttpResponse, Http404
+from unittest.case import SkipTest
 
 from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from courseware.tests.tests import TEST_DATA_MIXED_MODULESTORE
 
-from mock import Mock, patch, sentinel
-from textwrap import dedent
+from mock import Mock, patch
 
-from student.models import anonymous_id_for_user, user_by_anonymous_id, CourseEnrollment, unique_id_for_user
-from student.views import (process_survey_link, _cert_info, password_reset, password_reset_confirm_wrapper,
-                           change_enrollment, complete_course_mode_info, token, course_from_id)
-from student.tests.factories import UserFactory, CourseModeFactory
+from student.models import (anonymous_id_for_user, user_by_anonymous_id, CourseEnrollment, unique_id_for_user,
+                            UserStanding)
+from student.views import (process_survey_link, _cert_info,
+                           change_enrollment, complete_course_mode_info, token,
+                           resign, resign_confirm)
+from student.tests.factories import UserFactory, UserStandingFactory, CourseModeFactory
 from student.tests.test_email import mock_render_to_string
 
 import shoppingcart
@@ -44,8 +43,9 @@ COURSE_2 = 'edx/full/6.002_Spring_2012'
 log = logging.getLogger(__name__)
 
 
-class ResetPasswordTests(TestCase):
-    """ Tests that clicking reset password sends email, and doesn't activate the user
+class ResignTests(TestCase):
+    """
+    Tests for resignation functionality
     """
     request_factory = RequestFactory()
 
@@ -55,114 +55,294 @@ class ResetPasswordTests(TestCase):
         self.user.save()
         self.token = default_token_generator.make_token(self.user)
         self.uidb36 = int_to_base36(self.user.id)
+        self.resign_reason = 'a' * 1000
 
-        self.user_bad_passwd = UserFactory.create()
-        self.user_bad_passwd.is_active = False
-        self.user_bad_passwd.password = UNUSABLE_PASSWORD
-        self.user_bad_passwd.save()
+    def test_resign_404(self):
+        """Ensures that no get request to /resign/ is allowed"""
 
-    @patch('student.views.render_to_string', Mock(side_effect=mock_render_to_string, autospec=True))
-    def test_user_bad_password_reset(self):
-        """Tests password reset behavior for user with password marked UNUSABLE_PASSWORD"""
+        bad_req = self.request_factory.get('/resign/')
+        self.assertRaises(Http404, resign, bad_req)
 
-        bad_pwd_req = self.request_factory.post('/password_reset/', {'email': self.user_bad_passwd.email})
-        bad_pwd_resp = password_reset(bad_pwd_req)
-        # If they've got an unusable password, we return a successful response code
-        self.assertEquals(bad_pwd_resp.status_code, 200)
-        obj = json.loads(bad_pwd_resp.content)
-        self.assertEquals(obj, {
-            'success': True,
-            'value': "('registration/password_reset_done.html', [])",
-        })
+    def test_resign_by_nonexist_email_user(self):
+        """Now test the exception cases with of resign called with invalid email."""
 
-    @patch('student.views.render_to_string', Mock(side_effect=mock_render_to_string, autospec=True))
-    def test_nonexist_email_password_reset(self):
-        """Now test the exception cases with of reset_password called with invalid email."""
-
-        bad_email_req = self.request_factory.post('/password_reset/', {'email': self.user.email+"makeItFail"})
-        bad_email_resp = password_reset(bad_email_req)
+        bad_email_req = self.request_factory.post('/resign/', {'email': self.user.email + "makeItFail"})
+        bad_email_resp = resign(bad_email_req)
         # Note: even if the email is bad, we return a successful response code
         # This prevents someone potentially trying to "brute-force" find out which emails are and aren't registered with edX
         self.assertEquals(bad_email_resp.status_code, 200)
         obj = json.loads(bad_email_resp.content)
         self.assertEquals(obj, {
             'success': True,
-            'value': "('registration/password_reset_done.html', [])",
         })
 
-    @patch('student.views.render_to_string', Mock(side_effect=mock_render_to_string, autospec=True))
-    def test_password_reset_ratelimited(self):
-        """ Try (and fail) resetting password 30 times in a row on an non-existant email address """
+    def test_resign_ratelimited(self):
+        """ Try (and fail) resigning 30 times in a row on an non-existant email address """
         cache.clear()
 
         for i in xrange(30):
-            good_req = self.request_factory.post('/password_reset/', {'email': 'thisdoesnotexist@foo.com'})
-            good_resp = password_reset(good_req)
+            good_req = self.request_factory.post('/resign/', {'email': 'thisdoesnotexist@foo.com'})
+            good_resp = resign(good_req)
             self.assertEquals(good_resp.status_code, 200)
 
         # then the rate limiter should kick in and give a HttpForbidden response
-        bad_req = self.request_factory.post('/password_reset/', {'email': 'thisdoesnotexist@foo.com'})
-        bad_resp = password_reset(bad_req)
+        bad_req = self.request_factory.post('/resign/', {'email': 'thisdoesnotexist@foo.com'})
+        bad_resp = resign(bad_req)
         self.assertEquals(bad_resp.status_code, 403)
 
         cache.clear()
 
     @unittest.skipIf(
-        settings.FEATURES.get('DISABLE_RESET_EMAIL_TEST', False),
+        settings.FEATURES.get('DISABLE_RESIGN_EMAIL_TEST', False),
         dedent("""
-            Skipping Test because CMS has not provided necessary templates for password reset.
+            Skipping Test because CMS has not provided necessary templates for resignation.
             If LMS tests print this message, that needs to be fixed.
         """)
     )
     @patch('django.core.mail.send_mail')
     @patch('student.views.render_to_string', Mock(side_effect=mock_render_to_string, autospec=True))
-    def test_reset_password_email(self, send_email):
-        """Tests contents of reset password email, and that user is not active"""
+    def test_resign_email(self, send_email):
+        """Tests contents of resign email"""
 
-        good_req = self.request_factory.post('/password_reset/', {'email': self.user.email})
-        good_resp = password_reset(good_req)
+        good_req = self.request_factory.post('/resign/', {'email': self.user.email})
+        good_resp = resign(good_req)
         self.assertEquals(good_resp.status_code, 200)
         obj = json.loads(good_resp.content)
         self.assertEquals(obj, {
             'success': True,
-            'value': "('registration/password_reset_done.html', [])",
         })
 
         ((subject, msg, from_addr, to_addrs), sm_kwargs) = send_email.call_args
-        self.assertIn("Password reset", subject)
-        self.assertIn("You're receiving this e-mail because you requested a password reset", msg)
+        self.assertIn("Resignation from", subject)
+        self.assertIn("You're receiving this e-mail because you requested a resignation", msg)
         self.assertEquals(from_addr, settings.DEFAULT_FROM_EMAIL)
         self.assertEquals(len(to_addrs), 1)
         self.assertIn(self.user.email, to_addrs)
 
-        #test that the user is not active
+        # test that the user is not active (as well as test_reset_password_email)
         self.user = User.objects.get(pk=self.user.pk)
         self.assertFalse(self.user.is_active)
-        reset_match = re.search(r'password_reset_confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/', msg).groupdict()
+        url_match = re.search(r'resign_confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/', msg).groupdict()
+        self.assertEquals(url_match['uidb36'], self.uidb36)
+        self.assertEquals(url_match['token'], self.token)
 
-    @patch('student.views.password_reset_confirm')
-    def test_reset_password_bad_token(self, reset_confirm):
-        """Tests bad token and uidb36 in password reset"""
+    def test_resign_confirm_with_bad_token(self):
+        """Ensures that get request with bad token and uidb36 to /resign_confirm/ is considered invalid link
+        """
+        bad_req = self.request_factory.get('/resign_confirm/NO-OP/')
+        bad_resp = resign_confirm(bad_req, 'NO', 'OP')
+        self.assertEquals(bad_resp.status_code, 200)
+        self.assertEquals(bad_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNone(bad_resp.context_data['form'])
+        self.assertFalse(bad_resp.context_data['validlink'])
 
-        bad_reset_req = self.request_factory.get('/password_reset_confirm/NO-OP/')
-        password_reset_confirm_wrapper(bad_reset_req, 'NO', 'OP')
-        (confirm_args, confirm_kwargs) = reset_confirm.call_args
-        self.assertEquals(confirm_kwargs['uidb36'], 'NO')
-        self.assertEquals(confirm_kwargs['token'], 'OP')
-        self.user = User.objects.get(pk=self.user.pk)
-        self.assertFalse(self.user.is_active)
+    def test_resign_confirm_with_good_token(self):
+        """Ensures that get request with good token and uidb36 to /resign_confirm/ is considered valid link
+        """
+        good_req = self.request_factory.get('/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token))
+        good_resp = resign_confirm(good_req, self.uidb36, self.token)
+        self.assertEquals(good_resp.status_code, 200)
+        self.assertEquals(good_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNotNone(good_resp.context_data['form'])
+        self.assertTrue(good_resp.context_data['validlink'])
 
-    @patch('student.views.password_reset_confirm')
-    def test_reset_password_good_token(self, reset_confirm):
-        """Tests good token and uidb36 in password reset"""
+        # assert that the user's UserStanding record is not created yet
+        self.assertRaises(
+            UserStanding.DoesNotExist,
+            UserStanding.objects.get,
+            user=self.user)
 
-        good_reset_req = self.request_factory.get('/password_reset_confirm/{0}-{1}/'.format(self.uidb36, self.token))
-        password_reset_confirm_wrapper(good_reset_req, self.uidb36, self.token)
-        (confirm_args, confirm_kwargs) = reset_confirm.call_args
-        self.assertEquals(confirm_kwargs['uidb36'], self.uidb36)
-        self.assertEquals(confirm_kwargs['token'], self.token)
+    @patch('student.views.logout_user')
+    def test_resign_confirm_with_good_reason(self, logout_user):
+        """Ensures that post request with good resign_reason to /resign_confirm/ makes the user logged out and disabled
+        """
+        good_req = self.request_factory.post('/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token),
+                                             {'resign_reason': self.resign_reason})
+        good_resp = resign_confirm(good_req, self.uidb36, self.token)
+        self.assertTrue(logout_user.called)
+
+        self.assertEquals(good_resp.status_code, 200)
+        self.assertEquals(good_resp.template_name, 'registration/resign_complete.html')
+        # assert that the user is active
         self.user = User.objects.get(pk=self.user.pk)
         self.assertTrue(self.user.is_active)
+        # assert that the user's account_status is disabled
+        user_account = UserStanding.objects.get(user=self.user)
+        self.assertTrue(user_account.account_status, UserStanding.ACCOUNT_DISABLED)
+        self.assertTrue(user_account.resign_reason, self.resign_reason)
+
+    def test_resign_confirm_with_empty_reason(self):
+        """Ensures that post request with empty resign_reason to /resign_confirm/ is considered invalid form
+        """
+        bad_req = self.request_factory.post(
+            '/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token),
+            {'resign_reason': ''}
+        )
+        bad_resp = resign_confirm(bad_req, self.uidb36, self.token)
+
+        self.assertEquals(bad_resp.status_code, 200)
+        self.assertEquals(bad_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNotNone(bad_resp.context_data['form'])
+        # assert that the returned form is invalid
+        self.assertFalse(bad_resp.context_data['form'].is_valid())
+
+    def test_resign_confirm_with_over_maxlength_reason(self):
+        """Ensures that post request with over maxlength resign_reason to /resign_confirm/ is considered invalid form
+        """
+        bad_req = self.request_factory.post(
+            '/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token),
+            {'resign_reason': self.resign_reason + 'a'}
+        )
+        bad_resp = resign_confirm(bad_req, self.uidb36, self.token)
+
+        self.assertEquals(bad_resp.status_code, 200)
+        self.assertEquals(bad_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNotNone(bad_resp.context_data['form'])
+        # assert that the returned form is invalid
+        self.assertFalse(bad_resp.context_data['form'].is_valid())
+
+
+class ResignTests(TestCase):
+    """
+    Tests for resignation functionality
+    """
+    request_factory = RequestFactory()
+
+    def setUp(self):
+        self.user = UserFactory.create()
+        self.user.is_active = False
+        self.user.save()
+        self.token = default_token_generator.make_token(self.user)
+        self.uidb36 = int_to_base36(self.user.id)
+        self.resign_reason = 'a' * 1000
+
+    def test_resign_404(self):
+        """Ensures that no get request to /resign/ is allowed"""
+
+        bad_req = self.request_factory.get('/resign/')
+        self.assertRaises(Http404, resign, bad_req)
+
+    def test_resign_by_nonexist_email_user(self):
+        """Now test the exception cases with of resign called with invalid email."""
+
+        bad_email_req = self.request_factory.post('/resign/', {'email': self.user.email + "makeItFail"})
+        bad_email_resp = resign(bad_email_req)
+        # Note: even if the email is bad, we return a successful response code
+        # This prevents someone potentially trying to "brute-force" find out which emails are and aren't registered with edX
+        self.assertEquals(bad_email_resp.status_code, 200)
+        obj = json.loads(bad_email_resp.content)
+        self.assertEquals(obj, {
+            'success': True,
+        })
+
+    @unittest.skipIf(
+        settings.FEATURES.get('DISABLE_RESIGN_EMAIL_TEST', False),
+        dedent("""
+            Skipping Test because CMS has not provided necessary templates for resignation.
+            If LMS tests print this message, that needs to be fixed.
+        """)
+    )
+    @patch('django.core.mail.send_mail')
+    @patch('student.views.render_to_string', Mock(side_effect=mock_render_to_string, autospec=True))
+    def test_resign_email(self, send_email):
+        """Tests contents of resign email"""
+
+        good_req = self.request_factory.post('/resign/', {'email': self.user.email})
+        good_resp = resign(good_req)
+        self.assertEquals(good_resp.status_code, 200)
+        obj = json.loads(good_resp.content)
+        self.assertEquals(obj, {
+            'success': True,
+        })
+
+        ((subject, msg, from_addr, to_addrs), sm_kwargs) = send_email.call_args
+        self.assertIn("Resignation from", subject)
+        self.assertIn("You're receiving this e-mail because you requested a resignation", msg)
+        self.assertEquals(from_addr, settings.DEFAULT_FROM_EMAIL)
+        self.assertEquals(len(to_addrs), 1)
+        self.assertIn(self.user.email, to_addrs)
+
+        # test that the user is not active (as well as test_reset_password_email)
+        self.user = User.objects.get(pk=self.user.pk)
+        self.assertFalse(self.user.is_active)
+        url_match = re.search(r'resign_confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/', msg).groupdict()
+        self.assertEquals(url_match['uidb36'], self.uidb36)
+        self.assertEquals(url_match['token'], self.token)
+
+    def test_resign_confirm_with_bad_token(self):
+        """Ensures that get request with bad token and uidb36 to /resign_confirm/ is considered invalid link
+        """
+        bad_req = self.request_factory.get('/resign_confirm/NO-OP/')
+        bad_resp = resign_confirm(bad_req, 'NO', 'OP')
+        self.assertEquals(bad_resp.status_code, 200)
+        self.assertEquals(bad_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNone(bad_resp.context_data['form'])
+        self.assertFalse(bad_resp.context_data['validlink'])
+
+    def test_resign_confirm_with_good_token(self):
+        """Ensures that get request with good token and uidb36 to /resign_confirm/ is considered valid link
+        """
+        good_req = self.request_factory.get('/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token))
+        good_resp = resign_confirm(good_req, self.uidb36, self.token)
+        self.assertEquals(good_resp.status_code, 200)
+        self.assertEquals(good_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNotNone(good_resp.context_data['form'])
+        self.assertTrue(good_resp.context_data['validlink'])
+
+        # assert that the user's UserStanding record is not created yet
+        self.assertRaises(
+            UserStanding.DoesNotExist,
+            UserStanding.objects.get,
+            user=self.user)
+
+    @patch('student.views.logout_user')
+    def test_resign_confirm_with_good_reason(self, logout_user):
+        """Ensures that post request with good resign_reason to /resign_confirm/ makes the user logged out and disabled
+        """
+        good_req = self.request_factory.post('/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token),
+                                             {'resign_reason': self.resign_reason})
+        good_resp = resign_confirm(good_req, self.uidb36, self.token)
+        self.assertTrue(logout_user.called)
+
+        self.assertEquals(good_resp.status_code, 200)
+        self.assertEquals(good_resp.template_name, 'registration/resign_complete.html')
+        # assert that the user is active
+        self.user = User.objects.get(pk=self.user.pk)
+        self.assertTrue(self.user.is_active)
+        # assert that the user's account_status is disabled
+        user_account = UserStanding.objects.get(user=self.user)
+        self.assertTrue(user_account.account_status, UserStanding.ACCOUNT_DISABLED)
+        self.assertTrue(user_account.resign_reason, self.resign_reason)
+
+    def test_resign_confirm_with_empty_reason(self):
+        """Ensures that post request with empty resign_reason to /resign_confirm/ is considered invalid form
+        """
+        bad_req = self.request_factory.post(
+            '/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token),
+            {'resign_reason': ''}
+        )
+        bad_resp = resign_confirm(bad_req, self.uidb36, self.token)
+
+        self.assertEquals(bad_resp.status_code, 200)
+        self.assertEquals(bad_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNotNone(bad_resp.context_data['form'])
+        # assert that the returned form is invalid
+        self.assertFalse(bad_resp.context_data['form'].is_valid())
+
+    def test_resign_confirm_with_over_maxlength_reason(self):
+        """Ensures that post request with over maxlength resign_reason to /resign_confirm/ is considered invalid form
+        """
+        bad_req = self.request_factory.post(
+            '/resign_confirm/{0}-{1}/'.format(self.uidb36, self.token),
+            {'resign_reason': self.resign_reason + 'a'}
+        )
+        bad_resp = resign_confirm(bad_req, self.uidb36, self.token)
+
+        self.assertEquals(bad_resp.status_code, 200)
+        self.assertEquals(bad_resp.template_name, 'registration/resign_confirm.html')
+        self.assertIsNotNone(bad_resp.context_data['form'])
+        # assert that the returned form is invalid
+        self.assertFalse(bad_resp.context_data['form'].is_valid())
 
 
 class CourseEndingTest(TestCase):
@@ -275,12 +455,58 @@ class DashboardTest(TestCase):
     def setUp(self):
         self.course = CourseFactory.create(org=self.COURSE_ORG, display_name=self.COURSE_NAME, number=self.COURSE_SLUG)
         self.assertIsNotNone(self.course)
-        self.user = UserFactory.create(username="jack", email="jack@fake.edx.org")
+        self.user = UserFactory.create(username="jack", email="jack@fake.edx.org", password='test')
         CourseModeFactory.create(
             course_id=self.course.id,
             mode_slug='honor',
             mode_display_name='Honor Code',
         )
+        self.client = Client()
+
+    def check_verification_status_on(self, mode, value):
+        """
+        Check that the css class and the status message are in the dashboard html.
+        """
+        CourseEnrollment.enroll(self.user, self.course.location.course_id, mode=mode)
+        try:
+            response = self.client.get(reverse('dashboard'))
+        except NoReverseMatch:
+            raise SkipTest("Skip this test if url cannot be found (ie running from CMS tests)")
+        self.assertContains(response, "class=\"course {0}\"".format(mode))
+        self.assertContains(response, value)
+
+    @patch.dict("django.conf.settings.FEATURES", {'ENABLE_VERIFIED_CERTIFICATES': True})
+    def test_verification_status_visible(self):
+        """
+        Test that the certificate verification status for courses is visible on the dashboard.
+        """
+        self.client.login(username="jack", password="test")
+        self.check_verification_status_on('verified', 'You\'re enrolled as a verified student')
+        self.check_verification_status_on('honor', 'You\'re enrolled as an honor code student')
+        self.check_verification_status_on('audit', 'You\'re auditing this course')
+
+    def check_verification_status_off(self, mode, value):
+        """
+        Check that the css class and the status message are not in the dashboard html.
+        """
+        CourseEnrollment.enroll(self.user, self.course.location.course_id, mode=mode)
+        try:
+            response = self.client.get(reverse('dashboard'))
+        except NoReverseMatch:
+            raise SkipTest("Skip this test if url cannot be found (ie running from CMS tests)")
+        self.assertNotContains(response, "class=\"course {0}\"".format(mode))
+        self.assertNotContains(response, value)
+
+    @patch.dict("django.conf.settings.FEATURES", {'ENABLE_VERIFIED_CERTIFICATES': False})
+    def test_verification_status_invisible(self):
+        """
+        Test that the certificate verification status for courses is not visible on the dashboard
+        if the verified certificates setting is off.
+        """
+        self.client.login(username="jack", password="test")
+        self.check_verification_status_off('verified', 'You\'re enrolled as a verified student')
+        self.check_verification_status_off('honor', 'You\'re enrolled as an honor code student')
+        self.check_verification_status_off('audit', 'You\'re auditing this course')
 
     def test_course_mode_info(self):
         verified_mode = CourseModeFactory.create(
@@ -321,14 +547,9 @@ class EnrollInCourseTest(TestCase):
     """Tests enrolling and unenrolling in courses."""
 
     def setUp(self):
-        patcher = patch('student.models.server_track')
-        self.mock_server_track = patcher.start()
+        patcher = patch('student.models.tracker')
+        self.mock_tracker = patcher.start()
         self.addCleanup(patcher.stop)
-
-        crum_patcher = patch('student.models.crum.get_current_request')
-        self.mock_get_current_request = crum_patcher.start()
-        self.addCleanup(crum_patcher.stop)
-        self.mock_get_current_request.return_value = sentinel.request
 
     def test_enrollment(self):
         user = User.objects.create_user("joe", "joe@joe.com", "password")
@@ -383,13 +604,12 @@ class EnrollInCourseTest(TestCase):
 
     def assert_no_events_were_emitted(self):
         """Ensures no events were emitted since the last event related assertion"""
-        self.assertFalse(self.mock_server_track.called)
-        self.mock_server_track.reset_mock()
+        self.assertFalse(self.mock_tracker.emit.called)  # pylint: disable=maybe-no-member
+        self.mock_tracker.reset_mock()
 
     def assert_enrollment_event_was_emitted(self, user, course_id):
         """Ensures an enrollment event was emitted since the last event related assertion"""
-        self.mock_server_track.assert_called_once_with(
-            sentinel.request,
+        self.mock_tracker.emit.assert_called_once_with(  # pylint: disable=maybe-no-member
             'edx.course.enrollment.activated',
             {
                 'course_id': course_id,
@@ -397,12 +617,11 @@ class EnrollInCourseTest(TestCase):
                 'mode': 'honor'
             }
         )
-        self.mock_server_track.reset_mock()
+        self.mock_tracker.reset_mock()
 
     def assert_unenrollment_event_was_emitted(self, user, course_id):
         """Ensures an unenrollment event was emitted since the last event related assertion"""
-        self.mock_server_track.assert_called_once_with(
-            sentinel.request,
+        self.mock_tracker.emit.assert_called_once_with(  # pylint: disable=maybe-no-member
             'edx.course.enrollment.deactivated',
             {
                 'course_id': course_id,
@@ -410,7 +629,7 @@ class EnrollInCourseTest(TestCase):
                 'mode': 'honor'
             }
         )
-        self.mock_server_track.reset_mock()
+        self.mock_tracker.reset_mock()
 
     def test_enrollment_non_existent_user(self):
         # Testing enrollment of newly unsaved user (i.e. no database entry)
@@ -574,8 +793,8 @@ class AnonymousLookupTable(TestCase):
             mode_slug='honor',
             mode_display_name='Honor Code',
         )
-        patcher = patch('student.models.server_track')
-        self.mock_server_track = patcher.start()
+        patcher = patch('student.models.tracker')
+        patcher.start()
         self.addCleanup(patcher.stop)
 
     def test_for_unregistered_user(self):  # same path as for logged out user

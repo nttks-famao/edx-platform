@@ -7,11 +7,19 @@
 // ====================
 
 // UI: container page view
-body.view-container {
+.view-container {
 
   .mast {
     border-bottom: none;
     padding-bottom: 0;
+  }
+
+  .wrapper-mast .mast.has-navigation .nav-actions {
+    bottom: -($baseline*.75);
+
+    .nav-item .button {
+
+    }
   }
 
   .content-primary, .content-supplementary {
@@ -22,6 +30,25 @@ body.view-container {
   .content-primary {
     margin-right: flex-gutter();
     width: flex-grid(9,12);
+    box-shadow: none;
+    border: 0;
+
+    .no-container-content {
+      @extend %ui-well;
+      padding: ($baseline*2);
+      background-color: $gray-l4;
+      text-align: center;
+      color: $gray;
+
+      .new-button {
+        @include font-size(14);
+        margin-left: $baseline;
+
+        [class^="icon-"] {
+          margin-right: ($baseline/2);
+        }
+      }
+    }
   }
 
   .content-supplementary {
@@ -30,11 +57,98 @@ body.view-container {
     label {
       @extend %t-title8;
     }
+
+    .bit-publishing {
+      margin-bottom: $baseline;
+      border-top: 5px solid $blue;
+      background-color: $white;
+
+      .pub-status {
+        @extend %t-title6;
+        display: block;
+        background-color: $blue-l2;
+        padding: ($baseline/2) ($baseline*.75);
+        font-weight: 600;
+      }
+
+      &.published {
+        border-top: 5px solid $blue;
+
+        .pub-status {
+          background-color: $blue-t0;
+        }
+
+      }
+
+      &.draft {
+        border-top: 5px solid $gray-l1;
+
+        .pub-status {
+          background-color: $gray-l4;
+        }
+      }
+
+      .copy {
+        @extend %t-copy-sub1;
+        padding: ($baseline*.75) ($baseline*.75) ($baseline) ($baseline*.75);
+      }
+    }
   }
 }
 
 // UI: xblock rendering
-body.view-container  .content-primary{
+body.view-container .content-primary {
+
+  // dragging bits
+  .ui-sortable-helper {
+
+    article {
+      display: none;
+    }
+  }
+
+  .component-placeholder {
+    height: ($baseline*2.5);
+    opacity: .5;
+    margin: $baseline;
+    background-color: $gray-l5;
+    border-radius: ($baseline/2);
+    border: 2px dashed $gray-l2;
+  }
+
+  .vert-mod {
+
+    // min-height to allow drop when empty
+    .vertical-container {
+      min-height: ($baseline*2.5);
+    }
+
+    .vert {
+      position: relative;
+
+      .drag-handle {
+        display: none; // only show when vert is draggable
+        position: absolute;
+        top: 0;
+        right: ($baseline/2); // equal to margin on component
+        width: ($baseline*1.5);
+        height: ($baseline*2.5);
+        margin: 0;
+        background: transparent url("../img/drag-handles.png") no-repeat scroll center center;
+      }
+    }
+
+    .is-draggable {
+
+      .xblock-header {
+        padding-right: ($baseline*1.5); // make room for drag handle
+      }
+
+      .drag-handle {
+        display: block;
+      }
+    }
+  }
 
   .wrapper-xblock {
     @extend %wrap-xblock;
@@ -50,13 +164,13 @@ body.view-container  .content-primary{
 
     // CASE: nesting level xblock rendering
     &.level-nesting {
+      @include transition(all $tmg-f2 linear 0s);
       border: none;
       padding-bottom: $baseline;
       box-shadow: none;
 
       &:hover {
-        @include transition(all $tmg-f2 linear 0s);
-        background-color: $gray-l7;
+        background-color: $gray-l6;
         box-shadow: 0 0 1px $shadow-d2 inset;
       }
 
@@ -68,7 +182,7 @@ body.view-container  .content-primary{
       }
 
       .xblock-render {
-        margin: 0 $baseline $baseline $baseline;
+        margin: ($baseline/2);
       }
 
       // STATE: nesting level xblock is collapsed
@@ -81,10 +195,10 @@ body.view-container  .content-primary{
 
     // CASE: element level xblock rendering
     &.level-element {
+      @include transition(all $tmg-f2 linear 0s);
       box-shadow: none;
 
       &:hover {
-        @include transition(all $tmg-f2 linear 0s);
         border-color: $blue;
       }
 
@@ -97,7 +211,8 @@ body.view-container  .content-primary{
       }
 
       .xblock-render {
-        margin: $baseline;
+        margin: ($baseline/2);
+        padding: ($baseline/2);
       }
 
       // STATE: xBlock containers styled as rows.
@@ -134,3 +249,4 @@ body.view-container  .content-primary{
     text-transform: uppercase;
   }
 }
+

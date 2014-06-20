@@ -75,32 +75,8 @@
                         expect(state.el).toBe('#video_id');
                     });
 
-                    it('parse the videos if subtitles exist', function () {
-                        var sub = 'Z5KLxerq05Y';
-
-                        expect(state.videos).toEqual({
-                            '0.75': sub,
-                            '1.0': sub,
-                            '1.25': sub,
-                            '1.50': sub
-                        });
-                    });
-
-                    it(
-                        'parse the videos if subtitles do not exist',
-                        function ()
-                    {
-                        var sub = '';
-
-                        $('#example').find('.video').data('sub', '');
-                        state = new window.Video('#example');
-
-                        expect(state.videos).toEqual({
-                            '0.75': sub,
-                            '1.0': sub,
-                            '1.25': sub,
-                            '1.50': sub
-                        });
+                    it('doesn\'t have `videos` dictionary', function () {
+                        expect(state.videos).toBeUndefined();
                     });
 
                     it('parse Html5 sources', function () {
@@ -181,56 +157,23 @@
             });
         });
 
-        describe('YouTube video in FireFox will cue first', function () {
-            var oldUserAgent;
-
+        describe('YouTube API is not loaded', function () {
             beforeEach(function () {
-                oldUserAgent = window.navigator.userAgent;
-                window.navigator.userAgent = 'firefox';
+                window.YT = undefined;
 
-                state = jasmine.initializePlayer('video.html', {
-                  start: 10,
-                  end: 30
+                state = jasmine.initializePlayerYouTube('video.html');
+            });
+
+            it('callback, to be called after YouTube API loads, exists and is called', function () {
+                waitsFor(function () {
+                    return state.youtubeApiAvailable === true;
+                }, 'YouTube API is loaded', 3000);
+
+                runs(function () {
+                    // If YouTube API is not loaded, then the code will should create
+                    // a global callback that will be called by API once it is loaded.
+                    expect(window.onYouTubeIframeAPIReady).not.toBeUndefined();
                 });
-            });
-
-            afterEach(function () {
-                window.navigator.userAgent = oldUserAgent;
-            });
-
-            it('cue is called, skipOnEndedStartEndReset is set', function () {
-                state.videoPlayer.updatePlayTime(10);
-                expect(state.videoPlayer.player.cueVideoById).toHaveBeenCalledWith('cogebirgzzM', 10);
-                expect(state.videoPlayer.skipOnEndedStartEndReset).toBe(true);
-            });
-
-            it('when position is not 0: cue is called with stored position value', function () {
-                state.config.savedVideoPosition = 15;
-
-                state.videoPlayer.updatePlayTime(10);
-                expect(state.videoPlayer.player.cueVideoById).toHaveBeenCalledWith('cogebirgzzM', 15);
-            });
-
-            it('Handling cue state', function () {
-                spyOn(state.videoPlayer, 'play');
-
-                state.videoPlayer.seekToTimeOnCued = 10;
-                state.videoPlayer.onStateChange({data: 5});
-
-                expect(state.videoPlayer.player.seekTo).toHaveBeenCalledWith(10, true);
-                expect(state.videoPlayer.play).toHaveBeenCalled();
-            });
-
-            it('even when cued, onEnded does not resets start and end time', function () {
-                state.videoPlayer.skipOnEndedStartEndReset = true;
-                state.videoPlayer.onEnded();
-                expect(state.videoPlayer.startTime).toBe(10);
-                expect(state.videoPlayer.endTime).toBe(30);
-
-                state.videoPlayer.skipOnEndedStartEndReset = undefined;
-                state.videoPlayer.onEnded();
-                expect(state.videoPlayer.startTime).toBe(10);
-                expect(state.videoPlayer.endTime).toBe(30);
             });
         });
 

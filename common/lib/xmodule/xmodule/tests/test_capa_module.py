@@ -2,10 +2,10 @@
 """
 Tests of the Capa XModule
 """
-#pylint: disable=C0111
-#pylint: disable=R0904
-#pylint: disable=C0103
-#pylint: disable=C0302
+# pylint: disable=C0111
+# pylint: disable=R0904
+# pylint: disable=C0103
+# pylint: disable=C0302
 
 import datetime
 import json
@@ -58,21 +58,22 @@ class CapaFactory(object):
         return cls.num
 
     @classmethod
-    def input_key(cls, input_num=2):
+    def input_key(cls, response_num=2, input_num=1):
         """
         Return the input key to use when passing GET parameters
         """
-        return ("input_" + cls.answer_key(input_num))
+        return ("input_" + cls.answer_key(response_num, input_num))
 
     @classmethod
-    def answer_key(cls, input_num=2):
+    def answer_key(cls, response_num=2, input_num=1):
         """
         Return the key stored in the capa problem answer dict
         """
         return (
-            "%s_%d_1" % (
+            "%s_%d_%d" % (
                 "-".join(['i4x', 'edX', 'capa_test', 'problem', 'SampleProblem%d' % cls.num]),
-                input_num,
+                response_num,
+                input_num
             )
         )
 
@@ -81,6 +82,7 @@ class CapaFactory(object):
                attempts=None,
                problem_state=None,
                correct=False,
+               xml=None,
                **kwargs
                ):
         """
@@ -101,7 +103,9 @@ class CapaFactory(object):
         """
         location = Location(["i4x", "edX", "capa_test", "problem",
                              "SampleProblem{0}".format(cls.next_num())])
-        field_data = {'data': cls.sample_problem_xml}
+        if xml is None:
+            xml = cls.sample_problem_xml
+        field_data = {'data': xml}
         field_data.update(kwargs)
         descriptor = Mock(weight="1")
         if problem_state is not None:
@@ -544,8 +548,8 @@ class CapaModuleTest(unittest.TestCase):
 
         # Create a request dictionary for check_problem.
         get_request_dict = {
-            CapaFactoryWithFiles.input_key(input_num=2): fileobjs,
-            CapaFactoryWithFiles.input_key(input_num=3): 'None',
+            CapaFactoryWithFiles.input_key(response_num=2): fileobjs,
+            CapaFactoryWithFiles.input_key(response_num=3): 'None',
         }
 
         module.check_problem(get_request_dict)
@@ -594,8 +598,8 @@ class CapaModuleTest(unittest.TestCase):
         # Create a webob Request with the files uploaded.
         post_data = []
         for fname, fileobj in zip(fnames, fileobjs):
-            post_data.append((CapaFactoryWithFiles.input_key(input_num=2), (fname, fileobj)))
-        post_data.append((CapaFactoryWithFiles.input_key(input_num=3), 'None'))
+            post_data.append((CapaFactoryWithFiles.input_key(response_num=2), (fname, fileobj)))
+        post_data.append((CapaFactoryWithFiles.input_key(response_num=3), 'None'))
         request = webob.Request.blank("/some/fake/url", POST=post_data, content_type='multipart/form-data')
 
         module.handle('xmodule_handler', request, 'problem_check')
@@ -932,11 +936,19 @@ class CapaModuleTest(unittest.TestCase):
         module = CapaFactory.create(attempts=0)
         self.assertEqual(module.check_button_name(), "Check")
 
+    def test_check_button_checking_name(self):
+        module = CapaFactory.create(attempts=1, max_attempts=10)
+        self.assertEqual(module.check_button_checking_name(), "Checking...")
+
+        module = CapaFactory.create(attempts=10, max_attempts=10)
+        self.assertEqual(module.check_button_checking_name(), "Checking...")
+
     def test_check_button_name_customization(self):
-        module = CapaFactory.create(attempts=1,
-                                    max_attempts=10,
-                                    text_customization={"custom_check": "Submit", "custom_final_check": "Final Submit"}
-                                    )
+        module = CapaFactory.create(
+            attempts=1,
+            max_attempts=10,
+            text_customization={"custom_check": "Submit", "custom_final_check": "Final Submit"}
+        )
         self.assertEqual(module.check_button_name(), "Submit")
 
         module = CapaFactory.create(attempts=9,
@@ -944,6 +956,29 @@ class CapaModuleTest(unittest.TestCase):
                                     text_customization={"custom_check": "Submit", "custom_final_check": "Final Submit"}
                                     )
         self.assertEqual(module.check_button_name(), "Final Submit")
+
+    def test_check_button_checking_name_customization(self):
+        module = CapaFactory.create(
+            attempts=1,
+            max_attempts=10,
+            text_customization={
+                "custom_check": "Submit",
+                "custom_final_check": "Final Submit",
+                "custom_checking": "Checking..."
+            }
+        )
+        self.assertEqual(module.check_button_checking_name(), "Checking...")
+
+        module = CapaFactory.create(
+            attempts=9,
+            max_attempts=10,
+            text_customization={
+                "custom_check": "Submit",
+                "custom_final_check": "Final Submit",
+                "custom_checking": "Checking..."
+            }
+        )
+        self.assertEqual(module.check_button_checking_name(), "Checking...")
 
     def test_should_show_check_button(self):
 
@@ -1392,6 +1427,105 @@ class CapaModuleTest(unittest.TestCase):
         module = CapaFactory.create()
         self.assertEquals(module.get_problem("data"), {'html': module.get_problem_html(encapsulate=False)})
 
+    # Standard question with shuffle="true" used by a few tests
+    common_shuffle_xml = textwrap.dedent("""
+        <problem>
+        <multiplechoiceresponse>
+          <choicegroup type="MultipleChoice" shuffle="true">
+            <choice correct="false">Apple</choice>
+            <choice correct="false">Banana</choice>
+            <choice correct="false">Chocolate</choice>
+            <choice correct ="true">Donut</choice>
+          </choicegroup>
+        </multiplechoiceresponse>
+        </problem>
+    """)
+
+    def test_check_unmask(self):
+        """
+        Check that shuffle unmasking is plumbed through: when check_problem is called,
+        unmasked names should appear in the track_function event_info.
+        """
+        module = CapaFactory.create(xml=self.common_shuffle_xml)
+        with patch.object(module.runtime, 'track_function') as mock_track_function:
+            get_request_dict = {CapaFactory.input_key(): 'mask_1'}  # the correct choice
+            module.check_problem(get_request_dict)
+            mock_call = mock_track_function.mock_calls[0]
+            event_info = mock_call[1][1]
+            # 'answers' key modified to use unmasked name
+            self.assertEqual(event_info['answers'][CapaFactory.answer_key()], 'choice_3')
+            # 'permutation' key added to record how problem was shown
+            self.assertEquals(event_info['permutation'][CapaFactory.answer_key()],
+                              ('shuffle', ['choice_3', 'choice_1', 'choice_2', 'choice_0']))
+            self.assertEquals(event_info['success'], 'correct')
+
+    def test_save_unmask(self):
+        """On problem save, unmasked data should appear on track_function."""
+        module = CapaFactory.create(xml=self.common_shuffle_xml)
+        with patch.object(module.runtime, 'track_function') as mock_track_function:
+            get_request_dict = {CapaFactory.input_key(): 'mask_0'}
+            module.save_problem(get_request_dict)
+            mock_call = mock_track_function.mock_calls[0]
+            event_info = mock_call[1][1]
+            self.assertEquals(event_info['answers'][CapaFactory.answer_key()], 'choice_2')
+            self.assertIsNotNone(event_info['permutation'][CapaFactory.answer_key()])
+
+    def test_reset_unmask(self):
+        """On problem reset, unmask names should appear track_function."""
+        module = CapaFactory.create(xml=self.common_shuffle_xml)
+        get_request_dict = {CapaFactory.input_key(): 'mask_0'}
+        module.check_problem(get_request_dict)
+        # On reset, 'old_state' should use unmasked names
+        with patch.object(module.runtime, 'track_function') as mock_track_function:
+            module.reset_problem(None)
+            mock_call = mock_track_function.mock_calls[0]
+            event_info = mock_call[1][1]
+            self.assertEquals(mock_call[1][0], 'reset_problem')
+            self.assertEquals(event_info['old_state']['student_answers'][CapaFactory.answer_key()], 'choice_2')
+            self.assertIsNotNone(event_info['permutation'][CapaFactory.answer_key()])
+
+    def test_rescore_unmask(self):
+        """On problem rescore, unmasked names should appear on track_function."""
+        module = CapaFactory.create(xml=self.common_shuffle_xml)
+        get_request_dict = {CapaFactory.input_key(): 'mask_0'}
+        module.check_problem(get_request_dict)
+        # On rescore, state/student_answers should use unmasked names
+        with patch.object(module.runtime, 'track_function') as mock_track_function:
+            module.rescore_problem()
+            mock_call = mock_track_function.mock_calls[0]
+            event_info = mock_call[1][1]
+            self.assertEquals(mock_call[1][0], 'problem_rescore')
+            self.assertEquals(event_info['state']['student_answers'][CapaFactory.answer_key()], 'choice_2')
+            self.assertIsNotNone(event_info['permutation'][CapaFactory.answer_key()])
+
+    def test_check_unmask_answerpool(self):
+        """Check answer-pool question track_function uses unmasked names"""
+        xml = textwrap.dedent("""
+            <problem>
+            <multiplechoiceresponse>
+              <choicegroup type="MultipleChoice" answer-pool="4">
+                <choice correct="false">Apple</choice>
+                <choice correct="false">Banana</choice>
+                <choice correct="false">Chocolate</choice>
+                <choice correct ="true">Donut</choice>
+              </choicegroup>
+            </multiplechoiceresponse>
+            </problem>
+        """)
+        module = CapaFactory.create(xml=xml)
+        with patch.object(module.runtime, 'track_function') as mock_track_function:
+            get_request_dict = {CapaFactory.input_key(): 'mask_0'}
+            module.check_problem(get_request_dict)
+            mock_call = mock_track_function.mock_calls[0]
+            event_info = mock_call[1][1]
+            print event_info
+            # 'answers' key modified to use unmasked name
+            self.assertEqual(event_info['answers'][CapaFactory.answer_key()], 'choice_2')
+            # 'permutation' key added to record how problem was shown
+            self.assertEquals(event_info['permutation'][CapaFactory.answer_key()],
+                              ('answerpool', ['choice_1', 'choice_3', 'choice_2', 'choice_0']))
+            self.assertEquals(event_info['success'], 'incorrect')
+
 
 class ComplexEncoderTest(unittest.TestCase):
     def test_default(self):
@@ -1402,3 +1536,222 @@ class ComplexEncoderTest(unittest.TestCase):
         expected_str = '1-1*j'
         json_str = json.dumps(complex_num, cls=ComplexEncoder)
         self.assertEqual(expected_str, json_str[1:-1])  # ignore quotes
+
+
+class TestProblemCheckTracking(unittest.TestCase):
+    """
+    Ensure correct tracking information is included in events emitted during problem checks.
+    """
+
+    def setUp(self):
+        self.maxDiff = None
+
+    def test_choice_answer_text(self):
+        factory = self.capa_factory_for_problem_xml("""\
+            <problem display_name="Multiple Choice Questions">
+              <p>What color is the open ocean on a sunny day?</p>
+              <optionresponse>
+                <optioninput options="('yellow','blue','green')" correct="blue" label="What color is the open ocean on a sunny day?"/>
+              </optionresponse>
+              <p>Which piece of furniture is built for sitting?</p>
+              <multiplechoiceresponse>
+                <choicegroup type="MultipleChoice">
+                  <choice correct="false">
+                    <text>a table</text>
+                  </choice>
+                  <choice correct="false">
+                    <text>a desk</text>
+                  </choice>
+                  <choice correct="true">
+                    <text>a chair</text>
+                  </choice>
+                  <choice correct="false">
+                    <text>a bookshelf</text>
+                  </choice>
+                </choicegroup>
+              </multiplechoiceresponse>
+              <p>Which of the following are musical instruments?</p>
+              <choiceresponse>
+                <checkboxgroup direction="vertical" label="Which of the following are musical instruments?">
+                  <choice correct="true">a piano</choice>
+                  <choice correct="false">a tree</choice>
+                  <choice correct="true">a guitar</choice>
+                  <choice correct="false">a window</choice>
+                </checkboxgroup>
+              </choiceresponse>
+            </problem>
+            """)
+        module = factory.create()
+
+        answer_input_dict = {
+            factory.input_key(2): 'blue',
+            factory.input_key(3): 'choice_0',
+            factory.input_key(4): ['choice_0', 'choice_1'],
+        }
+
+        event = self.get_event_for_answers(module, answer_input_dict)
+
+        self.assertEquals(event['submission'], {
+            factory.answer_key(2): {
+                'question': 'What color is the open ocean on a sunny day?',
+                'answer': 'blue',
+                'response_type': 'optionresponse',
+                'input_type': 'optioninput',
+                'correct': True,
+                'variant': '',
+            },
+            factory.answer_key(3): {
+                'question': '',
+                'answer': u'<text>a table</text>',
+                'response_type': 'multiplechoiceresponse',
+                'input_type': 'choicegroup',
+                'correct': False,
+                'variant': '',
+            },
+            factory.answer_key(4): {
+                'question': 'Which of the following are musical instruments?',
+                'answer': [u'a piano', u'a tree'],
+                'response_type': 'choiceresponse',
+                'input_type': 'checkboxgroup',
+                'correct': False,
+                'variant': '',
+            },
+        })
+
+    def capa_factory_for_problem_xml(self, xml):
+        class CustomCapaFactory(CapaFactory):
+            """
+            A factory for creating a Capa problem with arbitrary xml.
+            """
+            sample_problem_xml = textwrap.dedent(xml)
+
+        return CustomCapaFactory
+
+    def get_event_for_answers(self, module, answer_input_dict):
+        with patch.object(module.runtime, 'track_function') as mock_track_function:
+            module.check_problem(answer_input_dict)
+
+            self.assertEquals(len(mock_track_function.mock_calls), 1)
+            mock_call = mock_track_function.mock_calls[0]
+            event = mock_call[1][1]
+
+            return event
+
+    def test_numerical_textline(self):
+        factory = CapaFactory
+        module = factory.create()
+
+        answer_input_dict = {
+            factory.input_key(2): '3.14'
+        }
+
+        event = self.get_event_for_answers(module, answer_input_dict)
+        self.assertEquals(event['submission'], {
+            factory.answer_key(2): {
+                'question': '',
+                'answer': '3.14',
+                'response_type': 'numericalresponse',
+                'input_type': 'textline',
+                'correct': True,
+                'variant': '',
+            }
+        })
+
+    def test_multiple_inputs(self):
+        factory = self.capa_factory_for_problem_xml("""\
+            <problem display_name="Multiple Inputs">
+              <p>Choose the correct color</p>
+              <optionresponse>
+                <p>What color is the sky?</p>
+                <optioninput options="('yellow','blue','green')" correct="blue"/>
+                <p>What color are pine needles?</p>
+                <optioninput options="('yellow','blue','green')" correct="green"/>
+              </optionresponse>
+            </problem>
+            """)
+        module = factory.create()
+
+        answer_input_dict = {
+            factory.input_key(2, 1): 'blue',
+            factory.input_key(2, 2): 'yellow',
+        }
+
+        event = self.get_event_for_answers(module, answer_input_dict)
+        self.assertEquals(event['submission'], {
+            factory.answer_key(2, 1): {
+                'question': '',
+                'answer': 'blue',
+                'response_type': 'optionresponse',
+                'input_type': 'optioninput',
+                'correct': True,
+                'variant': '',
+            },
+            factory.answer_key(2, 2): {
+                'question': '',
+                'answer': 'yellow',
+                'response_type': 'optionresponse',
+                'input_type': 'optioninput',
+                'correct': False,
+                'variant': '',
+            },
+        })
+
+    def test_rerandomized_inputs(self):
+        factory = CapaFactory
+        module = factory.create(rerandomize='always')
+
+        answer_input_dict = {
+            factory.input_key(2): '3.14'
+        }
+
+        event = self.get_event_for_answers(module, answer_input_dict)
+        self.assertEquals(event['submission'], {
+            factory.answer_key(2): {
+                'question': '',
+                'answer': '3.14',
+                'response_type': 'numericalresponse',
+                'input_type': 'textline',
+                'correct': True,
+                'variant': module.seed,
+            }
+        })
+
+    def test_file_inputs(self):
+        fnames = ["prog1.py", "prog2.py", "prog3.py"]
+        fpaths = [os.path.join(DATA_DIR, "capa", fname) for fname in fnames]
+        fileobjs = [open(fpath) for fpath in fpaths]
+        for fileobj in fileobjs:
+            self.addCleanup(fileobj.close)
+
+        factory = CapaFactoryWithFiles
+        module = factory.create()
+
+        # Mock the XQueueInterface.
+        xqueue_interface = XQueueInterface("http://example.com/xqueue", Mock())
+        xqueue_interface._http_post = Mock(return_value=(0, "ok"))  # pylint: disable=protected-access
+        module.system.xqueue['interface'] = xqueue_interface
+
+        answer_input_dict = {
+            CapaFactoryWithFiles.input_key(response_num=2): fileobjs,
+            CapaFactoryWithFiles.input_key(response_num=3): 'None',
+        }
+
+        event = self.get_event_for_answers(module, answer_input_dict)
+        self.assertEquals(event['submission'], {
+            factory.answer_key(2): {
+                'question': '',
+                'answer': fpaths,
+                'response_type': 'coderesponse',
+                'input_type': 'filesubmission',
+                'correct': False,
+                'variant': '',
+            },
+            factory.answer_key(3): {
+                'answer': 'None',
+                'correct': True,
+                'question': '',
+                'response_type': 'customresponse',
+                'input_type': 'textline',
+                'variant': ''
+            }
+        })

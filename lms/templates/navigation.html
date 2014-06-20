@@ -11,7 +11,7 @@ import branding
 from status.status import get_site_status_msg
 %>
 
-<%! from microsite_configuration.middleware import MicrositeConfiguration %>
+<%! from microsite_configuration import microsite %>
 <%! from microsite_configuration.templatetags.microsite import platform_name %>
 
 ## Provide a hook for themes to inject branding on top.
@@ -37,108 +37,213 @@ site_status_msg = get_site_status_msg(course_id)
 </%block>
 
 
-% if course:
-  <header class="global slim" aria-label="${_('Global Navigation')}">
-% else:
-  <header class="global" aria-label="${_('Global Navigation')}">
-% endif
-  <nav>
-
-  <h1 class="logo">
-    <a href="${marketing_link('ROOT')}">
-      <%block name="navigation_logo">
-          <img src="${static.url(branding.get_logo_url())}" alt="
-          % if course:
-          ${course.display_org_with_default | h}: ${course.display_number_with_default | h} ${course.display_name_with_default | h} @ 
-          % endif
-          ${platform_name()}
-          " />
-      </%block>
-    </a>
-  </h1>
-
-    % if course:
-      <h2><span class="provider">${course.display_org_with_default | h}:</span> ${course.display_number_with_default | h} ${course.display_name_with_default}</h2>
-    % endif
-
-    % if user.is_authenticated():
-
-    <ol class="left nav-global authenticated">
-      <%block name="navigation_global_links_authenticated">
-        % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
-          <li class="nav-global-01">
-            <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
-          </li>
-        % endif
-      </%block>
-    </ol>
-    <ol class="user">
-      <li class="primary">
-        <a href="${reverse('dashboard')}" class="user-link">
-          <span class="avatar"></span>
-          <span class="sr">${_("Dashboard for:")} </span> ${user.username}
-        </a>
-      </li>
-      <li class="primary">
-        <a href="#" class="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr">${_("More options dropdown")}</span> &#9662;</a>
-        <ul class="dropdown-menu" aria-label="More Options" role="menu">
-          <%block name="navigation_dropdown_menu_links" >
-            <li><a href="${marketing_link('FAQ')}">${_("Help")}</a></li>
-          </%block>
-          <li><a href="${reverse('logout')}" role="menuitem">${_("Log Out")}</a></li>
+##<header class="global ${"slim" if course else ""}" aria-label="${_('Global Navigation')}">
+ <header class="" aria-label="${_('Global Navigation')}">
+    <!-- HEADER || Tab/SP-->
+    <nav class="top-bar hide-for-large-up" data-topbar>
+        <ul class="title-area">
+            <li class="name show-for-medium">
+                <span class="tab-bar">
+                    <a class="left-off-canvas-toggle menu-icon" style="display:inline;">
+                    <span></span>
+                    <h1><img src="/static/images/gacco_identity_pc.svg" alt="${platform_name()}" width="160px" style="margin-left:1rem; margin-right:0.6rem; display:inline;"></h1>
+                    </a>
+                </span>
+            </li>
+            <li class="name show-for-small">
+                <span class="tab-bar">
+                    <a class="left-off-canvas-toggle menu-icon" style="display:inline;">
+                    <span></span>
+                    <h1><img src="/static/images/gacco_identity_mob.svg" alt="${platform_name()}" width="120px" style="margin-left:1rem; margin-right:0.6rem; display:inline;"></h1>
+                    </a>
+                </span>
+            </li>
+            % if course:
+            <li class="toggle-topbar"><a href="" style="padding: 0 0 0 0; "><span class="f_button small" style="">${_('Study Menu')}</span></a></li>
+            % endif
         </ul>
-      </li>
-    </ol>
-      % if display_shopping_cart: # see shoppingcart.context_processor.user_has_cart_context_processor
-        <ol class="user">
-          <li class="primary">
-            <a class="shopping-cart" href="${reverse('shoppingcart.views.show_cart')}">
-              <i class="icon-shopping-cart"></i> Shopping Cart
-            </a>
-          </li>
-        </ol>
-      % endif
-    % else:
-    <ol class="left nav-global">
-      <%block name="navigation_global_links">
-        % if MicrositeConfiguration.get_microsite_configuration_value('ENABLE_MKTG_SITE', settings.FEATURES.get('ENABLE_MKTG_SITE', False)):
-          <li class="nav-global-01">
-            <a href="${marketing_link('HOW_IT_WORKS')}">${_("How it Works")}</a>
-          </li>
-          <li class="nav-global-02">
-            <a href="${marketing_link('COURSES')}">${_("Courses")}</a>
-          </li>
-          <li class="nav-global-03">
-            <a href="${marketing_link('SCHOOLS')}">${_("Schools")}</a>
-          </li>
-        % endif
-      </%block>
-      % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
-          % if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
-          <li class="nav-global-04">
-            <a class="cta cta-register" href="${reverse('course-specific-register', args=[course.id])}">${_("Register Now")}</a>
-          </li>
-          % else:
-          <li class="nav-global-04">
-            <a class="cta cta-register" href="/register">${_("Register Now")}</a>
-          </li>
-          % endif
-      % endif
-    </ol>
-
-    <ol class="right nav-courseware">
-    <li class="nav-courseware-01">
-      % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
-          % if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
-          <a class="cta cta-login" href="${reverse('course-specific-login', args=[course.id])}${login_query()}">${_("Log in")}</a>
-          % else:
-          <a class="cta cta-login" href="/login${login_query()}">${_("Log in")}</a>
-          % endif
-      % endif
-    </li>
-    </ol>
+        <section class="top-bar-section">
+            <!-- Right Nav Section || Smartphone -->
+            <ul id="black_target_cnavi1" class="right hide-for-medium-up">
+            </ul>
+            <!-- Right Nav Section || Tablet -->
+            <ul class="right show-for-medium-up" style="z-index:1147483647;">
+                <li class="has-dropdown active" style="z-index:1147483647;">
+                % if course:
+                    <a href="#">${_('Study Menu')}</a>
+                % endif
+                    <ul id="black_target_cnavi2" class="dropdown"></ul>
+                </li>
+            </ul>
+        </section>
+    </nav>
+    % if course:
+        <div id="black_coursetitle" class="hide-for-large-up" style="background-color:#eee; width:100%;">
+        <h2 style="display:inline; font-size:1rem; color:#333333; margin-left:0.5rem;">${course.display_number_with_default | h} ${course.display_name_with_default}</h2>
+        </div>
     % endif
-  </nav>
+    
+    <aside class="left-off-canvas-menu hide-for-large-up">
+        <ul id="black_target_offcanvas" class="off-canvas-list">
+            <li id="black_target_offcanvas"><label>${_('Navi Menu')}</label></li>
+            % if course:
+            <!-- here can be something to add offcanvas menu -->
+            % else:
+            ## for dashboard /login/register Offcanvas menu
+            <li><a href="http://gacco.org/">${_('Top Page')}</a></li>
+                % if user.is_authenticated():
+                <li><a href="${reverse('dashboard')}" class="user-link">${_("Dashboard for:")} ${user.username}</a></li>
+                % else:
+                <li><a href="/register">${_('Register')}</a></li>
+                <li><a href="/dashboard">${_('Login')}</a></li>
+                % endif
+            <li><a href="https://support.gacco.org/">${_('FAQ')}</a></li>
+                % if user.is_authenticated():
+                <li><a href="${reverse('logout')}" role="menuitem">${_("Log Out")}</a></li>
+                % endif
+            % endif
+            % if course:
+            <!-- here can be something to add offcanvas menu -->
+            % endif
+        </ul>
+    </aside>
+
+    <%doc>    
+    <h1 class="logo">
+      <a href="http://gacco.org/">
+        <%block name="navigation_logo">
+            <img src="${static.url(branding.get_logo_url())}" alt="${platform_name()}"/>
+        </%block>
+      </a>
+    </h1>
+    </%doc>
+
+    <nav>
+        <div class="row show-for-large-up" style="margin-top:1rem;">
+            ## Sitename
+            <div class="columns large-8">
+                <a href="http://gacco.org/">
+                    <img src="/static/images/gacco_identity_pc.svg" width="250px" alt="${platform_name()}">
+                </a>
+                % if course:
+               <h2 style="display:inline; font-size:0.8rem; color:#333333;"><span style="font-size:1.2rem; margin-left:0.2rem; margin-right:0.2rem; ">|</span>${course.display_number_with_default | h} ${course.display_name_with_default}</h2>
+                % endif
+            </div>
+            ## navi button
+            <div class="columns large-4">
+    
+                % if user.is_authenticated():
+                <%doc>
+                <ol class="left nav-global authenticated">
+                  <%block name="navigation_global_links_authenticated">
+                    % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
+                      <li class="nav-global-01">
+                        <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
+                      </li>
+                    % endif
+                 </%block>
+                </ol>
+                </%doc>
+
+                <a href="#" data-dropdown="drop-menu" class="right f_button small radius secondary f_dropdown">${user.username}<!--${_('Navi Button')}--></a><br/>
+                <ul id="drop-menu" data-dropdown-content class="user f-f_dropdown">
+                ##<ol class="user">
+                <%doc>
+                    <li class="primary">
+                        <a href="${reverse('dashboard')}" class="user-link">
+                            ##<span class="avatar"></span>
+                            <span class="sr">${_("Dashboard for:")} </span> ${user.username}
+                        </a>
+                    </li>
+                </%doc>
+                    <li><a href="${reverse('dashboard')}">${_("My Page")}</a></li>
+                    ##<li class="primary">
+                        ##<a href="#" class="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr">${_("More options dropdown")}</span> &#9662;</a>
+                        ##<ul class="dropdown-menu" aria-label="More Options" role="menu">
+                        <%block name="navigation_dropdown_menu_links" >
+                        <li><a href="https://support.gacco.org/">${_("FAQ")}</a></li>
+                        </%block>
+                        <li><a href="${reverse('logout')}" role="menuitem">${_("Log Out")}</a></li>
+                        ##</ul>
+                    ##</li>
+                ##</ol>
+                </ul>
+        
+                % if display_shopping_cart: # see shoppingcart.context_processor.user_has_cart_context_processor
+                    <ol class="user">
+                    <li class="primary">
+                        <a class="shopping-cart" href="${reverse('shoppingcart.views.show_cart')}">
+                            <i class="icon-shopping-cart"></i> ${_("Shopping Cart")}
+                        </a>
+                    </li>
+                    </ol>
+                % endif
+
+                ## black called in course_navigation
+                <ul id="black_move_offcanvas" class="off-canvas-list hide">
+                    <li>
+                        <a href="${reverse('dashboard')}" class="user-link">
+                        ${_("Dashboard for:")}${user.username}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://support.gacco.org/">${_("FAQ")}</a>
+                    </li>
+                    <li>
+                        <a href="${reverse('logout')}" role="menuitem">${_("Log Out")}</a>
+                    </li>
+                </ul>
+
+                ##  ^^  % if user.is_authenticated():  ^^
+                % else:
+                
+                ##<ol class="left nav-global">
+                <ul class="button-group radius">
+                  <%block name="navigation_global_links">
+                    % if microsite.get_value('ENABLE_MKTG_SITE', settings.FEATURES.get('ENABLE_MKTG_SITE', False)):
+                    <li class="nav-global-01">
+                        <a href="${marketing_link('HOW_IT_WORKS')}">${_("How it Works")}</a>
+                    </li>
+                    <li class="nav-global-02">
+                        <a href="${marketing_link('COURSES')}">${_("Courses")}</a>
+                    </li>
+                    <li class="nav-global-03">
+                        <a href="${marketing_link('SCHOOLS')}">${_("Schools")}</a>
+                    </li>
+                    % endif
+                  </%block>
+                % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
+                    % if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
+                    <li class="nav-global-04">
+                        <a class="cta cta-register" href="${reverse('course-specific-register', args=[course.id])}">${_("Register Now")}</a>
+                    </li>
+                    % else:
+                    ##<li class="nav-global-04">
+                    ##    <a class="cta cta-register" href="/register">${_("Register Now")}</a>
+                    ##</li>
+                    <li><a href="/register" class="f_button small secondary">${_("Register Now")}</a></li>
+                    % endif
+                % endif
+                ##</ol> 
+
+                ##<ol class="right nav-courseware">
+                ##<li class="nav-courseware-01">
+                <li>
+                % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
+                    % if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
+                    <a class="cta cta-login" href="${reverse('course-specific-login', args=[course.id])}${login_query()}">${_("Log in")}</a>
+                     % else:
+                     ##<a class="cta cta-login" href="/login${login_query()}">${_("Log in")}</a>
+                     <a href="/login${login_query()}" class="f_button small secondary">${_("Log in")}</a>
+                     % endif
+                % endif
+                </li>
+                ##</ol>
+                </ul>
+                % endif
+            </div>
+        </div>
+     </nav>
 </header>
 % if course:
 <!--[if IE]>
@@ -149,5 +254,20 @@ site_status_msg = get_site_status_msg(course_id)
 %if not user.is_authenticated():
   <%include file="forgot_password_modal.html" />
 %endif
+
+## BLACK offcanvas move
+% if course:
+<script>
+$(document).ready(function(){  
+        $("#black_target_offcanvas").after($("#black_move_offcanvas")); 
+        $("#black_move_offcanvas").removeClass("hide");
+});
+</script>
+% endif
+
+##<script>
+## $("drop-menu").on("opened", function(){});
+## $("drop-menu").on("closed", function(){});
+##</script>
 
 <%include file="help_modal.html"/>

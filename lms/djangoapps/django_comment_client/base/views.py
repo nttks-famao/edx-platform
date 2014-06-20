@@ -88,14 +88,15 @@ def create_thread(request, course_id, commentable_id):
     if 'body' not in post or not post['body'].strip():
         return JsonError(_("Body can't be empty"))
 
-    thread = cc.Thread(**extract(post, ['body', 'title']))
-    thread.update_attributes(**{
-        'anonymous': anonymous,
-        'anonymous_to_peers': anonymous_to_peers,
-        'commentable_id': commentable_id,
-        'course_id': course_id,
-        'user_id': request.user.id,
-    })
+    thread = cc.Thread(
+        anonymous=anonymous,
+        anonymous_to_peers=anonymous_to_peers,
+        commentable_id=commentable_id,
+        course_id=course_id,
+        user_id=request.user.id,
+        body=post["body"],
+        title=post["title"]
+    )
 
     user = cc.User.from_django_user(request.user)
 
@@ -118,7 +119,7 @@ def create_thread(request, course_id, commentable_id):
             group_id = user_group_id
 
         if group_id:
-            thread.update_attributes(group_id=group_id)
+            thread.group_id = group_id
 
     thread.save()
 
@@ -149,7 +150,8 @@ def update_thread(request, course_id, thread_id):
     if 'body' not in request.POST or not request.POST['body'].strip():
         return JsonError(_("Body can't be empty"))
     thread = cc.Thread.find(thread_id)
-    thread.update_attributes(**extract(request.POST, ['body', 'title']))
+    thread.body = request.POST["body"]
+    thread.title = request.POST["title"]
     thread.save()
     if request.is_ajax():
         return ajax_content_response(request, course_id, thread.to_dict())
@@ -166,7 +168,6 @@ def _create_comment(request, course_id, thread_id=None, parent_id=None):
 
     if 'body' not in post or not post['body'].strip():
         return JsonError(_("Body can't be empty"))
-    comment = cc.Comment(**extract(post, ['body']))
 
     course = get_course_with_access(request.user, course_id, 'load')
     if course.allow_anonymous:
@@ -179,14 +180,15 @@ def _create_comment(request, course_id, thread_id=None, parent_id=None):
     else:
         anonymous_to_peers = False
 
-    comment.update_attributes(**{
-        'anonymous': anonymous,
-        'anonymous_to_peers': anonymous_to_peers,
-        'user_id': request.user.id,
-        'course_id': course_id,
-        'thread_id': thread_id,
-        'parent_id': parent_id,
-    })
+    comment = cc.Comment(
+        anonymous=anonymous,
+        anonymous_to_peers=anonymous_to_peers,
+        user_id=request.user.id,
+        course_id=course_id,
+        thread_id=thread_id,
+        parent_id=parent_id,
+        body=post["body"]
+    )
     comment.save()
     if post.get('auto_subscribe', 'false').lower() == 'true':
         user = cc.User.from_django_user(request.user)
@@ -235,7 +237,7 @@ def update_comment(request, course_id, comment_id):
     comment = cc.Comment.find(comment_id)
     if 'body' not in request.POST or not request.POST['body'].strip():
         return JsonError(_("Body can't be empty"))
-    comment.update_attributes(**extract(request.POST, ['body']))
+    comment.body = request.POST["body"]
     comment.save()
     if request.is_ajax():
         return ajax_content_response(request, course_id, comment.to_dict())
@@ -431,6 +433,9 @@ def pin_thread(request, course_id, thread_id):
     return JsonResponse(utils.safe_content(thread.to_dict()))
 
 
+@require_POST
+@login_required
+@permitted
 def un_pin_thread(request, course_id, thread_id):
     """
     given a course id and thread id, remove pin from this thread
@@ -516,27 +521,6 @@ def unfollow_user(request, course_id, followed_user_id):
     followed_user = cc.User.find(followed_user_id)
     user.unfollow(followed_user)
     return JsonResponse({})
-
-
-@require_GET
-def search_similar_threads(request, course_id, commentable_id):
-    """
-    given a course id and commentable id, run query given in text get param
-    of request
-    """
-    text = request.GET.get('text', None)
-    if text:
-        query_params = {
-            'text': text,
-            'commentable_id': commentable_id,
-        }
-        threads = cc.search_similar_threads(course_id, recursive=False, query_params=query_params)
-    else:
-        theads = []
-    context = {'threads': map(utils.extend_content, threads)}
-    return JsonResponse({
-        'html': render_to_string('discussion/_similar_posts.html', context)
-    })
 
 
 @require_POST

@@ -51,8 +51,9 @@ if Backbone?
       @navigate("", trigger: true)
 
     showNewPost: (event) =>
-      @newPost.slideDown(300)
+##      @newPost.slideDown(300)
       $('.new-post-title').focus()
 
     hideNewPost: (event) =>
-      @newPost.slideUp(300)
+##      @newPost.slideUp(300)
+	$('.close-reveal-modal').trigger('click')

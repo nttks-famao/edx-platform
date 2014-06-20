@@ -5,7 +5,7 @@
 // =====
 
 // page-level
-.view-register, .view-login, .view-passwordreset {
+.view-register, .view-login, .view-passwordreset, .view-resign {
   background: $container-bg;
 
 
@@ -49,7 +49,8 @@
     margin: 0 0 $baseline 0;
     font-weight: 300;
     color: $base-font-color;
-    font-family: 'Open Sans', sans-serif;
+//    font-family: 'Open Sans', sans-serif;
+    font-family: "Meiryo","Hiragino Kaku Gothic ProN","MS P Gothic",Verdana,Arial,Helvetica,sans-serif;
     line-height: lh(1.1);
   }
 
@@ -159,7 +160,7 @@
 }
 
 // shared
-.login, .register, .passwordreset, #forgot-password-modal #password-reset {
+.login, .register, .passwordreset, .resign, #forgot-password-modal #password-reset {
 
   // reset - horrible, but necessary
   p, ol, ul, h1, h2, h3, h4, h5, h6, label, input, textarea {
@@ -422,12 +423,12 @@
     @include clearfix();
 
     button[type="submit"] {
-      @extend %m-btn-primary;
-
-      &:disabled, &.is-disabled {
-        opacity: 0.3;
-        cursor: default !important;
-      }
+//      @extend %m-btn-primary;
+//
+//      &:disabled, &.is-disabled {
+//        opacity: 0.3;
+//        cursor: default !important;
+//      }
     }
 
     .action-primary {
@@ -447,6 +448,20 @@
 
     &.error {
 
+    }
+  }
+
+  // forms - third-party auth
+  .form-third-party-auth {
+    margin-bottom: $baseline;
+
+    button {
+      margin-right: $baseline;
+
+      .icon {
+        color: inherit;
+        margin-right: $baseline/2;
+      }
     }
   }
 
@@ -497,7 +512,7 @@
     padding: 0 $baseline/4;
   }
 
-  #register-form, #login-form, #passwordreset-form {
+  #register-form, #login-form, #passwordreset-form, #resign-form {
 
     .status.message {
       display: none;
@@ -568,6 +583,45 @@
   }
 }
 
+// resign
+.view-resign {
+  background: $sidebar-color;
+
+  header.global {
+
+    h1 {
+      float: none;
+    }
+  }
+
+  .introduction {
+    width: auto;
+    padding: 0;
+
+    header h1 {
+      margin: 0;
+    }
+  }
+
+  .content {
+    margin-top: 0;
+  }
+
+  .form-actions {
+
+    .action-primary {
+//      width: flex-grid(3,8);
+    }
+
+    .action-cancel {
+//      @extend %m-btn-secondary;
+//      width: flex-grid(3,8);
+//      line-height: lh(1);
+//      margin: 0;
+    }
+  }
+}
+
 // modal password reset form
 #forgot-password-modal {
   border-radius: 2px;
@@ -628,12 +682,12 @@
       }
 
       .form-actions {
-        padding: 0 !important;
+//        padding: 0 !important;
 
         .action-primary {
-          float: none;
-          display: block !important;
-          width: 100%;
+//          float: none;
+//          display: block !important;
+//          width: 100%;
         }
       }
     }

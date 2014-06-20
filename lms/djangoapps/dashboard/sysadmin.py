@@ -27,6 +27,7 @@ from django.views.decorators.http import condition
 from django_future.csrf import ensure_csrf_cookie
 from edxmako.shortcuts import render_to_response
 import mongoengine
+from path import path
 
 from courseware.courses import get_course_by_id
 import dashboard.git_import as git_import
@@ -272,7 +273,7 @@ class Users(SysadminDashboardView):
             'msg': self.msg,
             'djangopid': os.getpid(),
             'modeflag': {'users': 'active-section'},
-            'mitx_version': getattr(settings, 'VERSION_STRING', ''),
+            'edx_platform_version': getattr(settings, 'EDX_PLATFORM_VERSION_STRING', ''),
         }
         return render_to_response(self.template_name, context)
 
@@ -316,7 +317,7 @@ class Users(SysadminDashboardView):
             'msg': self.msg,
             'djangopid': os.getpid(),
             'modeflag': {'users': 'active-section'},
-            'mitx_version': getattr(settings, 'VERSION_STRING', ''),
+            'edx_platform_version': getattr(settings, 'EDX_PLATFORM_VERSION_STRING', ''),
         }
         return render_to_response(self.template_name, context)
 
@@ -333,8 +334,12 @@ class Courses(SysadminDashboardView):
         cmd = ''
         gdir = settings.DATA_DIR / cdir
         info = ['', '', '']
-        if not os.path.exists(gdir):
-            return info
+
+        # Try the data dir, then try to find it in the git import dir
+        if not gdir.exists():
+            gdir = path(git_import.GIT_REPO_DIR) / cdir
+            if not gdir.exists():
+                return info
 
         cmd = ['git', 'log', '-1',
                '--format=format:{ "commit": "%H", "author": "%an %ae", "date": "%ad"}', ]
@@ -348,7 +353,7 @@ class Courses(SysadminDashboardView):
 
         return info
 
-    def get_course_from_git(self, gitloc, datatable):
+    def get_course_from_git(self, gitloc, branch):
         """This downloads and runs the checks for importing a course in git"""
 
         if not (gitloc.endswith('.git') or gitloc.startswith('http:') or
@@ -357,11 +362,11 @@ class Courses(SysadminDashboardView):
                      "and be a valid url")
 
         if self.is_using_mongo:
-            return self.import_mongo_course(gitloc)
+            return self.import_mongo_course(gitloc, branch)
 
-        return self.import_xml_course(gitloc, datatable)
+        return self.import_xml_course(gitloc, branch)
 
-    def import_mongo_course(self, gitloc):
+    def import_mongo_course(self, gitloc, branch):
         """
         Imports course using management command and captures logging output
         at debug level for display in template
@@ -390,7 +395,7 @@ class Courses(SysadminDashboardView):
 
         error_msg = ''
         try:
-            git_import.add_repo(gitloc, None)
+            git_import.add_repo(gitloc, None, branch)
         except GitImportError as ex:
             error_msg = str(ex)
         ret = output.getvalue()
@@ -411,7 +416,7 @@ class Courses(SysadminDashboardView):
         msg += "<pre>{0}</pre>".format(escape(ret))
         return msg
 
-    def import_xml_course(self, gitloc, datatable):
+    def import_xml_course(self, gitloc, branch):
         """Imports a git course into the XMLModuleStore"""
 
         msg = u''
@@ -436,13 +441,31 @@ class Courses(SysadminDashboardView):
             cmd_output = escape(
                 subprocess.check_output(cmd, stderr=subprocess.STDOUT, cwd=cwd)
             )
-        except subprocess.CalledProcessError:
-            return _('Unable to clone or pull repository. Please check your url.')
+        except subprocess.CalledProcessError as ex:
+            log.exception('Git pull or clone output was: %r', ex.output)
+            # Translators: unable to download the course content from
+            # the source git repository. Clone occurs if this is brand
+            # new, and pull is when it is being updated from the
+            # source.
+            return _('Unable to clone or pull repository. Please check '
+                     'your url. Output was: {0!r}'.format(ex.output))
 
         msg += u'<pre>{0}</pre>'.format(cmd_output)
         if not os.path.exists(gdir):
             msg += _('Failed to clone repository to {0}').format(gdir)
             return msg
+        # Change branch if specified
+        if branch:
+            try:
+                git_import.switch_branch(branch, gdir)
+            except GitImportError as ex:
+                return str(ex)
+            # Translators: This is a git repository branch, which is a
+            # specific version of a courses content
+            msg += u'<p>{0}</p>'.format(
+                _('Successfully switched to branch: '
+                  '{branch_name}'.format(branch_name=branch)))
+
         self.def_ms.try_load_course(os.path.abspath(gdir))
         errlog = self.def_ms.errored_courses.get(cdir, '')
         if errlog:
@@ -460,8 +483,7 @@ class Courses(SysadminDashboardView):
                     msg += u'<li><pre>{0}: {1}</pre></li>'.format(escape(summary),
                                                                   escape(err))
                 msg += u'</ul>'
-            datatable['data'].append([course.display_name, cdir]
-                                     + self.git_info_for_course(cdir))
+
         return msg
 
     def make_datatable(self):
@@ -473,7 +495,7 @@ class Courses(SysadminDashboardView):
         for (cdir, course) in courses.items():
             gdir = cdir
             if '/' in cdir:
-                gdir = cdir.rsplit('/', 1)[1]
+                gdir = cdir.split('/')[1]
             data.append([course.display_name, cdir]
                         + self.git_info_for_course(gdir))
 
@@ -494,7 +516,7 @@ class Courses(SysadminDashboardView):
             'msg': self.msg,
             'djangopid': os.getpid(),
             'modeflag': {'courses': 'active-section'},
-            'mitx_version': getattr(settings, 'VERSION_STRING', ''),
+            'edx_platform_version': getattr(settings, 'EDX_PLATFORM_VERSION_STRING', ''),
         }
         return render_to_response(self.template_name, context)
 
@@ -511,8 +533,8 @@ class Courses(SysadminDashboardView):
         courses = self.get_courses()
         if action == 'add_course':
             gitloc = request.POST.get('repo_location', '').strip().replace(' ', '').replace(';', '')
-            datatable = self.make_datatable()
-            self.msg += self.get_course_from_git(gitloc, datatable)
+            branch = request.POST.get('repo_branch', '').strip().replace(' ', '').replace(';', '')
+            self.msg += self.get_course_from_git(gitloc, branch)
 
         elif action == 'del_course':
             course_id = request.POST.get('course_id', '').strip()
@@ -556,14 +578,13 @@ class Courses(SysadminDashboardView):
                 self.msg += \
                     u"<font color='red'>{0} {1} = {2} ({3})</font>".format(
                         _('Deleted'), loc, course.id, course.display_name)
-            datatable = self.make_datatable()
 
         context = {
-            'datatable': datatable,
+            'datatable': self.make_datatable(),
             'msg': self.msg,
             'djangopid': os.getpid(),
             'modeflag': {'courses': 'active-section'},
-            'mitx_version': getattr(settings, 'VERSION_STRING', ''),
+            'edx_platform_version': getattr(settings, 'EDX_PLATFORM_VERSION_STRING', ''),
         }
         return render_to_response(self.template_name, context)
 
@@ -602,7 +623,7 @@ class Staffing(SysadminDashboardView):
             'msg': self.msg,
             'djangopid': os.getpid(),
             'modeflag': {'staffing': 'active-section'},
-            'mitx_version': getattr(settings, 'VERSION_STRING', ''),
+            'edx_platform_version': getattr(settings, 'EDX_PLATFORM_VERSION_STRING', ''),
         }
         return render_to_response(self.template_name, context)
 

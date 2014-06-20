@@ -9,13 +9,14 @@ if Backbone?
         (event) -> DiscussionUtil.activateOnSpace(event, @toggleNewPost)
       "click .new-post-cancel": "hideNewPost"
       "click .discussion-paginator a": "navigateToPage"
-
+  
     paginationTemplate: -> DiscussionUtil.getTemplate("_pagination")
     page_re: /\?discussion_page=(\d+)/
     initialize: ->
       @toggleDiscussionBtn = @$(".discussion-show")
       # Set the page if it was set in the URL. This is used to allow deep linking to pages
       match = @page_re.exec(window.location.href)
+
       if match
         @page = parseInt(match[1])
       else
@@ -52,7 +53,6 @@ if Backbone?
       else
         @toggleDiscussionBtn.addClass('shown')
         @toggleDiscussionBtn.find('.button-text').html(gettext("Hide Discussion"))
-
         if @retrieved
           @$("section.discussion").slideDown()
           @showed = true
@@ -116,7 +116,7 @@ if Backbone?
       @discussion.on "add", @addThread
       @retrieved = true
       @showed = true
-      @renderPagination(2, response.num_pages)
+      @renderPagination(response.num_pages)
       if @isWaitingOnNewPost
         @newPostForm.show()
 
@@ -128,21 +128,10 @@ if Backbone?
       threadView.render()
       @threadviews.unshift threadView
 
-    renderPagination: (delta, numPages) =>
-      minPage = Math.max(@page - delta, 1)
-      maxPage = Math.min(@page + delta, numPages)
+    renderPagination: (numPages) =>
       pageUrl = (number) ->
         "?discussion_page=#{number}"
-      params =
-        page: @page
-        lowPages: _.range(minPage, @page).map (n) -> {number: n, url: pageUrl(n)}
-        highPages: _.range(@page+1, maxPage+1).map (n) -> {number: n, url: pageUrl(n)}
-        previous: if @page-1 >= 1 then {url: pageUrl(@page-1), number: @page-1} else false
-        next: if @page+1 <= numPages then {url: pageUrl(@page+1), number: @page+1} else false
-        leftdots: minPage > 2
-        rightdots: maxPage < numPages-1
-        first: if minPage > 1 then {url: pageUrl(1)} else false
-        last: if maxPage < numPages then {number: numPages, url: pageUrl(numPages)} else false
+      params = DiscussionUtil.getPaginationParams(@page, numPages, pageUrl)
       thing = Mustache.render @paginationTemplate(), params
       @$('section.pagination').html(thing)
 

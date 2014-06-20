@@ -23,6 +23,8 @@ BOK_CHOY_XUNIT_REPORT = File.join(BOK_CHOY_REPORT_DIR, "xunit.xml")
 BOK_CHOY_COVERAGE_RC = File.join(BOK_CHOY_DIR, ".coveragerc")
 directory BOK_CHOY_REPORT_DIR
 
+# Directory that videos are served from
+VIDEO_SOURCE_DIR = File.join(REPO_ROOT, "test_root", "data", "video")
 
 BOK_CHOY_SERVERS = {
     :lms => { :port =>  8003, :log => File.join(BOK_CHOY_LOG_DIR, "bok_choy_lms.log") },
@@ -46,7 +48,19 @@ BOK_CHOY_STUBS = {
     :comments => {
         :port => 4567,
         :log => File.join(BOK_CHOY_LOG_DIR, "bok_choy_comments.log")
+    },
+
+    :video => {
+        :port => 8777,
+        :log => File.join(BOK_CHOY_LOG_DIR, "bok_choy_video_sources.log"),
+        :config => "root_dir=#{VIDEO_SOURCE_DIR}"
+    },
+
+    :youtube => {
+        :port => 9080,
+        :log => File.join(BOK_CHOY_LOG_DIR, "bok_choy_youtube.log")
     }
+
 }
 
 # For the time being, stubs are used by both the bok-choy and lettuce acceptance tests
@@ -160,31 +174,38 @@ end
 
 namespace :'test:bok_choy' do
 
-    # Check that required services are running
-    task :check_services do
+    # Check that mongo is running
+    task :check_mongo do
         if not is_mongo_running()
             fail("Mongo is not running locally.")
         end
+    end
 
+    # Check that memcache is running
+    task :check_memcache do
         if not is_memcache_running()
             fail("Memcache is not running locally.")
         end
+    end
 
+    # Check that mysql is running
+    task :check_mysql do
         if not is_mysql_running()
             fail("MySQL is not running locally.")
         end
     end
 
+    # Check that all required services are running
+    task :check_services => [:check_mongo, :check_memcache, :check_mysql]
+
     desc "Process assets and set up database for bok-choy tests"
-    task :setup => [:check_services, :install_prereqs, BOK_CHOY_LOG_DIR] do
+    task :setup => [:check_mysql, :install_prereqs, BOK_CHOY_LOG_DIR] do
 
         # Reset the database
         sh("#{REPO_ROOT}/scripts/reset-test-db.sh")
 
         # Collect static assets
-        Rake::Task["gather_assets"].invoke('lms', 'bok_choy')
-        Rake::Task["gather_assets"].reenable
-        Rake::Task["gather_assets"].invoke('cms', 'bok_choy')
+        sh("paver update_assets --settings=bok_choy")
     end
 
     desc "Run acceptance tests that use the bok-choy framework but skip setup"

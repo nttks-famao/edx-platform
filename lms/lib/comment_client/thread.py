@@ -20,6 +20,11 @@ class Thread(models.Model):
         'closed', 'user_id', 'commentable_id', 'group_id', 'group_name', 'pinned'
     ]
 
+    metric_tag_fields = [
+        'course_id', 'group_id', 'pinned', 'closed', 'anonymous', 'anonymous_to_peers',
+        'endorsed', 'read'
+    ]
+
     initializable_fields = updatable_fields
 
     base_url = "{prefix}/threads".format(prefix=settings.PREFIX)
@@ -27,7 +32,7 @@ class Thread(models.Model):
     type = 'thread'
 
     @classmethod
-    def search(cls, query_params, *args, **kwargs):
+    def search(cls, query_params):
 
         default_params = {'page': 1,
                           'per_page': 20,
@@ -41,7 +46,14 @@ class Thread(models.Model):
             url = cls.url(action='get_all', params=extract(params, 'commentable_id'))
             if params.get('commentable_id'):
                 del params['commentable_id']
-        response = perform_request('get', url, params, *args, **kwargs)
+        response = perform_request(
+            'get',
+            url,
+            params,
+            metric_tags=[u'course_id:{}'.format(query_params['course_id'])],
+            metric_action='thread.search',
+            paged_results=True
+        )
         return response.get('collection', []), response.get('page', 1), response.get('num_pages', 1)
 
     @classmethod
@@ -79,8 +91,14 @@ class Thread(models.Model):
         }
         request_params = strip_none(request_params)
 
-        response = perform_request('get', url, request_params)
-        self.update_attributes(**response)
+        response = perform_request(
+            'get',
+            url,
+            request_params,
+            metric_action='model.retrieve',
+            metric_tags=self._metric_tags
+        )
+        self._update_from_response(response)
 
     def flagAbuse(self, user, voteable):
         if voteable.type == 'thread':
@@ -90,8 +108,14 @@ class Thread(models.Model):
         else:
             raise CommentClientRequestError("Can only flag/unflag threads or comments")
         params = {'user_id': user.id}
-        request = perform_request('put', url, params)
-        voteable.update_attributes(request)
+        response = perform_request(
+            'put',
+            url,
+            params,
+            metric_action='thread.abuse.flagged',
+            metric_tags=self._metric_tags
+        )
+        voteable._update_from_response(response)
 
     def unFlagAbuse(self, user, voteable, removeAll):
         if voteable.type == 'thread':
@@ -105,20 +129,38 @@ class Thread(models.Model):
         if removeAll:
             params['all'] = True
 
-        request = perform_request('put', url, params)
-        voteable.update_attributes(request)
+        response = perform_request(
+            'put',
+            url,
+            params,
+            metric_tags=self._metric_tags,
+            metric_action='thread.abuse.unflagged'
+        )
+        voteable._update_from_response(response)
 
     def pin(self, user, thread_id):
         url = _url_for_pin_thread(thread_id)
         params = {'user_id': user.id}
-        request = perform_request('put', url, params)
-        self.update_attributes(request)
+        response = perform_request(
+            'put',
+            url,
+            params,
+            metric_tags=self._metric_tags,
+            metric_action='thread.pin'
+        )
+        self._update_from_response(response)
 
     def un_pin(self, user, thread_id):
         url = _url_for_un_pin_thread(thread_id)
         params = {'user_id': user.id}
-        request = perform_request('put', url, params)
-        self.update_attributes(request)
+        response = perform_request(
+            'put',
+            url,
+            params,
+            metric_tags=self._metric_tags,
+            metric_action='thread.unpin'
+        )
+        self._update_from_response(response)
 
 
 def _url_for_flag_abuse_thread(thread_id):

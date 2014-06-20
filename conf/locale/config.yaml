@@ -2,24 +2,29 @@
 
 locales:
     - en  # English - Source Language
-    - ach  # Acoli
     - ar  # Arabic
+    - az  # Azerbaijani
     - bg_BG  # Bulgarian (Bulgaria)
-    - bn  # Bengali
     - bn_BD  # Bengali (Bangladesh)
+    - bn_IN  # Bengali (India)
+    - bs  # Bosnian
+    - ca  # Catalan
     - ca@valencia  # Catalan (Valencia)
     - cs  # Czech
     - cy  # Welsh
+    - da  # Danish
     - de_DE  # German (Germany)
     - el  # Greek
     - en@lolcat  # LOLCAT English
     - en@pirate  # Pirate English
     - es_419  # Spanish (Latin America)
+    - es_AR  # Spanish (Argentina)
     - es_EC  # Spanish (Ecuador)
     - es_ES  # Spanish (Spain)
     - es_MX  # Spanish (Mexico)
-    - es_US  # Spanish (United States)
+    - es_PE  # Spanish (Peru)
     - et_EE  # Estonian (Estonia)
+    - eu_ES  # Basque (Spain)
     - fa  # Persian
     - fa_IR  # Persian (Iran)
     - fi_FI  # Finnish (Finland)
@@ -27,19 +32,26 @@ locales:
     - gl  # Galician
     - he  # Hebrew
     - hi  # Hindi
+    - hu  # Hungarian
     - hy_AM  # Armenian (Armenia)
     - id  # Indonesian
     - it_IT  # Italian (Italy)
     - ja_JP  # Japanese (Japan)
+    - kk_KZ  # Kazakh (Kazakhstan)
     - km_KH  # Khmer (Cambodia)
+    - kn  # Kannada
     - ko_KR  # Korean (Korea)
     - lt_LT  # Lithuanian (Lithuania)
     - ml  # Malayalam
+    - mn  # Mongolian
+    - ms  # Malay
     - nb  # Norwegian Bokmål
+    - ne  # Nepali
     - nl_NL  # Dutch (Netherlands)
     - pl  # Polish
     - pt_BR  # Portuguese (Brazil)
     - pt_PT  # Portuguese (Portugal)
+    - ro  # Romanian
     - ru  # Russian
     - si  # Sinhala
     - sk  # Slovak
@@ -47,9 +59,9 @@ locales:
     - th  # Thai
     - tr_TR  # Turkish (Turkey)
     - uk  # Ukranian
+    - ur  # Urdu
     - vi  # Vietnamese
     - zh_CN  # Chinese (China)
-    - zh_CN.GB2312  # Chinese (China) (GB2312)
     - zh_TW  # Chinese (Taiwan)
 
 
@@ -103,6 +115,8 @@ generate_merge:
         - mako-studio.po
         - messages.po
         - wiki.po
+        - gacco.po
     djangojs.po:
         - djangojs-partial.po
         - djangojs-studio.po
+        - gaccojs.po

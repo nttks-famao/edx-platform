@@ -1,1 +1,1 @@
-Request to change ${settings.PLATFORM_NAME} account e-mail
+■gaccoメールアドレス変更手続きのご案内

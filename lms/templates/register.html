@@ -1,5 +1,5 @@
 <%! from django.utils.translation import ugettext as _ %>
-<%! from microsite_configuration.middleware import MicrositeConfiguration %>
+<%! from microsite_configuration import microsite %>
 
 <%inherit file="main.html" />
 
@@ -12,11 +12,18 @@
 <%! from django.utils.translation import ugettext as _ %>
 <%! from student.models import UserProfile %>
 <%! from datetime import date %>
+<%! from third_party_auth import pipeline, provider %>
 <%! import calendar %>
 
 <%block name="pagetitle">${_("Register for {platform_name}").format(platform_name=platform_name)}</%block>
 
 <%block name="bodyclass">view-register</%block>
+
+<%block name="header_extra">
+  <%static:css group='style-app'/>
+  <%static:css group='style-app-extend1'/>
+  <%static:css group='style-app-extend2'/>
+</%block>
 
 <%block name="js_extra">
   <script type="text/javascript">
@@ -67,6 +74,11 @@
       });
     })(this);
 
+    function thirdPartySignin(event, url) {
+      event.preventDefault();
+      window.location.href = url;
+    }
+
     function toggleSubmitButton(enable) {
       var $submitButton = $('form .form-actions #submit');
 
@@ -86,6 +98,7 @@
   </script>
 </%block>
 
+<%doc>
 <section class="introduction">
   <header>
     <h1 class="title">
@@ -94,9 +107,42 @@
     </h1>
   </header>
 </section>
+</%doc>
 
-<section class="register container">
-  <section role="main" class="content">
+<div style="margin-top:4rem;"></div>
+
+<div class="row">
+  <div class="columns">
+    <h2>${_("Register Now")}</h2>
+  </div>
+</div>
+<div style="width:100%; height:121px; margin-bottom:3rem; background-color:#ccc;">
+  <div class="row">
+    <div class="columns">
+      <h3 style="margin-top:1rem;">${_("Welcome, {platform_name}!").format(platform_name=platform_name)}</h3>
+      <h3>${_("{platform_name} is an educational Web Service. For everyone, for free.").format(platform_name=platform_name)}</h3>
+    </div>
+  </div>
+</div>
+
+## Login button fo SP
+  <div class="row show-for-small-only">
+     <p class="text-center" style="margin-top:20px;"><a href="/login" class="f_button small radius text-center" style="width:80%;">${_("If you're already registerd. Here to Login.")}</a></p>
+  </div>
+
+## Login button fo Tab
+  <div class="row show-for-medium-only">
+     <p class="text-center" style="margin-top:20px;"><a href="/login" class="f_button radius small text-center" style="width:50%;">${_("If you're already registerd. Here to Login.")}</a></p>
+  </div>
+
+<div class="row">
+
+<a name="form"></a>
+
+
+<section class="register container_">
+  <section role="main" class="content_">
+    <div class="columns large-8 medium-8">
     <form role="form" id="register-form" method="post" data-remote="true" action="/create_account" novalidate>
       <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
 
@@ -110,10 +156,45 @@
         <ul class="message-copy"> </ul>
       </div>
 
+      % if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
+
+        % if not running_pipeline:
+
+        <p class="instructions">
+          ${_("Register to start learning today!")}
+        </p>
+
+        <div class="form-actions form-third-party-auth">
+
+        % for enabled in provider.Registry.enabled():
+          ## Translators: provider_name is the name of an external, third-party user authentication service (like Google or LinkedIn).
+          <button type="submit" class="button button-primary" onclick="thirdPartySignin(event, '${pipeline.get_login_url(enabled.NAME, pipeline.AUTH_ENTRY_REGISTER)}');"><span class="icon ${enabled.ICON_CLASS}"></span>${_('Sign in with {provider_name}').format(provider_name=enabled.NAME)}</button>
+        % endfor
+
+        </div>
+
+        <p class="instructions">
+          ${_('or create your own {platform_name} account by completing all <strong>required*</strong> fields below.').format(platform_name=platform_name)}
+        </p>
+
+        % else:
+
+        <p class="instructions">
+          ## Translators: selected_provider is the name of an external, third-party user authentication service (like Google or LinkedIn).
+          ${_("You've successfully signed in with {selected_provider}.").format(selected_provider='<strong>%s</strong>' % selected_provider)}<br />
+          ${_("Finish your account registration below to start learning.")}
+        </p>
+
+        % endif
+
+      % else:
+
       <p class="instructions">
         ${_("Please complete the following fields to register for an account. ")}<br />
         ${_('Required fields are noted by <strong class="indicator">bold text and an asterisk (*)</strong>.')}
       </p>
+
+      % endif
 
       <div class="group group-form group-form-requiredinformation">
         <h2 class="sr">${_('Required Information')}</h2>
@@ -123,20 +204,33 @@
         <ol class="list-input">
           <li class="field required text" id="field-email">
             <label for="email">${_('E-mail')}</label>
-            <input class="" id="email" type="email" name="email" value="" placeholder="${_('example: username@domain.com')}" required aria-required="true" />
+            <input class="" id="email" type="email" name="email" value="${email}" placeholder="${_('example: username@domain.com')}" required aria-required="true" />
           </li>
+
+          % if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH') and running_pipeline:
+
+          <li class="is-disabled field optional password" id="field-password" hidden>
+            <label for="password">${_('Password')}</label>
+            <input id="password" type="password" name="password" value="" disabled required aria-required="true" />
+          </li>
+
+          % else:
+
           <li class="field required password" id="field-password">
             <label for="password">${_('Password')}</label>
             <input id="password" type="password" name="password" value="" required aria-required="true" />
           </li>
+
+          % endif
+
           <li class="field required text" id="field-username">
             <label for="username">${_('Public Username')}</label>
-            <input id="username" type="text" name="username" value="" placeholder="${_('example: JaneDoe')}" required aria-required="true" aria-describedby="username-tip"/>
+            <input id="username" type="text" name="username" value="${username}" placeholder="${_('example: JaneDoe')}" required aria-required="true" aria-describedby="username-tip"/>
             <span class="tip tip-input" id="username-tip">${_('Will be shown in any discussions or forums you participate in')} <strong>(${_('cannot be changed later')})</strong></span>
           </li>
           <li class="field required text" id="field-name">
             <label for="name">${_('Full Name')}</label>
-            <input id="name" type="text" name="name" value="" placeholder="${_('example: Jane Doe')}" required aria-required="true" aria-describedby="name-tip" />
+            <input id="name" type="text" name="name" value="${name}" placeholder="${_('example: Jane Doe')}" required aria-required="true" aria-describedby="name-tip" />
             <span class="tip tip-input" id="name-tip">${_("Needed for any certificates you may earn")}</span>
           </li>
         </ol>
@@ -169,7 +263,7 @@
 
           <li class="field required text" id="field-name">
             <label for="name">${_('Full Name')}</label>
-            <input id="name" type="text" name="name" value="" placeholder="$_('example: Jane Doe')}" aria-describedby="name-tip" />
+            <input id="name" type="text" name="name" value="" placeholder="${_('example: Jane Doe')}" aria-describedby="name-tip" />
             <span class="tip tip-input" id="name-tip">${_("Needed for any certificates you may earn")}</span>
           </li>
 
@@ -194,7 +288,7 @@
           <li class="field-group">
           <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['country']} select" id="field-country">
               <label for="country">${_("Country")}</label>
-              <select id="country" name="country" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['country'] == 'required' else ''}>
+              <select style="-moz-appearance: none; text-indent: 0.01px; text-overflow:''; -ms-expand {display: none;} " id="country" name="country" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['country'] == 'required' else ''}>
                 <option value="">--</option>
                 %for code, country_name in COUNTRIES:
                 <option value="${code}">${ unicode(country_name) }</option>
@@ -207,10 +301,10 @@
           <li class="field-group">
           <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['level_of_education']} select" id="field-education-level">
               <label for="education-level">${_("Highest Level of Education Completed")}</label>
-              <select id="education-level" name="level_of_education" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['level_of_education'] == 'required' else ''}>
+              <select style="-moz-appearance: none; text-indent: 0.01px; text-overflow:''; -ms-expand {display: none;} " id="education-level" name="level_of_education" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['level_of_education'] == 'required' else ''}>
                 <option value="">--</option>
                 %for code, ed_level in UserProfile.LEVEL_OF_EDUCATION_CHOICES:
-                <option value="${code}">${ed_level}</option>
+                <option value="${code}">${_(ed_level)}</option>
                 %endfor
               </select>
             </div>
@@ -220,10 +314,10 @@
           <li class="field-group">
             <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['gender']} select" id="field-gender">
               <label for="gender">${_("Gender")}</label>
-              <select id="gender" name="gender" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['gender'] == 'required' else ''}>
+              <select style="-moz-appearance: none; text-indent: 0.01px; text-overflow:''; -ms-expand {display: none;} " id="gender" name="gender" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['gender'] == 'required' else ''}>
                 <option value="">--</option>
                 %for code, gender in UserProfile.GENDER_CHOICES:
-                <option value="${code}">${gender}</option>
+                <option value="${code}">${_(gender)}</option>
                 %endfor
               </select>
             </div>
@@ -233,7 +327,7 @@
           <li class="field-group">
             <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['year_of_birth']} select" id="field-yob">
               <label for="yob">${_("Year of Birth")}</label>
-              <select id="yob" name="year_of_birth" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['year_of_birth'] == 'required' else ''}>
+              <select style="-moz-appearance: none; text-indent: 0.01px; text-overflow:''; -ms-expand {display: none;} " id="yob" name="year_of_birth" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['year_of_birth'] == 'required' else ''}>
                 <option value="">--</option>
                 %for year in UserProfile.VALID_YEARS:
                 <option value="${year}">${year}</option>
@@ -245,6 +339,7 @@
         </ol>
       </div>
 
+<%doc>
       <div class="group group-form group-form-personalinformation2">
         <h2 class="sr">${_("Extra Personal Information")}</h2>
 
@@ -264,6 +359,7 @@
           % endif
         </ol>
       </div>
+</%doc>
 
       <div class="group group-form group-form-accountacknowledgements">
         <h2 class="sr">${_("Account Acknowledgements")}</h2>
@@ -275,7 +371,7 @@
             <div class="field required checkbox" id="field-tos">
               <input id="tos-yes" type="checkbox" name="terms_of_service" value="true" required aria-required="true" />
               <label for="tos-yes">${_('I agree to the {link_start}Terms of Service{link_end}').format(
-                link_start='<a href="{url}" class="new-vp" tabindex="-1">'.format(url=marketing_link('TOS')),
+                link_start='<a href="https://support.gacco.org/hc/ja/articles/200749224" class="new-vp" tabindex="-1">',
                 link_end='</a>')}</label>
             </div>
             % endif
@@ -291,7 +387,7 @@
                   honor_code_path = marketing_link('HONOR')
               %>
               <label for="honorcode-yes">${_('I agree to the {link_start}Honor Code{link_end}').format(
-                link_start='<a href="{url}" class="new-vp" tabindex="-1">'.format(url=honor_code_path),
+                link_start='<a href="https://support.gacco.org/hc/ja/articles/200749314" class="new-vp" tabindex="-1">',
                 link_end='</a>')}</label>
             </div>
             % endif
@@ -305,19 +401,26 @@
 % endif
 
       <div class="form-actions">
-        <button name="submit" type="submit" id="submit" class="action action-primary action-update">${_('Register')} <span class="orn-plus">+</span> ${_('Create My Account')}</button>
+        <button name="submit" type="submit" id="submit" class="f_button radius success expand">${_('Register')} <span class="orn-plus">+</span> ${_('Create My Account')}</button>
+        <small>${_("If you are under 20 years old, you have to get permission of your parents to regist this site.")}</small>
       </div>
     </form>
+    </div>
   </section>
 
-  <aside role="complementary">
+##  <aside role="complementary">
+  <div class="columns large-4 medium-4">
+    <a name="help"></a>
 
 <%
   # allow for microsite overrides on the registration sidebars, otherwise default to pre-existing ones
-  sidebar_file = MicrositeConfiguration.get_microsite_template_path('register-sidebar.html')
+  sidebar_file = microsite.get_template_path('register-sidebar.html')
 %>
 
     <%include file="${sidebar_file}" />
 
-  </aside>
+    </div>
+##  </aside>
 </section>
+
+</div>

@@ -26,6 +26,7 @@ Longer TODO:
 
 import sys
 import os
+import imp
 import json
 
 from path import path
@@ -33,8 +34,6 @@ from path import path
 from .discussionsettings import *
 
 from lms.lib.xblock.mixin import LmsBlockMixin
-from xmodule.modulestore.inheritance import InheritanceMixin
-from xmodule.x_module import XModuleMixin, only_xmodules
 
 ################################### FEATURES ###################################
 # The display name of the platform to be used in templates/emails/etc.
@@ -43,8 +42,6 @@ CC_MERCHANT_NAME = PLATFORM_NAME
 
 COURSEWARE_ENABLED = True
 ENABLE_JASMINE = False
-
-PERFSTATS = False
 
 DISCUSSION_SETTINGS = {
     'MAX_COMMENT_DEPTH': 2,
@@ -57,7 +54,7 @@ FEATURES = {
     'USE_DJANGO_PIPELINE': True,
 
     'DISPLAY_DEBUG_INFO_TO_STAFF': True,
-    'DISPLAY_HISTOGRAMS_TO_STAFF': False,  # For large courses this slows down courseware access for staff.
+    'DISPLAY_HISTOGRAMS_TO_STAFF': True,  # For large courses this slows down courseware access for staff.
 
     'REROUTE_ACTIVATION_EMAIL': False,  # nonempty string = address for all activation emails
     'DEBUG_LEVEL': 0,  # 0 = lowest level, least verbose, 255 = max level, most verbose
@@ -79,8 +76,12 @@ FEATURES = {
     'FORCE_UNIVERSITY_DOMAIN': False,  # set this to the university domain to use, as an override to HTTP_HOST
                                         # set to None to do no university selection
 
-    'ENABLE_TEXTBOOK': True,
+    # for consistency in user-experience, keep the value of the following 3 settings
+    # in sync with the corresponding ones in cms/envs/common.py
     'ENABLE_DISCUSSION_SERVICE': True,
+    'ENABLE_TEXTBOOK': True,
+    'ENABLE_STUDENT_NOTES': True,  # enables the student notes API and UI.
+
     # discussion home panel, which includes a subscription on/off setting for discussion digest emails.
     # this should remain off in production until digest notifications are online.
     'ENABLE_DISCUSSION_HOME_PANEL': False,
@@ -146,9 +147,6 @@ FEATURES = {
     # segment.io for LMS--need to explicitly turn it on for production.
     'SEGMENT_IO_LMS': False,
 
-    # Enables the student notes API and UI.
-    'ENABLE_STUDENT_NOTES': True,
-
     # Provide a UI to allow users to submit feedback from the LMS (left-hand help modal)
     'ENABLE_FEEDBACK_SUBMISSION': False,
 
@@ -169,10 +167,15 @@ FEATURES = {
     'ENABLE_INSTRUCTOR_BACKGROUND_TASKS': True,
 
     # Enable instructor to assign individual due dates
-    'INDIVIDUAL_DUE_DATES': False,
+    'INDIVIDUAL_DUE_DATES': True,
 
-    # Enable instructor dash beta version link
-    'ENABLE_INSTRUCTOR_BETA_DASHBOARD': True,
+    # Enable legacy instructor dashboard
+    'ENABLE_INSTRUCTOR_LEGACY_DASHBOARD': True,
+    # Is this an edX-owned domain? (used on instructor dashboard)
+    'IS_EDX_DOMAIN': False,
+
+    # Toggle to enable certificates of courses on dashboard
+    'ENABLE_VERIFIED_CERTIFICATES': False,
 
     # Allow use of the hint managment instructor view.
     'ENABLE_HINTER_INSTRUCTOR_VIEW': False,
@@ -224,6 +227,31 @@ FEATURES = {
 
     # Toggle embargo functionality
     'EMBARGO': False,
+
+    # Whether the Wiki subsystem should be accessible via the direct /wiki/ paths. Setting this to True means
+    # that people can submit content and modify the Wiki in any arbitrary manner. We're leaving this as True in the
+    # defaults, so that we maintain current behavior
+    'ALLOW_WIKI_ROOT_ACCESS': True,
+
+    # Turn on/off Microsites feature
+    'USE_MICROSITES': False,
+
+    # Turn on third-party auth. Disabled for now because full implementations are not yet available. Remember to syncdb
+    # if you enable this; we don't create tables by default.
+    'ENABLE_THIRD_PARTY_AUTH': False,
+
+    # Toggle to enable alternate urls for marketing links
+    'ENABLE_MKTG_SITE': False,
+
+    # Prevent concurrent logins per user
+    'PREVENT_CONCURRENT_LOGINS': False,
+
+    # Turn off Advanced Security by default
+    'ADVANCED_SECURITY': False,
+
+    # Show a "Download your certificate" on the Progress page if the lowest
+    # nonzero grade cutoff is met
+    'SHOW_PROGRESS_SUCCESS_BUTTON': False,
 }
 
 # Used for A/B testing
@@ -305,7 +333,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'sekizai.context_processors.sekizai',
-    'course_wiki.course_nav.context_processor',
 
     # Hack to get required link URLs to password reset templates
     'edxmako.shortcuts.marketing_link_context_processor',
@@ -329,8 +356,6 @@ LIB_URL = '/static/js/'
 # Dev machines shouldn't need the book
 # BOOK_URL = '/static/book/'
 BOOK_URL = 'https://mitxstatic.s3.amazonaws.com/book_images/'  # For AWS deploys
-# RSS_URL = r'lms/templates/feed.rss'
-# PRESS_URL = r''
 RSS_TIMEOUT = 600
 
 # Configuration option for when we want to grab server error pages
@@ -372,7 +397,7 @@ LMS_MIGRATION_ALLOWED_IPS = []
 ############################## EVENT TRACKING #################################
 
 # FIXME: Should we be doing this truncation?
-TRACK_MAX_EVENT = 10000
+TRACK_MAX_EVENT = 50000
 
 DEBUG_TRACK_LOG = False
 
@@ -385,19 +410,43 @@ TRACKING_BACKENDS = {
     }
 }
 
+# We're already logging events, and we don't want to capture user
+# names/passwords.  Heartbeat events are likely not interesting.
+TRACKING_IGNORE_URL_PATTERNS = [r'^/event', r'^/login', r'^/heartbeat']
+
+EVENT_TRACKING_ENABLED = True
+EVENT_TRACKING_BACKENDS = {
+    'logger': {
+        'ENGINE': 'eventtracking.backends.logger.LoggerBackend',
+        'OPTIONS': {
+            'name': 'tracking',
+            'max_event_size': TRACK_MAX_EVENT,
+        }
+    }
+}
+EVENT_TRACKING_PROCESSORS = [
+    {
+        'ENGINE': 'track.shim.LegacyFieldMappingProcessor'
+    }
+]
+
 # Backwards compatibility with ENABLE_SQL_TRACKING_LOGS feature flag.
-# In the future, adding the backend to TRACKING_BACKENDS enough.
+# In the future, adding the backend to TRACKING_BACKENDS should be enough.
 if FEATURES.get('ENABLE_SQL_TRACKING_LOGS'):
     TRACKING_BACKENDS.update({
         'sql': {
             'ENGINE': 'track.backends.django.DjangoBackend'
         }
     })
+    EVENT_TRACKING_BACKENDS.update({
+        'sql': {
+            'ENGINE': 'track.backends.django.DjangoBackend'
+        }
+    })
 
-# We're already logging events, and we don't want to capture user
-# names/passwords.  Heartbeat events are likely not interesting.
-TRACKING_IGNORE_URL_PATTERNS = [r'^/event', r'^/login', r'^/heartbeat']
-TRACKING_ENABLED = True
+######################## GOOGLE ANALYTICS ###########################
+GOOGLE_ANALYTICS_ACCOUNT = None
+GOOGLE_ANALYTICS_LINKEDIN = 'GOOGLE_ANALYTICS_LINKEDIN_DUMMY'
 
 ######################## subdomain specific settings ###########################
 COURSE_LISTINGS = {}
@@ -423,17 +472,17 @@ DOC_STORE_CONFIG = {
 
 ############# XBlock Configuration ##########
 
+# Import after sys.path fixup
+from xmodule.modulestore.inheritance import InheritanceMixin
+from xmodule.modulestore import prefer_xmodules
+from xmodule.x_module import XModuleMixin
+
 # This should be moved into an XBlock Runtime/Application object
 # once the responsibility of XBlock creation is moved out of modulestore - cpennington
 XBLOCK_MIXINS = (LmsBlockMixin, InheritanceMixin, XModuleMixin)
 
-# Only allow XModules in the LMS
-XBLOCK_SELECT_FUNCTION = only_xmodules
-
-# Use the following lines to allow any xblock in the LMS,
-# either by uncommenting them here, or adding them to your private.py
-# from xmodule.x_module import prefer_xmodules
-# XBLOCK_SELECT_FUNCTION = prefer_xmodules
+# Allow any XBlock in the LMS
+XBLOCK_SELECT_FUNCTION = prefer_xmodules
 
 #################### Python sandbox ############################################
 
@@ -460,10 +509,6 @@ CODE_JAIL = {
 #   ]
 COURSES_WITH_UNSAFE_CODE = []
 
-############################ SIGNAL HANDLERS ################################
-# This is imported to register the exception signal handling that logs exceptions
-import monitoring.exceptions  # noqa
-
 ############################### DJANGO BUILT-INS ###############################
 # Change DEBUG/TEMPLATE_DEBUG in your environment settings files, not here
 DEBUG = False
@@ -478,7 +523,6 @@ SITE_ID = 1
 SITE_NAME = "edx.org"
 HTTPS = 'on'
 ROOT_URLCONF = 'lms.urls'
-IGNORABLE_404_ENDS = ('favicon.ico')
 # NOTE: Please set ALLOWED_HOSTS to some sane value, as we do not allow the default '*'
 
 # Platform Email
@@ -514,24 +558,29 @@ LANGUAGES = (
     ('eo', u'Dummy Language (Esperanto)'),  # Dummy languaged used for testing
     ('fake2', u'Fake translations'),        # Another dummy language for testing (not pushed to prod)
 
-    ('ach', u'Acholi'),  # Acoli
     ('ar', u'العربية'),  # Arabic
+    ('az', u'azərbaycanca'),  # Azerbaijani
     ('bg-bg', u'български (България)'),  # Bulgarian (Bulgaria)
-    ('bn', u'বাংলা'),  # Bengali
     ('bn-bd', u'বাংলা (বাংলাদেশ)'),  # Bengali (Bangladesh)
+    ('bn-in', u'বাংলা (ভারত)'),  # Bengali (India)
+    ('bs', u'bosanski'),  # Bosnian
+    ('ca', u'Català'),  # Catalan
     ('ca@valencia', u'Català (València)'),  # Catalan (Valencia)
     ('cs', u'Čeština'),  # Czech
     ('cy', u'Cymraeg'),  # Welsh
+    ('da', u'dansk'),  # Danish
     ('de-de', u'Deutsch (Deutschland)'),  # German (Germany)
     ('el', u'Ελληνικά'),  # Greek
     ('en@lolcat', u'LOLCAT English'),  # LOLCAT English
     ('en@pirate', u'Pirate English'),  # Pirate English
     ('es-419', u'Español (Latinoamérica)'),  # Spanish (Latin America)
+    ('es-ar', u'Español (Argentina)'),  # Spanish (Argentina)
     ('es-ec', u'Español (Ecuador)'),  # Spanish (Ecuador)
     ('es-es', u'Español (España)'),  # Spanish (Spain)
     ('es-mx', u'Español (México)'),  # Spanish (Mexico)
-    ('es-us', u'Español (Estados Unidos)'),  # Spanish (United States)
+    ('es-pe', u'Español (Perú)'),  # Spanish (Peru)
     ('et-ee', u'Eesti (Eesti)'),  # Estonian (Estonia)
+    ('eu-es', u'euskara (Espainia)'),  # Basque (Spain)
     ('fa', u'فارسی'),  # Persian
     ('fa-ir', u'فارسی (ایران)'),  # Persian (Iran)
     ('fi-fi', u'Suomi (Suomi)'),  # Finnish (Finland)
@@ -539,29 +588,37 @@ LANGUAGES = (
     ('gl', u'Galego'),  # Galician
     ('he', u'עברית'),  # Hebrew
     ('hi', u'हिन्दी'),  # Hindi
-    ('hy-am', u'Հայերէն (Հայաստանի Հանրապետութիւն)'),  # Armenian (Armenia)
+    ('hu', u'magyar'),  # Hungarian
+    ('hy-am', u'Հայերեն (Հայաստան)'),  # Armenian (Armenia)
     ('id', u'Bahasa Indonesia'),  # Indonesian
     ('it-it', u'Italiano (Italia)'),  # Italian (Italy)
     ('ja-jp', u'日本語(日本)'),  # Japanese (Japan)
+    ('kk-kz', u'қазақ тілі (Қазақстан)'),  # Kazakh (Kazakhstan)
     ('km-kh', u'ភាសាខ្មែរ (កម្ពុជា)'),  # Khmer (Cambodia)
+    ('kn', u'ಕನ್ನಡ'),  # Kannada
     ('ko-kr', u'한국어(대한민국)'),  # Korean (Korea)
     ('lt-lt', u'Lietuvių (Lietuva)'),  # Lithuanian (Lithuania)
     ('ml', u'മലയാളം'),  # Malayalam
+    ('mn', u'Монгол хэл'),  # Mongolian
+    ('ms', u'Bahasa Melayu'),  # Malay
     ('nb', u'Norsk bokmål'),  # Norwegian Bokmål
+    ('ne', u'नेपाली'),  # Nepali
     ('nl-nl', u'Nederlands (Nederland)'),  # Dutch (Netherlands)
     ('pl', u'Polski'),  # Polish
     ('pt-br', u'Português (Brasil)'),  # Portuguese (Brazil)
     ('pt-pt', u'Português (Portugal)'),  # Portuguese (Portugal)
+    ('ro', u'română'),  # Romanian
     ('ru', u'Русский'),  # Russian
     ('si', u'සිංහල'),  # Sinhala
     ('sk', u'Slovenčina'),  # Slovak
     ('sl', u'Slovenščina'),  # Slovenian
     ('th', u'ไทย'),  # Thai
     ('tr-tr', u'Türkçe (Türkiye)'),  # Turkish (Turkey)
-    ('uk', u'Українська'),  # Uknranian
+    ('uk', u'Українська'),  # Ukranian
+    ('ur', u'اردو'),  # Urdu
     ('vi', u'Tiếng Việt'),  # Vietnamese
-    ('zh-cn', u'大陆简体'),  # Chinese (China)
-    ('zh-tw', u'台灣正體'),  # Chinese (Taiwan)
+    ('zh-cn', u'中文(简体)'),  # Chinese (China)
+    ('zh-tw', u'中文(台灣)'),  # Chinese (Taiwan)
 )
 
 LANGUAGE_DICT = dict(LANGUAGES)
@@ -688,7 +745,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'request_cache.middleware.RequestCache',
-    'microsite_configuration.middleware.MicrositeConfiguration',
+    'microsite_configuration.middleware.MicrositeMiddleware',
     'django_comment_client.middleware.AjaxExceptionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -700,12 +757,14 @@ MIDDLEWARE_CLASSES = (
     'contentserver.middleware.StaticContentServer',
     'crum.CurrentRequestUserMiddleware',
 
+    # Adds user tags to tracking events
+    # Must go before TrackMiddleware, to get the context set up
+    'user_api.middleware.UserTagsEventContextMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'track.middleware.TrackMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'splash.middleware.SplashMiddleware',
-
-    'course_wiki.course_nav.Middleware',
 
     # Allows us to dark-launch particular languages
     'dark_lang.middleware.DarkLangMiddleware',
@@ -735,7 +794,14 @@ MIDDLEWARE_CLASSES = (
     # for expiring inactive sessions
     'session_inactivity_timeout.middleware.SessionInactivityTimeout',
 
+    # use Django built in clickjacking protection
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'course_wiki.middleware.WikiAccessMiddleware',
 )
+
+# Clickjacking protection can be enabled by setting this to 'DENY'
+X_FRAME_OPTIONS = 'ALLOW'
 
 ############################### Pipeline #######################################
 
@@ -776,6 +842,15 @@ main_vendor_js = [
     'js/vendor/ova/catch/js/catch.js',
     'js/vendor/ova/catch/js/handlebars-1.1.2.js',
     'js/vendor/URI.min.js',
+    'js/vendor/modernizr.js',
+]
+
+foundation_js = [
+##    'js/vendor/jquery.min.js',
+    'js/vendor/fastclick.js',
+    'js/vendor/foundation.min.js',
+##    'js/vendor/foundation.js',
+##    'js/vendor/foundation.f_dropdown.js',
 ]
 
 discussion_js = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
@@ -803,6 +878,18 @@ PIPELINE_CSS = {
             'js/vendor/ova/catch/css/main.css'
         ],
         'output_filename': 'css/lms-style-vendor.css',
+    },
+    'style-vendor-tinymce-content': {
+        'source_filenames': [
+            'js/vendor/tinymce/js/tinymce/skins/studio-tmce4/content.min.css'
+        ],
+        'output_filename': 'css/lms-style-vendor-tinymce-content.css',
+    },
+    'style-vendor-tinymce-skin': {
+        'source_filenames': [
+            'js/vendor/tinymce/js/tinymce/skins/studio-tmce4/skin.min.css'
+        ],
+        'output_filename': 'css/lms-style-vendor-tinymce-skin.css',
     },
     'style-app': {
         'source_filenames': [
@@ -837,6 +924,12 @@ PIPELINE_CSS = {
             'xmodule/modules.css',
         ],
         'output_filename': 'css/lms-style-course.css',
+    },
+    'style-gacco': {
+        'source_filenames': [
+            'sass/gacco/gacco.css',
+        ],
+        'output_filename': 'css/lms-style-gacco.css',
     },
 }
 
@@ -909,6 +1002,11 @@ PIPELINE_JS = {
         'source_filenames': instructor_dash_js,
         'output_filename': 'js/instructor_dash.js',
         'test_order': 9,
+    },
+    'foundation': {
+        'source_filenames': foundation_js,
+        'output_filename': 'js/foundation.js',
+        'test_order': 10,
     },
 }
 
@@ -1040,9 +1138,23 @@ BULK_EMAIL_RETRY_DELAY_BETWEEN_SENDS = 0.02
 
 ############################## Video ##########################################
 
-# URL to test YouTube availability
-YOUTUBE_TEST_URL = 'https://gdata.youtube.com/feeds/api/videos/'
+YOUTUBE = {
+    # YouTube JavaScript API
+    'API': 'www.youtube.com/iframe_api',
 
+    # URL to test YouTube availability
+    'TEST_URL': 'gdata.youtube.com/feeds/api/videos/',
+
+    # Current youtube api for requesting transcripts.
+    # For example: http://video.google.com/timedtext?lang=en&v=j_jEn79vS3g.
+    'TEXT_API': {
+        'url': 'video.google.com/timedtext',
+        'params': {
+            'lang': 'ja',
+            'v': 'set_youtube_id_of_11_symbols_here',
+        },
+    },
+}
 
 ################################### APPS ######################################
 INSTALLED_APPS = (
@@ -1071,7 +1183,6 @@ INSTALLED_APPS = (
     # Our courseware
     'circuit',
     'courseware',
-    'lms.lib.perfstats',
     'student',
     'static_template_view',
     'staticbook',
@@ -1151,6 +1262,15 @@ INSTALLED_APPS = (
     'reverification',
 
     'embargo',
+
+    # Monitoring functionality
+    'monitoring',
+
+    # Entrance/Exit Survey
+    'survey',
+
+    # Certificate generator
+    'pdfgen',
 )
 
 ######################### MARKETING SITE ###############################
@@ -1173,68 +1293,15 @@ MKTG_URL_LINK_MAP = {
 }
 
 
-############################### MICROSITES ################################
-def enable_microsites(microsite_config_dict, subdomain_branding, virtual_universities, microsites_root=ENV_ROOT / "microsites"):
-    """
-    Enable the use of microsites, which are websites that allow
-    for subdomains for the edX platform, e.g. foo.edx.org
-    """
-
-    if not microsite_config_dict:
-        return
-
-    FEATURES['USE_MICROSITES'] = True
-
-    for microsite_name in microsite_config_dict.keys():
-        # Calculate the location of the microsite's files
-        microsite_root = microsites_root / microsite_name
-        microsite_config = microsite_config_dict[microsite_name]
-
-        # pull in configuration information from each
-        # microsite root
-
-        if os.path.isdir(microsite_root):
-            # store the path on disk for later use
-            microsite_config['microsite_root'] = microsite_root
-
-            # get the domain that this should reside
-            domain = microsite_config['domain_prefix']
-
-            # get the virtual university that this should use
-            university = microsite_config['university']
-
-            # add to the existing maps in our settings
-            subdomain_branding[domain] = university
-            virtual_universities.append(university)
-
-            template_dir = microsite_root / 'templates'
-            microsite_config['template_dir'] = template_dir
-
-            microsite_config['microsite_name'] = microsite_name
-
-        else:
-            # not sure if we have application logging at this stage of
-            # startup
-            print '**** Error loading microsite {0}. Directory does not exist'.format(microsite_root)
-            # remove from our configuration as it is not valid
-            del microsite_config_dict[microsite_name]
-
-    # if we have microsites, then let's turn on SUBDOMAIN_BRANDING
-    # Note check size of the dict because some microsites might not be found on disk and
-    # we could be left with none
-    if microsite_config_dict:
-        FEATURES['SUBDOMAIN_BRANDING'] = True
-
-        TEMPLATE_DIRS.append(microsites_root)
-        MAKO_TEMPLATES['main'].append(microsites_root)
-
-        STATICFILES_DIRS.append(microsites_root)
-
-
 ################# Student Verification #################
 VERIFY_STUDENT = {
     "DAYS_GOOD_FOR": 365,  # How many days is a verficiation good for?
 }
+
+### This enables the Metrics tab for the Instructor dashboard ###########
+FEATURES['CLASS_DASHBOARD'] = False
+if FEATURES.get('CLASS_DASHBOARD'):
+    INSTALLED_APPS += ('class_dashboard',)
 
 ######################## CAS authentication ###########################
 
@@ -1278,6 +1345,11 @@ GRADES_DOWNLOAD = {
     'ROOT_PATH': '/tmp/edx-s3/grades',
 }
 
+######################## PROGRESS SUCCESS BUTTON ##############################
+# The following fields are available in the URL: {course_id} {student_id}
+PROGRESS_SUCCESS_BUTTON_URL = 'http://<domain>/<path>/{course_id}'
+PROGRESS_SUCCESS_BUTTON_TEXT_OVERRIDE = None
+
 #### PASSWORD POLICY SETTINGS #####
 
 PASSWORD_MIN_LENGTH = None
@@ -1296,6 +1368,7 @@ LINKEDIN_API = {
     'EMAIL_WHITELIST': [],
     'COMPANY_ID': '2746406',
 }
+
 
 ##### ACCOUNT LOCKOUT DEFAULT PARAMETERS #####
 MAX_FAILED_LOGIN_ATTEMPTS_ALLOWED = 5
@@ -1334,19 +1407,19 @@ ALL_LANGUAGES = (
     [u"br", u"Breton"],
     [u"bg", u"Bulgarian"],
     [u"my", u"Burmese"],
-    [u"ca", u"Catalan; Valencian"],
+    [u"ca", u"Catalan"],
     [u"ch", u"Chamorro"],
     [u"ce", u"Chechen"],
     [u"zh", u"Chinese"],
-    [u"cu", u"Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic"],
+    [u"cu", u"Church Slavic"],
     [u"cv", u"Chuvash"],
     [u"kw", u"Cornish"],
     [u"co", u"Corsican"],
     [u"cr", u"Cree"],
     [u"cs", u"Czech"],
     [u"da", u"Danish"],
-    [u"dv", u"Divehi; Dhivehi; Maldivian"],
-    [u"nl", u"Dutch; Flemish"],
+    [u"dv", u"Divehi"],
+    [u"nl", u"Dutch"],
     [u"dz", u"Dzongkha"],
     [u"en", u"English"],
     [u"eo", u"Esperanto"],
@@ -1360,14 +1433,14 @@ ALL_LANGUAGES = (
     [u"ff", u"Fulah"],
     [u"ka", u"Georgian"],
     [u"de", u"German"],
-    [u"gd", u"Gaelic; Scottish Gaelic"],
+    [u"gd", u"Gaelic"],
     [u"ga", u"Irish"],
     [u"gl", u"Galician"],
     [u"gv", u"Manx"],
-    [u"el", u"Greek, Modern (1453-)"],
+    [u"el", u"Greek"],
     [u"gn", u"Guarani"],
     [u"gu", u"Gujarati"],
-    [u"ht", u"Haitian; Haitian Creole"],
+    [u"ht", u"Haitian"],
     [u"ha", u"Hausa"],
     [u"he", u"Hebrew"],
     [u"hz", u"Herero"],
@@ -1378,36 +1451,36 @@ ALL_LANGUAGES = (
     [u"ig", u"Igbo"],
     [u"is", u"Icelandic"],
     [u"io", u"Ido"],
-    [u"ii", u"Sichuan Yi; Nuosu"],
+    [u"ii", u"Sichuan Yi"],
     [u"iu", u"Inuktitut"],
-    [u"ie", u"Interlingue; Occidental"],
-    [u"ia", u"Interlingua (International Auxiliary Language Association)"],
+    [u"ie", u"Interlingue"],
+    [u"ia", u"Interlingua"],
     [u"id", u"Indonesian"],
     [u"ik", u"Inupiaq"],
     [u"it", u"Italian"],
     [u"jv", u"Javanese"],
     [u"ja", u"Japanese"],
-    [u"kl", u"Kalaallisut; Greenlandic"],
+    [u"kl", u"Kalaallisut"],
     [u"kn", u"Kannada"],
     [u"ks", u"Kashmiri"],
     [u"kr", u"Kanuri"],
     [u"kk", u"Kazakh"],
     [u"km", u"Central Khmer"],
-    [u"ki", u"Kikuyu; Gikuyu"],
+    [u"ki", u"Kikuyu"],
     [u"rw", u"Kinyarwanda"],
-    [u"ky", u"Kirghiz; Kyrgyz"],
+    [u"ky", u"Kirghiz"],
     [u"kv", u"Komi"],
     [u"kg", u"Kongo"],
     [u"ko", u"Korean"],
-    [u"kj", u"Kuanyama; Kwanyama"],
+    [u"kj", u"Kuanyama"],
     [u"ku", u"Kurdish"],
     [u"lo", u"Lao"],
     [u"la", u"Latin"],
     [u"lv", u"Latvian"],
-    [u"li", u"Limburgan; Limburger; Limburgish"],
+    [u"li", u"Limburgan"],
     [u"ln", u"Lingala"],
     [u"lt", u"Lithuanian"],
-    [u"lb", u"Luxembourgish; Letzeburgesch"],
+    [u"lb", u"Luxembourgish"],
     [u"lu", u"Luba-Katanga"],
     [u"lg", u"Ganda"],
     [u"mk", u"Macedonian"],
@@ -1420,34 +1493,34 @@ ALL_LANGUAGES = (
     [u"mt", u"Maltese"],
     [u"mn", u"Mongolian"],
     [u"na", u"Nauru"],
-    [u"nv", u"Navajo; Navaho"],
-    [u"nr", u"Ndebele, South; South Ndebele"],
-    [u"nd", u"Ndebele, North; North Ndebele"],
+    [u"nv", u"Navajo"],
+    [u"nr", u"Ndebele, South"],
+    [u"nd", u"Ndebele, North"],
     [u"ng", u"Ndonga"],
     [u"ne", u"Nepali"],
-    [u"nn", u"Norwegian Nynorsk; Nynorsk, Norwegian"],
-    [u"nb", u"Bokmål, Norwegian; Norwegian Bokmål"],
+    [u"nn", u"Norwegian Nynorsk"],
+    [u"nb", u"Bokmål, Norwegian"],
     [u"no", u"Norwegian"],
-    [u"ny", u"Chichewa; Chewa; Nyanja"],
-    [u"oc", u"Occitan (post 1500); Provençal"],
+    [u"ny", u"Chichewa"],
+    [u"oc", u"Occitan"],
     [u"oj", u"Ojibwa"],
     [u"or", u"Oriya"],
     [u"om", u"Oromo"],
-    [u"os", u"Ossetian; Ossetic"],
-    [u"pa", u"Panjabi; Punjabi"],
+    [u"os", u"Ossetian"],
+    [u"pa", u"Panjabi"],
     [u"fa", u"Persian"],
     [u"pi", u"Pali"],
     [u"pl", u"Polish"],
     [u"pt", u"Portuguese"],
-    [u"ps", u"Pushto; Pashto"],
+    [u"ps", u"Pushto"],
     [u"qu", u"Quechua"],
     [u"rm", u"Romansh"],
-    [u"ro", u"Romanian; Moldavian; Moldovan"],
+    [u"ro", u"Romanian"],
     [u"rn", u"Rundi"],
     [u"ru", u"Russian"],
     [u"sg", u"Sango"],
     [u"sa", u"Sanskrit"],
-    [u"si", u"Sinhala; Sinhalese"],
+    [u"si", u"Sinhala"],
     [u"sk", u"Slovak"],
     [u"sl", u"Slovenian"],
     [u"se", u"Northern Sami"],
@@ -1456,7 +1529,7 @@ ALL_LANGUAGES = (
     [u"sd", u"Sindhi"],
     [u"so", u"Somali"],
     [u"st", u"Sotho, Southern"],
-    [u"es", u"Spanish; Castilian"],
+    [u"es", u"Spanish"],
     [u"sc", u"Sardinian"],
     [u"sr", u"Serbian"],
     [u"ss", u"Swati"],
@@ -1478,7 +1551,7 @@ ALL_LANGUAGES = (
     [u"tk", u"Turkmen"],
     [u"tr", u"Turkish"],
     [u"tw", u"Twi"],
-    [u"ug", u"Uighur; Uyghur"],
+    [u"ug", u"Uighur"],
     [u"uk", u"Ukrainian"],
     [u"ur", u"Urdu"],
     [u"uz", u"Uzbek"],
@@ -1491,6 +1564,41 @@ ALL_LANGUAGES = (
     [u"xh", u"Xhosa"],
     [u"yi", u"Yiddish"],
     [u"yo", u"Yoruba"],
-    [u"za", u"Zhuang; Chuang"],
+    [u"za", u"Zhuang"],
     [u"zu", u"Zulu"]
 )
+
+
+### Apps only installed in some instances
+OPTIONAL_APPS = (
+    'edx_jsdraw',
+    'mentoring',
+
+    # edx-ora2
+    'submissions',
+    'openassessment',
+    'openassessment.assessment',
+    'openassessment.workflow',
+    'openassessment.xblock'
+)
+
+for app_name in OPTIONAL_APPS:
+    # First attempt to only find the module rather than actually importing it,
+    # to avoid circular references - only try to import if it can't be found
+    # by find_module, which doesn't work with import hooks
+    try:
+        imp.find_module(app_name)
+    except ImportError:
+        try:
+            __import__(app_name)
+        except ImportError:
+            continue
+    INSTALLED_APPS += (app_name,)
+
+# Stub for third_party_auth options.
+# See common/djangoapps/third_party_auth/settings.py for configuration details.
+THIRD_PARTY_AUTH = {}
+
+### ADVANCED_SECURITY_CONFIG
+# Empty by default
+ADVANCED_SECURITY_CONFIG = {}

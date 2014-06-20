@@ -13,7 +13,7 @@ import textwrap
 import requests
 import mock
 
-from . import new_loncapa_problem, test_capa_system
+from . import new_loncapa_problem, test_capa_system, load_fixture
 import calc
 
 from capa.responsetypes import LoncapaProblemError, \
@@ -224,7 +224,7 @@ class SymbolicResponseTest(ResponseTest):
 
         for (input_str, input_mathml, server_fixture) in correct_inputs:
             print "Testing input: {0}".format(input_str)
-            server_resp = self._load_fixture(server_fixture)
+            server_resp = load_fixture(server_fixture)
             self._assert_symbolic_grade(
                 problem, input_str, input_mathml,
                 'correct', snuggletex_resp=server_resp
@@ -253,8 +253,8 @@ class SymbolicResponseTest(ResponseTest):
             options=["matrix", "imaginary"]
         )
 
-        correct_snuggletex = self._load_fixture('snuggletex_correct.html')
-        dynamath_input = self._load_fixture('dynamath_input.txt')
+        correct_snuggletex = load_fixture('snuggletex_correct.html')
+        dynamath_input = load_fixture('dynamath_input.txt')
         student_response = "cos(theta)*[[1,0],[0,1]] + i*sin(theta)*[[0,1],[1,0]]"
 
         self._assert_symbolic_grade(
@@ -269,7 +269,7 @@ class SymbolicResponseTest(ResponseTest):
                                      expect="[[cos(theta),i*sin(theta)],[i*sin(theta),cos(theta)]]",
                                      options=["matrix", "imaginary"])
 
-        wrong_snuggletex = self._load_fixture('snuggletex_wrong.html')
+        wrong_snuggletex = load_fixture('snuggletex_wrong.html')
         dynamath_input = textwrap.dedent("""
             <math xmlns="http://www.w3.org/1998/Math/MathML">
               <mstyle displaystyle="true"><mn>2</mn></mstyle>
@@ -314,18 +314,6 @@ class SymbolicResponseTest(ResponseTest):
             self.assertEqual(
                 correct_map.get_correctness('1_2_1'), expected_correctness
             )
-
-    @staticmethod
-    def _load_fixture(relpath):
-        """
-        Return a `unicode` object representing the contents
-        of the fixture file at `relpath` (relative to the test files dir)
-        """
-        abspath = os.path.join(os.path.dirname(__file__), 'test_files', relpath)
-        with open(abspath) as fixture_file:
-            contents = fixture_file.read()
-
-        return contents.decode('utf8')
 
 
 class OptionResponseTest(ResponseTest):
@@ -997,6 +985,59 @@ class CodeResponseTest(ResponseTest):
             self.assertEquals(answers_converted['1_2_1'], 'String-based answer')
             self.assertEquals(answers_converted['1_3_1'], ['answer1', 'answer2', 'answer3'])
             self.assertEquals(answers_converted['1_4_1'], [fp.name, fp.name])
+
+    def test_parse_score_msg_of_responder(self):
+        """
+        Test whether LoncapaProblem._parse_score_msg correcly parses valid HTML5 html.
+        """
+        valid_grader_msgs = [
+            u'<span>MESSAGE</span>',  # Valid XML
+            textwrap.dedent("""
+                <div class='matlabResponse'><div id='mwAudioPlaceHolder'>
+                <audio controls autobuffer autoplay src='data:audio/wav;base64='>Audio is not supported on this browser.</audio>
+                <div>Right click <a href=https://endpoint.mss-mathworks.com/media/filename.wav>here</a> and click \"Save As\" to download the file</div></div>
+                <div style='white-space:pre' class='commandWindowOutput'></div><ul></ul></div>
+            """).replace('\n', ''),  # Valid HTML5 real case Matlab response, invalid XML
+            '<aaa></bbb>'  # Invalid XML, but will be parsed by html5lib to <aaa/>
+        ]
+
+        invalid_grader_msgs = [
+            '<audio',  # invalid XML and HTML5
+        ]
+
+        answer_ids = sorted(self.problem.get_question_answers())
+
+        # CodeResponse requires internal CorrectMap state. Build it now in the queued state
+        old_cmap = CorrectMap()
+        for i, answer_id in enumerate(answer_ids):
+            queuekey = 1000 + i
+            queuestate = CodeResponseTest.make_queuestate(queuekey, datetime.now(UTC))
+            old_cmap.update(CorrectMap(answer_id=answer_ids[i], queuestate=queuestate))
+
+        for grader_msg in valid_grader_msgs:
+            correct_score_msg = json.dumps({'correct': True, 'score': 1, 'msg': grader_msg})
+            incorrect_score_msg = json.dumps({'correct': False, 'score': 0, 'msg': grader_msg})
+            xserver_msgs = {'correct': correct_score_msg, 'incorrect': incorrect_score_msg, }
+
+            for i, answer_id in enumerate(answer_ids):
+                self.problem.correct_map = CorrectMap()
+                self.problem.correct_map.update(old_cmap)
+                output = self.problem.update_score(xserver_msgs['correct'], queuekey=1000 + i)
+                self.assertEquals(output[answer_id]['msg'], grader_msg)
+
+        for grader_msg in invalid_grader_msgs:
+            correct_score_msg = json.dumps({'correct': True, 'score': 1, 'msg': grader_msg})
+            incorrect_score_msg = json.dumps({'correct': False, 'score': 0, 'msg': grader_msg})
+            xserver_msgs = {'correct': correct_score_msg, 'incorrect': incorrect_score_msg, }
+
+            for i, answer_id in enumerate(answer_ids):
+                self.problem.correct_map = CorrectMap()
+                self.problem.correct_map.update(old_cmap)
+
+                output = self.problem.update_score(xserver_msgs['correct'], queuekey=1000 + i)
+                self.assertEquals(output[answer_id]['msg'], u'Invalid grader reply. Please contact the course staff.')
+
+
 
 
 class ChoiceResponseTest(ResponseTest):

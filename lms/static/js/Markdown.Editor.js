@@ -27,8 +27,12 @@
 
     // The text that appears on the upper part of the dialog box when
     // entering links.
-    var linkDialogText = gettext("<p><b>Insert Hyperlink</b></p><p>http://example.com/ \"optional title\"</p>");
-    var imageDialogText = gettext("<p><b>Insert Image (upload file or type url)</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br></p>");
+    var linkDialogText = "<p><b>" + gettext("Insert Hyperlink") + "</b></p><p>http://example.com/ " +
+	// Translators: Please keep the quotation marks (") around this text
+	gettext("\"optional title\"") + "</p>";
+    var imageDialogText = "<p><b>" + gettext("Insert Image (upload file or type url)") + "</b></p><p>http://example.com/images/diagram.jpg " +
+	// Translators: Please keep the quotation marks (") around this text
+	gettext("\"optional title\"") + "<br><br></p>";
 
     // The default text that appears in the dialog input box when entering
     // links.
@@ -1099,7 +1103,7 @@
             form.appendChild(input);
 
             // The choose file button if prompt type is 'image'
-
+/* disable image upload
             if (imageUploadHandler) {
               var chooseFile = doc.createElement("input");
               chooseFile.type = "file";
@@ -1111,7 +1115,7 @@
               form.appendChild(doc.createElement("br"));
               form.appendChild(chooseFile);
             }
-
+*/
 
             // The ok button
             var okButton = doc.createElement("input");
@@ -1445,7 +1449,8 @@
             }
 
             buttons.bold = makeButton("wmd-bold-button", gettext("Bold (Ctrl+B)"), "0px", bindCommand("doBold"));
-            buttons.italic = makeButton("wmd-italic-button", gettext("Italic (Ctrl+I)"), "-20px", bindCommand("doItalic"));
+// italicはメイリオフォントが未対応のため非表示にする
+//            buttons.italic = makeButton("wmd-italic-button", gettext("Italic (Ctrl+I)"), "-20px", bindCommand("doItalic"));
             makeSpacer(1);
             buttons.link = makeButton("wmd-link-button", gettext("Hyperlink (Ctrl+L)"), "-40px", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, false);
